@@ -6,7 +6,7 @@ from flask import Flask
 
 from app.config import config_by_name
 from app.extensions import bcrypt, cors, db, jwt, migrate
-from app.utils.errors import register_error_handlers
+from app.utils.errors import register_error_handlers, register_jwt_error_handlers
 from app.utils.logger import configure_logging
 
 from app import models  # noqa: F401 - registers models with SQLAlchemy metadata
@@ -22,6 +22,7 @@ def create_app(config_name: str | None = None) -> Flask:
     migrate.init_app(app, db)
     bcrypt.init_app(app)
     jwt.init_app(app)
+    register_jwt_error_handlers(jwt)
     cors.init_app(app, origins=app.config["CORS_ORIGINS"], supports_credentials=True)
 
     register_error_handlers(app)
@@ -30,8 +31,10 @@ def create_app(config_name: str | None = None) -> Flask:
         configure_logging(app)
 
     from app.routes.health import health_bp
+    from app.routes.auth import auth_bp
 
     app.register_blueprint(health_bp)
+    app.register_blueprint(auth_bp)
 
     from app.seed import register_seed_command
 

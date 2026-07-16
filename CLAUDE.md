@@ -2,7 +2,7 @@
 
 Read this file, `SYSTEM.md`, and `README.md` at the start of every session, in that order. `SYSTEM.md` is the architecture reference (DB schema, API list, folder structure, AI workflow) — don't duplicate it here, look it up there. This file is the operating contract: the rules that don't change and the checklist of what's left to build.
 
-**Status:** Modules 1-2 complete — see `documentation/module_reports/`. Current target: **Module 3**.
+**Status:** Modules 1-3 complete — see `documentation/module_reports/`. Current target: **Module 4**.
 
 ## Non-negotiable rules
 
@@ -48,7 +48,7 @@ Read this file, `SYSTEM.md`, and `README.md` at the start of every session, in t
 
 - [x] **Module 1** — Project scaffolding (Flask factory, Vite+React shell, folder structure, health check)
 - [x] **Module 2** — Database schema: SQLAlchemy models for every table in `SYSTEM.md` §4, Alembic migrations, seed script with realistic sample data (body types, BMI categories, age groups, a few meal/workout plans, sample foods)
-- [ ] **Module 3** — Auth: register (with age/validation rules), login, JWT issuing/refresh, bcrypt hashing, protected-route decorator; frontend Login/Register pages wired to `AuthContext`
+- [x] **Module 3** — Auth: register (with age/validation rules), login, JWT issuing/refresh, bcrypt hashing, protected-route decorator; frontend Login/Register pages wired to `AuthContext`
 - [ ] **Module 4** — Profile management: view/edit profile, profile picture upload (secure file handling, size/type limits)
 - [ ] **Module 5** — Public landing page: nav bar (Home/About/Healthy Foods/Workouts/BMI Calculator/Contact/Login/Register), healthcare-themed content per `SYSTEM.md`
 - [ ] **Module 6** — BMI Calculator (stateless endpoint + frontend widget, category display)
