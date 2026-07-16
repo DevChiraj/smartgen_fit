@@ -6,6 +6,7 @@ import LandingPage from './pages/LandingPage'
 import About from './pages/About'
 import Contact from './pages/Contact'
 import ComingSoon from './pages/ComingSoon'
+import BMICalculator from './pages/BMICalculator'
 import Login from './pages/Login'
 import Register from './pages/Register'
 import Profile from './pages/Profile'
@@ -37,15 +38,7 @@ function App() {
                 />
               }
             />
-            <Route
-              path="/bmi-calculator"
-              element={
-                <ComingSoon
-                  title="BMI Calculator"
-                  description="A stateless BMI calculator is coming very soon."
-                />
-              }
-            />
+            <Route path="/bmi-calculator" element={<BMICalculator />} />
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
             <Route
