@@ -20,3 +20,8 @@ def create(user: User) -> User:
     db.session.add(user)
     db.session.commit()
     return user
+
+
+def save(user: User) -> User:
+    db.session.commit()
+    return user
