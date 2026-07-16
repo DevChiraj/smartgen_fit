@@ -1,7 +1,8 @@
 """Request/response orchestration for auth endpoints."""
 
 from app.repositories import user_repository
-from app.schemas.auth_schema import LoginSchema, RegisterSchema, UserPublicSchema
+from app.schemas.auth_schema import LoginSchema, RegisterSchema
+from app.schemas.user_schema import UserPublicSchema
 from app.services import auth_service
 
 register_schema = RegisterSchema()

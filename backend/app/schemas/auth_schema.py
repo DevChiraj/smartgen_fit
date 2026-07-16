@@ -20,14 +20,3 @@ class RegisterSchema(Schema):
 class LoginSchema(Schema):
     identifier = fields.String(required=True)
     password = fields.String(required=True, load_only=True)
-
-
-class UserPublicSchema(Schema):
-    user_id = fields.Integer()
-    full_name = fields.String()
-    username = fields.String()
-    email = fields.String()
-    gender = fields.String()
-    age = fields.Integer()
-    role = fields.String()
-    created_at = fields.DateTime()

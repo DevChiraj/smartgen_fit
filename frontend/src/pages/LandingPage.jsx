@@ -33,6 +33,9 @@ export default function LandingPage() {
               <p>
                 Welcome back, <strong>{user?.username}</strong>.
               </p>
+              <Link to="/profile" className="btn btn-outline-primary me-2">
+                My profile
+              </Link>
               <button type="button" className="btn btn-outline-secondary" onClick={logout}>
                 Log out
               </button>

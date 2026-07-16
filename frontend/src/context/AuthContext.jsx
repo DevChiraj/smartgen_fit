@@ -38,8 +38,14 @@ export function AuthProvider({ children }) {
     setUser(null)
   }
 
+  const refreshUser = async () => {
+    const data = await fetchCurrentUser()
+    setUser(data.user)
+    return data.user
+  }
+
   const value = useMemo(
-    () => ({ token, user, isAuthenticated: Boolean(token), isLoading, login, logout }),
+    () => ({ token, user, isAuthenticated: Boolean(token), isLoading, login, logout, refreshUser }),
     [token, user, isLoading],
   )
 

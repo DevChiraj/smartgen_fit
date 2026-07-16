@@ -1,8 +1,12 @@
 import axios from 'axios'
 import { TOKEN_STORAGE_KEY } from '../utils/storageKeys'
 
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000/api'
+
+export const API_ORIGIN = API_BASE_URL.replace(/\/api\/?$/, '')
+
 const apiClient = axios.create({
-  baseURL: import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000/api',
+  baseURL: API_BASE_URL,
 })
 
 apiClient.interceptors.request.use((config) => {
