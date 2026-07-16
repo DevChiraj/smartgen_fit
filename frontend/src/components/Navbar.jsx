@@ -1,0 +1,76 @@
+import { useState } from 'react'
+import { Link, NavLink } from 'react-router-dom'
+import { useAuth } from '../context/AuthContext'
+
+const NAV_LINKS = [
+  { to: '/', label: 'Home', end: true },
+  { to: '/about', label: 'About' },
+  { to: '/healthy-foods', label: 'Healthy Foods' },
+  { to: '/workouts', label: 'Workouts' },
+  { to: '/bmi-calculator', label: 'BMI Calculator' },
+  { to: '/contact', label: 'Contact' },
+]
+
+export default function Navbar() {
+  const [isOpen, setIsOpen] = useState(false)
+  const { isAuthenticated, user, logout } = useAuth()
+  const closeMenu = () => setIsOpen(false)
+
+  return (
+    <nav className="navbar navbar-expand-lg navbar-light bg-white border-bottom">
+      <div className="container">
+        <Link className="navbar-brand fw-bold" to="/" onClick={closeMenu}>
+          SmartGen Fit
+        </Link>
+        <button
+          className="navbar-toggler"
+          type="button"
+          onClick={() => setIsOpen((prev) => !prev)}
+          aria-expanded={isOpen}
+          aria-label="Toggle navigation"
+        >
+          <span className="navbar-toggler-icon" />
+        </button>
+        <div className={`collapse navbar-collapse ${isOpen ? 'show' : ''}`}>
+          <ul className="navbar-nav me-auto mb-2 mb-lg-0">
+            {NAV_LINKS.map((link) => (
+              <li className="nav-item" key={link.to}>
+                <NavLink className="nav-link" to={link.to} end={link.end} onClick={closeMenu}>
+                  {link.label}
+                </NavLink>
+              </li>
+            ))}
+          </ul>
+          <div className="d-flex gap-2">
+            {isAuthenticated ? (
+              <>
+                <Link to="/profile" className="btn btn-outline-primary" onClick={closeMenu}>
+                  {user?.username}
+                </Link>
+                <button
+                  type="button"
+                  className="btn btn-outline-secondary"
+                  onClick={() => {
+                    logout()
+                    closeMenu()
+                  }}
+                >
+                  Log out
+                </button>
+              </>
+            ) : (
+              <>
+                <Link to="/login" className="btn btn-outline-primary" onClick={closeMenu}>
+                  Login
+                </Link>
+                <Link to="/register" className="btn btn-primary" onClick={closeMenu}>
+                  Register
+                </Link>
+              </>
+            )}
+          </div>
+        </div>
+      </div>
+    </nav>
+  )
+}
