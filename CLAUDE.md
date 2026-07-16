@@ -2,7 +2,7 @@
 
 Read this file, `SYSTEM.md`, and `README.md` at the start of every session, in that order. `SYSTEM.md` is the architecture reference (DB schema, API list, folder structure, AI workflow) — don't duplicate it here, look it up there. This file is the operating contract: the rules that don't change and the checklist of what's left to build.
 
-**Status:** Modules 1-5 complete — see `documentation/module_reports/`. Current target: **Module 6**.
+**Status:** Modules 1-6 complete — see `documentation/module_reports/`. Current target: **Module 7**.
 
 ## Non-negotiable rules
 
@@ -51,7 +51,7 @@ Read this file, `SYSTEM.md`, and `README.md` at the start of every session, in t
 - [x] **Module 3** — Auth: register (with age/validation rules), login, JWT issuing/refresh, bcrypt hashing, protected-route decorator; frontend Login/Register pages wired to `AuthContext`
 - [x] **Module 4** — Profile management: view/edit profile, profile picture upload (secure file handling, size/type limits)
 - [x] **Module 5** — Public landing page: nav bar (Home/About/Healthy Foods/Workouts/BMI Calculator/Contact/Login/Register), healthcare-themed content per `SYSTEM.md`
-- [ ] **Module 6** — BMI Calculator (stateless endpoint + frontend widget, category display)
+- [x] **Module 6** — BMI Calculator (stateless endpoint + frontend widget, category display)
 - [ ] **Module 7** — Authenticated dashboard: profile summary, BMI, body type, latest meal/workout plan, charts, quick actions
 - [ ] **Module 8** — AI dataset preparation: source/curate body-image dataset (Kaggle-first), preprocessing scripts in `ai_model/preprocessing/`
 - [ ] **Module 9** — CNN training pipeline (`ai_model/training/`), export versioned model to `ai_model/saved_models/`, record in `ai_model_files` table

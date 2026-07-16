@@ -33,10 +33,12 @@ def create_app(config_name: str | None = None) -> Flask:
     from app.routes.health import health_bp
     from app.routes.auth import auth_bp
     from app.routes.users import users_bp
+    from app.routes.bmi import bmi_bp
 
     app.register_blueprint(health_bp)
     app.register_blueprint(auth_bp)
     app.register_blueprint(users_bp)
+    app.register_blueprint(bmi_bp)
 
     from app.seed import register_seed_command
 
