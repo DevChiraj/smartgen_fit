@@ -13,11 +13,7 @@ def configure_logging(app):
     handler = RotatingFileHandler(
         os.path.join(log_dir, "smartgen_fit.log"), maxBytes=1_000_000, backupCount=5
     )
-    handler.setFormatter(
-        logging.Formatter(
-            "%(asctime)s [%(levelname)s] %(name)s: %(message)s"
-        )
-    )
+    handler.setFormatter(logging.Formatter("%(asctime)s [%(levelname)s] %(name)s: %(message)s"))
     handler.setLevel(logging.INFO)
 
     app.logger.addHandler(handler)

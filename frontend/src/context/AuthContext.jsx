@@ -1,26 +1,46 @@
-import { createContext, useContext, useMemo, useState } from 'react'
+import { createContext, useContext, useEffect, useMemo, useState } from 'react'
 import PropTypes from 'prop-types'
+import { fetchCurrentUser } from '../services/authService'
+import { REFRESH_TOKEN_STORAGE_KEY, TOKEN_STORAGE_KEY } from '../utils/storageKeys'
 
 const AuthContext = createContext(null)
 
-const TOKEN_STORAGE_KEY = 'smartgen_fit_token'
-
 export function AuthProvider({ children }) {
   const [token, setToken] = useState(() => localStorage.getItem(TOKEN_STORAGE_KEY))
+  const [user, setUser] = useState(null)
+  const [isLoading, setIsLoading] = useState(Boolean(token))
 
-  const login = (newToken) => {
-    localStorage.setItem(TOKEN_STORAGE_KEY, newToken)
-    setToken(newToken)
+  useEffect(() => {
+    if (!token) {
+      return
+    }
+    fetchCurrentUser()
+      .then((data) => setUser(data.user))
+      .catch(() => {
+        localStorage.removeItem(TOKEN_STORAGE_KEY)
+        localStorage.removeItem(REFRESH_TOKEN_STORAGE_KEY)
+        setToken(null)
+      })
+      .finally(() => setIsLoading(false))
+  }, [token])
+
+  const login = (authResponse) => {
+    localStorage.setItem(TOKEN_STORAGE_KEY, authResponse.access_token)
+    localStorage.setItem(REFRESH_TOKEN_STORAGE_KEY, authResponse.refresh_token)
+    setToken(authResponse.access_token)
+    setUser(authResponse.user)
   }
 
   const logout = () => {
     localStorage.removeItem(TOKEN_STORAGE_KEY)
+    localStorage.removeItem(REFRESH_TOKEN_STORAGE_KEY)
     setToken(null)
+    setUser(null)
   }
 
   const value = useMemo(
-    () => ({ token, isAuthenticated: Boolean(token), login, logout }),
-    [token],
+    () => ({ token, user, isAuthenticated: Boolean(token), isLoading, login, logout }),
+    [token, user, isLoading],
   )
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>
