@@ -22,8 +22,8 @@ export default function LandingPage() {
         </p>
         <div className="d-flex justify-content-center gap-2 mt-4">
           {isAuthenticated ? (
-            <Link to="/profile" className="btn btn-primary btn-lg">
-              Go to your profile
+            <Link to="/dashboard" className="btn btn-primary btn-lg">
+              Go to your dashboard
             </Link>
           ) : (
             <>
