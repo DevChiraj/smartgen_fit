@@ -2,6 +2,7 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import { AuthProvider } from './context/AuthContext'
 import ProtectedRoute from './components/ProtectedRoute'
 import PublicLayout from './layouts/PublicLayout'
+import AuthenticatedLayout from './layouts/AuthenticatedLayout'
 import LandingPage from './pages/LandingPage'
 import About from './pages/About'
 import Contact from './pages/Contact'
@@ -10,6 +11,7 @@ import BMICalculator from './pages/BMICalculator'
 import Login from './pages/Login'
 import Register from './pages/Register'
 import Profile from './pages/Profile'
+import Dashboard from './pages/Dashboard'
 
 function App() {
   return (
@@ -42,10 +44,22 @@ function App() {
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
             <Route
+              path="/dashboard"
+              element={
+                <ProtectedRoute>
+                  <AuthenticatedLayout>
+                    <Dashboard />
+                  </AuthenticatedLayout>
+                </ProtectedRoute>
+              }
+            />
+            <Route
               path="/profile"
               element={
                 <ProtectedRoute>
-                  <Profile />
+                  <AuthenticatedLayout>
+                    <Profile />
+                  </AuthenticatedLayout>
                 </ProtectedRoute>
               }
             />

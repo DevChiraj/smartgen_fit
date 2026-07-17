@@ -44,7 +44,7 @@ export default function Navbar() {
           <div className="d-flex gap-2">
             {isAuthenticated ? (
               <>
-                <Link to="/profile" className="btn btn-outline-primary" onClick={closeMenu}>
+                <Link to="/dashboard" className="btn btn-outline-primary" onClick={closeMenu}>
                   {user?.username}
                 </Link>
                 <button
