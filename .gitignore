@@ -192,7 +192,17 @@ frontend/dist/
 # AI model artifacts (large binaries, not committed)
 ai_model/saved_models/*.h5
 ai_model/saved_models/*.keras
+ai_model/.venv/
 
 # Runtime user uploads
 uploads/*
 !uploads/.gitkeep
+
+# Body-image dataset: real photos carry personal data (height/weight/age/
+# gender) and a non-commercial/no-redistribution license; synthetic images
+# are regenerable from ai_model/preprocessing/. Neither belongs in git -
+# regenerate locally via datasets/datasets_README.md.
+raw_dataset/
+datasets/body_images/*
+!datasets/body_images/.gitkeep
+datasets/body_images_processed/

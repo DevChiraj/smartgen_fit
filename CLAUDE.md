@@ -2,7 +2,7 @@
 
 Read this file, `SYSTEM.md`, and `README.md` at the start of every session, in that order. `SYSTEM.md` is the architecture reference (DB schema, API list, folder structure, AI workflow) — don't duplicate it here, look it up there. This file is the operating contract: the rules that don't change and the checklist of what's left to build.
 
-**Status:** Modules 1-7 complete — see `documentation/module_reports/`. Current target: **Module 8**.
+**Status:** Modules 1-8 complete — see `documentation/module_reports/`. Current target: **Module 9**.
 
 ## Non-negotiable rules
 
@@ -53,7 +53,7 @@ Read this file, `SYSTEM.md`, and `README.md` at the start of every session, in t
 - [x] **Module 5** — Public landing page: nav bar (Home/About/Healthy Foods/Workouts/BMI Calculator/Contact/Login/Register), healthcare-themed content per `SYSTEM.md`
 - [x] **Module 6** — BMI Calculator (stateless endpoint + frontend widget, category display)
 - [x] **Module 7** — Authenticated dashboard: profile summary, BMI, body type, latest meal/workout plan, charts, quick actions
-- [ ] **Module 8** — AI dataset preparation: source/curate body-image dataset (Kaggle-first), preprocessing scripts in `ai_model/preprocessing/`
+- [x] **Module 8** — AI dataset preparation: source/curate body-image dataset (Kaggle-first), preprocessing scripts in `ai_model/preprocessing/`
 - [ ] **Module 9** — CNN training pipeline (`ai_model/training/`), export versioned model to `ai_model/saved_models/`, record in `ai_model_files` table
 - [ ] **Module 10** — Image analysis module: upload → validation → OpenCV preprocessing → CNN inference API → `image_analysis_records`, wired to frontend upload page
 - [ ] **Module 11** — Recommendation engine: pure rule-based lookup service triggered after classification, populates `user_recommendations`
