@@ -12,6 +12,7 @@ import Login from './pages/Login'
 import Register from './pages/Register'
 import Profile from './pages/Profile'
 import Dashboard from './pages/Dashboard'
+import ImageAnalysis from './pages/ImageAnalysis'
 
 function App() {
   return (
@@ -59,6 +60,16 @@ function App() {
                 <ProtectedRoute>
                   <AuthenticatedLayout>
                     <Profile />
+                  </AuthenticatedLayout>
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/analyze"
+              element={
+                <ProtectedRoute>
+                  <AuthenticatedLayout>
+                    <ImageAnalysis />
                   </AuthenticatedLayout>
                 </ProtectedRoute>
               }

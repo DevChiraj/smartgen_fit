@@ -1,4 +1,5 @@
-"""Secure profile-picture upload handling: extension, size, and real image-content checks."""
+"""Secure image upload handling: extension, size, and real image-content checks.
+Shared by profile pictures (Module 4) and body-analysis photos (Module 10)."""
 
 import os
 import uuid
@@ -15,7 +16,7 @@ def _allowed_extension(filename: str, allowed_extensions: set) -> str | None:
     return extension if extension in allowed_extensions else None
 
 
-def validate_and_save_profile_picture(
+def validate_and_save_image(
     file, upload_folder: str, allowed_extensions: set, max_bytes: int
 ) -> str:
     """Validate an uploaded FileStorage and persist it, returning the saved filename."""

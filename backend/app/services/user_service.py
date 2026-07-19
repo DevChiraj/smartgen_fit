@@ -6,7 +6,7 @@ from flask import current_app
 
 from app.models import User
 from app.repositories import user_repository
-from app.utils.file_handler import delete_profile_picture, validate_and_save_profile_picture
+from app.utils.file_handler import delete_profile_picture, validate_and_save_image
 
 PROFILE_PICTURE_URL_PREFIX = "/api/v1/users/uploads/profile-pictures"
 
@@ -27,7 +27,7 @@ def update_profile_picture(user_id: int, file) -> User:
     user = user_repository.get_by_id(user_id)
     upload_folder = current_app.config["UPLOAD_FOLDER"]
 
-    filename = validate_and_save_profile_picture(
+    filename = validate_and_save_image(
         file,
         upload_folder=upload_folder,
         allowed_extensions=current_app.config["PROFILE_PICTURE_ALLOWED_EXTENSIONS"],

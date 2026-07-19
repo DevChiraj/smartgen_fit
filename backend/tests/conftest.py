@@ -8,6 +8,7 @@ from app.extensions import db as _db
 def app(tmp_path):
     application = create_app("testing")
     application.config["UPLOAD_FOLDER"] = str(tmp_path / "profile_pictures")
+    application.config["BODY_IMAGE_UPLOAD_FOLDER"] = str(tmp_path / "body_images")
     with application.app_context():
         _db.create_all()
         yield application
