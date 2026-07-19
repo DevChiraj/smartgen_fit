@@ -2,7 +2,9 @@
 
 Read this file, `SYSTEM.md`, and `README.md` at the start of every session, in that order. `SYSTEM.md` is the architecture reference (DB schema, API list, folder structure, AI workflow) — don't duplicate it here, look it up there. This file is the operating contract: the rules that don't change and the checklist of what's left to build.
 
-**Status:** Modules 1-8 complete — see `documentation/module_reports/`. Current target: **Module 9**.
+**Status:** Modules 1-9 complete — see `documentation/module_reports/`. Current target: **Module 10**.
+
+**Heads up for Module 10:** the Module 9 model is a pipeline proof-of-concept only — trained on a 48-image dataset with known label-accuracy issues, kept as-is per explicit supervisor direction (see `module9.md`). It is not fit for real classification. Retrain on corrected/larger data before treating its predictions as meaningful, or clearly surface to users that results are a demo, not validated.
 
 ## Non-negotiable rules
 
@@ -54,7 +56,7 @@ Read this file, `SYSTEM.md`, and `README.md` at the start of every session, in t
 - [x] **Module 6** — BMI Calculator (stateless endpoint + frontend widget, category display)
 - [x] **Module 7** — Authenticated dashboard: profile summary, BMI, body type, latest meal/workout plan, charts, quick actions
 - [x] **Module 8** — AI dataset preparation: source/curate body-image dataset (Kaggle-first), preprocessing scripts in `ai_model/preprocessing/`
-- [ ] **Module 9** — CNN training pipeline (`ai_model/training/`), export versioned model to `ai_model/saved_models/`, record in `ai_model_files` table
+- [x] **Module 9** — CNN training pipeline (`ai_model/training/`), export versioned model to `ai_model/saved_models/`, record in `ai_model_files` table
 - [ ] **Module 10** — Image analysis module: upload → validation → OpenCV preprocessing → CNN inference API → `image_analysis_records`, wired to frontend upload page
 - [ ] **Module 11** — Recommendation engine: pure rule-based lookup service triggered after classification, populates `user_recommendations`
 - [ ] **Module 12** — Meal plan module: Sri Lankan food data, meal plan detail pages, nutrition breakdown

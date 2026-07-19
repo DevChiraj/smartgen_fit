@@ -3,3 +3,5 @@ Pillow==11.0.0
 numpy==1.26.4
 huggingface_hub==0.26.2
 kaggle==1.6.17
+tensorflow==2.18.0
+scikit-learn==1.5.2

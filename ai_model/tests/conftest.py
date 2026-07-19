@@ -1,6 +1,8 @@
 import sys
 from pathlib import Path
 
-PREPROCESSING_DIR = Path(__file__).resolve().parent.parent / "preprocessing"
-if str(PREPROCESSING_DIR) not in sys.path:
-    sys.path.insert(0, str(PREPROCESSING_DIR))
+AI_MODEL_DIR = Path(__file__).resolve().parent.parent
+for subdir in ("preprocessing", "training"):
+    path = str(AI_MODEL_DIR / subdir)
+    if path not in sys.path:
+        sys.path.insert(0, path)
