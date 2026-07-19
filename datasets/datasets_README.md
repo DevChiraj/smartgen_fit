@@ -63,8 +63,19 @@ python ai_model/preprocessing/build_dataset.py \
 
 `build_dataset.py` runs the full OpenCV pipeline (`opencv_pipeline.py`) per image: HOG person detection + crop (falls back to the full frame when no person is detected, which is common on tightly-cropped close-up photos), denoise, CLAHE contrast normalization, resize. It prints a per-class count and the body-detection hit rate — check both before training.
 
-## Known limitations (as of Module 8)
+## Update (Module 9): dataset expanded to 3 sources, 48 images
 
-- Only 21 real photos exist (11 normal, 10 overweight, 0 thin before synthetic supplementation) — nowhere near enough to train a CNN that generalizes. Module 9 needs either a larger real dataset or an explicit acknowledgment that this is a proof-of-concept model, not a deployable one.
-- `resize_image()` squashes to a square without preserving aspect ratio, which distorts body proportions — the exact signal this classifier depends on. Worth revisiting (e.g. letterbox-pad instead of stretch) before Module 9 finalizes its training pipeline.
-- HOG person detection succeeds roughly half the time on this dataset's close-range, indoor, tightly-cropped photos; the rest fall back to using the full frame uncropped. Acceptable for now, but a DNN-based detector would likely do better if body-cropping accuracy turns out to matter for training quality.
+Since Module 8, the dataset was expanded with two more sources merged into the same `labels.csv` (`ai_model/preprocessing/prepare_real_dataset_multi_source.py`, added by the project owner):
+
+- `hf_*` (21 images) — the original Hugging Face `UniqueData/body-measurements-dataset` sample from Module 8.
+- `kaggle_*` (6 images) — pulled from `raw_dataset/kaggle_data/`. Its `Body Measurements Image Dataset.csv` matches the *other* free teaser sample from the same vendor family seen during Module 8's research (`ud-biometrics` on Hugging Face), not an independent Kaggle-sourced dataset. 3 of the 6 are byte-identical to 3 already-counted `hf_*` photos (same people).
+- `ds3_*` (21 images) — a separate university-style "body shape data collection study" (see `raw_dataset/dataset3/Proceedure.pdf`). **Important:** that study's own documented procedure only records height + frontal bust/waist/hip circumference + a photo — it does not include weight. The `weight_kg` column in `measurements_2.csv` was added by someone after the fact and is not a real measurement; visually checking several `ds3_*` photos against their claimed BMI confirms the numbers don't match what's shown (e.g. a normal-looking subject labeled BMI 7.7, which would be visibly skeletal).
+
+**Explicit project decision (documented here so it isn't mistaken for an oversight):** the project owner's supervisor instructed keeping all 48 images exactly as-is — including the `dataset_3` mismatch and the `hf`/`kaggle` duplicates — because the immediate goal is proving the training pipeline runs end to end, not achieving real classification accuracy. See `documentation/module_reports/module9.md` for the full review trail and the resulting model's real (expectedly poor/overfit) metrics. **Do not point Module 10's inference at this model expecting meaningful predictions** — retrain on a corrected/larger dataset first if real accuracy is ever needed.
+
+## Known limitations
+
+- Per the above, roughly half of `labels.csv`'s rows (the `ds3_*` ones) do not have trustworthy body-type labels, and 3 rows are exact duplicates of other rows.
+- `resize_image()` squashes to a square without preserving aspect ratio, which distorts body proportions — the exact signal this classifier depends on. Worth revisiting (e.g. letterbox-pad instead of stretch) if this pipeline is ever pointed at real training.
+- HOG person detection succeeds on roughly 35/48 images (73%) of this combined dataset's close-range, indoor, tightly-cropped photos; the rest fall back to using the full frame uncropped.
+- 48 images total (even before discounting the issues above) is nowhere near enough to train a CNN that generalizes to real-world photos.

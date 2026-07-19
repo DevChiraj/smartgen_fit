@@ -43,7 +43,9 @@ def create_app(config_name: str | None = None) -> Flask:
     app.register_blueprint(recommendations_bp)
 
     from app.seed import register_seed_command
+    from app.register_model import register_model_command
 
     register_seed_command(app)
+    register_model_command(app)
 
     return app
