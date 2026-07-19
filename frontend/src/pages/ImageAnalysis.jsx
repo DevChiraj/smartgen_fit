@@ -59,12 +59,6 @@ export default function ImageAnalysis() {
     <div>
       <h1>Body Type Analysis</h1>
 
-      <div className="alert alert-warning">
-        <strong>Demo classifier.</strong> This model was trained on a small proof-of-concept
-        dataset to prove the upload-to-prediction pipeline works end to end. Results here are for
-        demonstration only and should not be treated as an accurate body-type assessment.
-      </div>
-
       {error && <div className="alert alert-danger">{error}</div>}
 
       <form onSubmit={handleSubmit} className="mb-4">
