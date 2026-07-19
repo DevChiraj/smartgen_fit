@@ -28,6 +28,12 @@ class Config:
     PROFILE_PICTURE_MAX_BYTES = 2 * 1024 * 1024  # 2 MB per file
     PROFILE_PICTURE_ALLOWED_EXTENSIONS = {"png", "jpg", "jpeg", "webp"}
 
+    BODY_IMAGE_UPLOAD_FOLDER = os.environ.get(
+        "BODY_IMAGE_UPLOAD_FOLDER", os.path.join(PROJECT_ROOT, "uploads", "body_images")
+    )
+    BODY_IMAGE_MAX_BYTES = 4 * 1024 * 1024  # 4 MB per file
+    BODY_IMAGE_ALLOWED_EXTENSIONS = {"png", "jpg", "jpeg", "webp"}
+
 
 class DevelopmentConfig(Config):
     DEBUG = True

@@ -35,12 +35,14 @@ def create_app(config_name: str | None = None) -> Flask:
     from app.routes.users import users_bp
     from app.routes.bmi import bmi_bp
     from app.routes.recommendations import recommendations_bp
+    from app.routes.image_analysis import image_analysis_bp
 
     app.register_blueprint(health_bp)
     app.register_blueprint(auth_bp)
     app.register_blueprint(users_bp)
     app.register_blueprint(bmi_bp)
     app.register_blueprint(recommendations_bp)
+    app.register_blueprint(image_analysis_bp)
 
     from app.seed import register_seed_command
     from app.register_model import register_model_command

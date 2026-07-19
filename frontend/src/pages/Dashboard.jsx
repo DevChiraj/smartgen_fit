@@ -167,9 +167,9 @@ export default function Dashboard() {
               </Link>
             </div>
             <div className="col-sm-6 col-lg-3">
-              <button type="button" className="btn btn-outline-secondary w-100 h-100" disabled>
-                Analyze body photo (coming soon)
-              </button>
+              <Link to="/analyze" className="btn btn-outline-primary w-100 h-100">
+                Analyze body photo
+              </Link>
             </div>
             <div className="col-sm-6 col-lg-3">
               <button type="button" className="btn btn-outline-secondary w-100 h-100" disabled>
