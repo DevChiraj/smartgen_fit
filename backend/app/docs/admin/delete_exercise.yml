@@ -1,0 +1,19 @@
+tags:
+  - Admin
+summary: Delete an exercise
+security:
+  - BearerAuth: []
+parameters:
+  - in: path
+    name: exercise_id
+    type: integer
+    required: true
+responses:
+  204:
+    description: Deleted
+  401:
+    description: Missing/invalid/expired access token
+  403:
+    description: Not an admin
+  404:
+    description: No exercise with that id

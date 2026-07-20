@@ -1,0 +1,15 @@
+tags:
+  - Foods
+summary: List distinct food categories
+description: Public, no auth. For populating a filter dropdown.
+responses:
+  200:
+    description: Distinct categories, sorted
+    schema:
+      type: object
+      properties:
+        categories:
+          type: array
+          items:
+            type: string
+          example: [Beverage, Condiment, Dairy, "Fat & Oil", Fruit, Grain, Legume, "Nuts & Seeds", Protein, Snack, Sweet, Vegetable]

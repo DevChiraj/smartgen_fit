@@ -1,0 +1,42 @@
+tags:
+  - Admin
+summary: Update a body type's description
+description: >
+  Description only. `name` cannot be changed here (and there is no create/delete) - the CNN's
+  CLASS_NAMES (ai_model/training/model_architecture.py) are hardcoded to Thin/Normal/Overweight,
+  and image_analysis_service looks up the predicted body type by exact name. Renaming a row would
+  silently break classification for that body type - see module_reports/module14.md.
+security:
+  - BearerAuth: []
+consumes:
+  - application/json
+parameters:
+  - in: path
+    name: body_type_id
+    type: integer
+    required: true
+  - in: body
+    name: body
+    required: true
+    schema:
+      type: object
+      required: [description]
+      properties:
+        description:
+          type: string
+responses:
+  200:
+    description: Updated
+    schema:
+      type: object
+      properties:
+        body_type:
+          $ref: '#/definitions/BodyTypeCategory'
+  400:
+    description: Validation error
+  401:
+    description: Missing/invalid/expired access token
+  403:
+    description: Not an admin
+  404:
+    description: No body type with that id

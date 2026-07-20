@@ -1,0 +1,18 @@
+tags:
+  - Image Analysis
+summary: Get the logged-in user's past analyses
+description: Most recent 20, newest first.
+security:
+  - BearerAuth: []
+responses:
+  200:
+    description: Analysis history
+    schema:
+      type: object
+      properties:
+        history:
+          type: array
+          items:
+            $ref: '#/definitions/ImageAnalysisRecord'
+  401:
+    description: Missing/invalid/expired access token

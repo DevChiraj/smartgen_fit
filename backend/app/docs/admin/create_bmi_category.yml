@@ -1,0 +1,37 @@
+tags:
+  - Admin
+summary: Create a BMI category
+security:
+  - BearerAuth: []
+consumes:
+  - application/json
+parameters:
+  - in: body
+    name: body
+    required: true
+    schema:
+      type: object
+      required: [category_name, min_bmi, max_bmi]
+      properties:
+        category_name:
+          type: string
+        min_bmi:
+          type: number
+          minimum: 0
+        max_bmi:
+          type: number
+          minimum: 0
+responses:
+  201:
+    description: Created
+    schema:
+      type: object
+      properties:
+        bmi_category:
+          $ref: '#/definitions/BMICategory'
+  400:
+    description: Validation error
+  401:
+    description: Missing/invalid/expired access token
+  403:
+    description: Not an admin

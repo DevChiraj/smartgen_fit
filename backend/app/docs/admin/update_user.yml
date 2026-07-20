@@ -1,0 +1,47 @@
+tags:
+  - Admin
+summary: Update a user (profile fields or role)
+description: Partial update. Demoting the last remaining admin to "user" is rejected (409) to prevent a full admin lockout.
+security:
+  - BearerAuth: []
+consumes:
+  - application/json
+parameters:
+  - in: path
+    name: user_id
+    type: integer
+    required: true
+  - in: body
+    name: body
+    schema:
+      type: object
+      properties:
+        full_name:
+          type: string
+        phone_number:
+          type: string
+        height_cm:
+          type: number
+        weight_kg:
+          type: number
+        role:
+          type: string
+          enum: [user, admin]
+responses:
+  200:
+    description: Updated user
+    schema:
+      type: object
+      properties:
+        user:
+          $ref: '#/definitions/AdminUser'
+  400:
+    description: Validation error
+  401:
+    description: Missing/invalid/expired access token
+  403:
+    description: Not an admin
+  404:
+    description: No user with that id
+  409:
+    description: Would demote the last remaining admin

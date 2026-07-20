@@ -1,0 +1,15 @@
+tags:
+  - Auth
+summary: Get the currently authenticated user
+security:
+  - BearerAuth: []
+responses:
+  200:
+    description: Current user
+    schema:
+      type: object
+      properties:
+        user:
+          $ref: '#/definitions/UserPublic'
+  401:
+    description: Missing/invalid/expired access token

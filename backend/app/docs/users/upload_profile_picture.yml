@@ -1,0 +1,25 @@
+tags:
+  - Users
+summary: Upload/replace the logged-in user's profile picture
+security:
+  - BearerAuth: []
+consumes:
+  - multipart/form-data
+parameters:
+  - in: formData
+    name: profile_picture
+    type: file
+    required: true
+    description: PNG/JPEG/WEBP, max 2 MB
+responses:
+  200:
+    description: Profile updated with the new picture URL
+    schema:
+      type: object
+      properties:
+        user:
+          $ref: '#/definitions/UserPublic'
+  400:
+    description: Invalid file (wrong type, too large, or not a real image)
+  401:
+    description: Missing/invalid/expired access token

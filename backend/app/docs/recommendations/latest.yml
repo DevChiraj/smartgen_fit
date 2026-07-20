@@ -1,0 +1,90 @@
+tags:
+  - Recommendations
+summary: Get the logged-in user's latest matched meal + workout plan
+description: >
+  Returns null if the user hasn't uploaded a body photo yet. The meal/workout content is always
+  an existing, real row from the KNN-matched dataset - never generated at request time (rule 2,
+  see module_reports/module11.md).
+security:
+  - BearerAuth: []
+responses:
+  200:
+    description: Latest recommendation (or null)
+    schema:
+      type: object
+      properties:
+        recommendation:
+          type: object
+          x-nullable: true
+          properties:
+            recommendation_id:
+              type: integer
+            bmi_value:
+              type: string
+            created_at:
+              type: string
+              format: date-time
+            body_type:
+              type: object
+              properties:
+                body_type_id:
+                  type: integer
+                name:
+                  type: string
+            matched_person_id:
+              type: string
+            meal_record:
+              type: object
+              properties:
+                person_id:
+                  type: string
+                bmi:
+                  type: string
+                bmi_category:
+                  type: string
+                breakfast:
+                  type: string
+                morning_snack:
+                  type: string
+                lunch:
+                  type: string
+                evening_snack:
+                  type: string
+                dinner:
+                  type: string
+                daily_calories:
+                  type: integer
+            workout_record:
+              type: object
+              properties:
+                person_id:
+                  type: string
+                fitness_level:
+                  type: string
+                workout_type:
+                  type: string
+                workout_category:
+                  type: string
+                intensity:
+                  type: string
+                duration_min:
+                  type: integer
+                days_per_week:
+                  type: integer
+                calories_burned:
+                  type: integer
+                target_muscle:
+                  type: string
+                equipment:
+                  type: string
+                  x-nullable: true
+                indoor_outdoor:
+                  type: string
+                goal:
+                  type: string
+                warmup_min:
+                  type: integer
+                cooldown_min:
+                  type: integer
+  401:
+    description: Missing/invalid/expired access token

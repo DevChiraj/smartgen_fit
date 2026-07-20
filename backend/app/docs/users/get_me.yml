@@ -1,0 +1,15 @@
+tags:
+  - Users
+summary: Get the logged-in user's profile
+security:
+  - BearerAuth: []
+responses:
+  200:
+    description: Current profile
+    schema:
+      type: object
+      properties:
+        user:
+          $ref: '#/definitions/UserPublic'
+  401:
+    description: Missing/invalid/expired access token

@@ -1,0 +1,24 @@
+tags:
+  - Admin
+summary: Get a single user
+security:
+  - BearerAuth: []
+parameters:
+  - in: path
+    name: user_id
+    type: integer
+    required: true
+responses:
+  200:
+    description: User detail
+    schema:
+      type: object
+      properties:
+        user:
+          $ref: '#/definitions/AdminUser'
+  401:
+    description: Missing/invalid/expired access token
+  403:
+    description: Not an admin
+  404:
+    description: No user with that id

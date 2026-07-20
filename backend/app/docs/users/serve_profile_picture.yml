@@ -1,0 +1,18 @@
+tags:
+  - Users
+summary: Fetch an uploaded profile picture file
+description: Public - the returned URL from the user object is directly fetchable, no auth required (same trade-off as body-photo storage, see module_reports/module10.md).
+parameters:
+  - in: path
+    name: filename
+    type: string
+    required: true
+produces:
+  - image/png
+  - image/jpeg
+  - image/webp
+responses:
+  200:
+    description: The image file
+  404:
+    description: No such file

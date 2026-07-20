@@ -1,0 +1,29 @@
+tags:
+  - Health
+summary: Database connectivity check
+description: Runs `SELECT 1` against MySQL. Returns 503 (not 500) when the database is unreachable, since that's an expected operational state, not a bug.
+responses:
+  200:
+    description: Database reachable
+    schema:
+      type: object
+      properties:
+        status:
+          type: string
+          example: ok
+        database:
+          type: string
+          example: connected
+  503:
+    description: Database unreachable
+    schema:
+      type: object
+      properties:
+        status:
+          type: string
+          example: error
+        database:
+          type: string
+          example: unreachable
+        detail:
+          type: string

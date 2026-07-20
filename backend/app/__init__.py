@@ -2,9 +2,11 @@
 
 import os
 
+from flasgger import Swagger
 from flask import Flask
 
 from app.config import config_by_name
+from app.docs.swagger_config import SWAGGER_CONFIG, SWAGGER_TEMPLATE
 from app.extensions import bcrypt, cors, db, jwt, migrate
 from app.utils.errors import register_error_handlers, register_jwt_error_handlers
 from app.utils.logger import configure_logging
@@ -24,6 +26,7 @@ def create_app(config_name: str | None = None) -> Flask:
     jwt.init_app(app)
     register_jwt_error_handlers(jwt)
     cors.init_app(app, origins=app.config["CORS_ORIGINS"], supports_credentials=True)
+    Swagger(app, config=SWAGGER_CONFIG, template=SWAGGER_TEMPLATE)
 
     register_error_handlers(app)
 

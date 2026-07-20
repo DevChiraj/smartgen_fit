@@ -1,0 +1,19 @@
+tags:
+  - Foods
+summary: Get a single food's full nutrition detail
+description: Public, no auth.
+parameters:
+  - in: path
+    name: food_id
+    type: integer
+    required: true
+responses:
+  200:
+    description: Food detail
+    schema:
+      type: object
+      properties:
+        food:
+          $ref: '#/definitions/SriLankanFood'
+  404:
+    description: No food with that id

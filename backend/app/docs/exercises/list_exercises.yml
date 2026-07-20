@@ -1,0 +1,48 @@
+tags:
+  - Exercises
+summary: List exercises
+description: Public, no auth. Real Kaggle-sourced exercise data (50 rows) - see module_reports/module13.md.
+parameters:
+  - in: query
+    name: difficulty
+    type: string
+    enum: [Beginner, Intermediate, Advanced]
+    description: Case-insensitive exact match
+  - in: query
+    name: q
+    type: string
+    description: Case-insensitive substring match on exercise_name
+responses:
+  200:
+    description: Matching exercises
+    schema:
+      type: object
+      properties:
+        exercises:
+          type: array
+          items:
+            $ref: '#/definitions/Exercise'
+definitions:
+  Exercise:
+    type: object
+    properties:
+      exercise_id:
+        type: integer
+      exercise_name:
+        type: string
+      target_muscle:
+        type: string
+      difficulty:
+        type: string
+        enum: [Beginner, Intermediate, Advanced]
+      equipment:
+        type: string
+        x-nullable: true
+      sets:
+        type: integer
+      reps:
+        type: integer
+      calories_per_30min:
+        type: integer
+      benefit:
+        type: string
