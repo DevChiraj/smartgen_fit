@@ -2,14 +2,14 @@
 
 Read this file, `SYSTEM.md`, and `README.md` at the start of every session, in that order. `SYSTEM.md` is the architecture reference (DB schema, API list, folder structure, AI workflow) — don't duplicate it here, look it up there. This file is the operating contract: the rules that don't change and the checklist of what's left to build.
 
-**Status:** Modules 1-10 complete — see `documentation/module_reports/`. Current target: **Module 11**.
+**Status:** Modules 1-11 complete — see `documentation/module_reports/`. Current target: **Module 12**.
 
-**Standing heads-up:** the Module 9 CNN is a pipeline proof-of-concept only — trained on a 48-image dataset with known label-accuracy issues, kept as-is per explicit supervisor direction (see `module9.md`). It is not fit for real classification. Module 10 ships it as an explicit in-product demo (a visible disclaimer on the analysis page) rather than hiding the limitation. Retrain on corrected/larger data before treating its predictions as meaningful.
+**Standing heads-up:** the Module 9 CNN is a pipeline proof-of-concept only — trained on a 48-image dataset with known label-accuracy issues, kept as-is per explicit supervisor direction (see `module9.md`). It is not fit for real classification. Module 11's KNN recommender consumes that same predicted label as one of its match features, so a wrong CNN prediction now also produces a mismatched meal/workout recommendation — this is expected given the CNN's documented status, not a Module 11 bug. Retrain the CNN on corrected/larger data before treating either its predictions or the recommendations derived from them as meaningful.
 
 ## Non-negotiable rules
 
 1. **The AI model only classifies body images** (Thin/Normal/Overweight). It must never generate meal plans, workouts, calories, or health advice, and the code path must never let it. `RecommendationService` and `ai_model/` stay decoupled — label in, plan out, nothing shared.
-2. **Recommendations are rule-based DB lookups only** — keyed on Body Type + BMI Category + Age Group + Gender. Never invent a plan at request time.
+2. **Recommendations are similarity-matched, never generated at request time.** *(Amended in Module 11, project owner's explicit decision — see `module11.md`.)* A KNN model (`ai_model/recommendation/`) matches the CNN's predicted body type + the user's Age/Gender against a fixed 2,000-row candidate pool (`meal_recommendation_records` / `workout_recommendation_records`, loaded from real datasets) and returns an existing candidate's `Person_ID`. The meal/workout content shown to the user is always that candidate's own real row, read straight from the DB — nothing is synthesized, interpolated, or authored by a model at request time. This keeps the spirit of the original rule (no free-text generation, no LLM-authored plans, the boundary stays auditable) while replacing the old small hand-written template table with a much larger real dataset matched by similarity instead of an exact composite key.
 3. **One module per session.** Fully build and verify the current module (code + tests), write a short report to `documentation/module_reports/moduleN.md`, then **stop and wait for explicit approval** before starting the next. Don't bundle modules.
 4. Minimum registration age is 15, enforced server-side. Passwords are bcrypt-hashed, never logged. No secrets committed — `.env` stays gitignored; only `.env.example` is tracked.
 5. All inputs validated server-side regardless of frontend validation.
@@ -58,7 +58,7 @@ Read this file, `SYSTEM.md`, and `README.md` at the start of every session, in t
 - [x] **Module 8** — AI dataset preparation: source/curate body-image dataset (Kaggle-first), preprocessing scripts in `ai_model/preprocessing/`
 - [x] **Module 9** — CNN training pipeline (`ai_model/training/`), export versioned model to `ai_model/saved_models/`, record in `ai_model_files` table
 - [x] **Module 10** — Image analysis module: upload → validation → OpenCV preprocessing → CNN inference API → `image_analysis_records`, wired to frontend upload page
-- [ ] **Module 11** — Recommendation engine: pure rule-based lookup service triggered after classification, populates `user_recommendations`
+- [x] **Module 11** — Recommendation engine: KNN similarity match (Age/Gender/predicted body type) over a 2,000-row Sri Lankan meal + workout dataset pair, triggered after classification, populates `user_recommendations` with a matched `Person_ID`; dashboard shows the full matched meal + workout detail
 - [ ] **Module 12** — Meal plan module: Sri Lankan food data, meal plan detail pages, nutrition breakdown
 - [ ] **Module 13** — Workout plan module: workout detail pages, weekly schedule display
 - [ ] **Module 14** — Admin panel: CRUD for users, meal/workout plans, foods, body types, BMI categories — no CNN retraining required

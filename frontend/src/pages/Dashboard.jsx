@@ -12,6 +12,12 @@ const CATEGORY_VARIANT = {
   Obese: 'danger',
 }
 
+const BODY_TYPE_VARIANT = {
+  Thin: 'info',
+  Normal: 'success',
+  Overweight: 'warning',
+}
+
 export default function Dashboard() {
   const { user } = useAuth()
   const [bmiResult, setBmiResult] = useState(null)
@@ -125,28 +131,84 @@ export default function Dashboard() {
         <div className="col-12">
           <div className="card">
             <div className="card-body">
-              <h2 className="h5">Body type &amp; latest plan</h2>
+              <div className="d-flex flex-wrap align-items-center justify-content-between gap-2 mb-3">
+                <h2 className="h5 mb-0">Your personalized plan</h2>
+                {recommendation && (
+                  <span
+                    className={`badge text-bg-${
+                      BODY_TYPE_VARIANT[recommendation.body_type?.name] || 'secondary'
+                    }`}
+                  >
+                    {recommendation.body_type?.name} &middot; BMI {recommendation.bmi_value}
+                  </span>
+                )}
+              </div>
+
               {isLoadingRecommendation ? (
                 <p className="text-muted mb-0">Loading...</p>
               ) : recommendation ? (
-                <div className="row g-3">
-                  <div className="col-md-4">
-                    <strong>Body type:</strong> {recommendation.body_type?.name}
+                <div className="row g-4">
+                  <div className="col-md-6">
+                    <h3 className="h6 text-uppercase text-muted">Meal plan</h3>
+                    <p className="mb-2">
+                      <span className="badge text-bg-light border">
+                        {recommendation.meal_record?.daily_calories} kcal / day
+                      </span>
+                    </p>
+                    <dl className="row mb-0 small">
+                      <dt className="col-5">Breakfast</dt>
+                      <dd className="col-7">{recommendation.meal_record?.breakfast}</dd>
+                      <dt className="col-5">Morning snack</dt>
+                      <dd className="col-7">{recommendation.meal_record?.morning_snack}</dd>
+                      <dt className="col-5">Lunch</dt>
+                      <dd className="col-7">{recommendation.meal_record?.lunch}</dd>
+                      <dt className="col-5">Evening snack</dt>
+                      <dd className="col-7">{recommendation.meal_record?.evening_snack}</dd>
+                      <dt className="col-5">Dinner</dt>
+                      <dd className="col-7">{recommendation.meal_record?.dinner}</dd>
+                    </dl>
                   </div>
-                  <div className="col-md-4">
-                    <strong>Meal plan:</strong> {recommendation.meal_plan?.plan_code} (
-                    {recommendation.meal_plan?.calories} kcal)
-                  </div>
-                  <div className="col-md-4">
-                    <strong>Workout plan:</strong> {recommendation.workout_plan?.plan_code} (
-                    {recommendation.workout_plan?.duration_minutes} min,{' '}
-                    {recommendation.workout_plan?.calories_burned} kcal burned)
+
+                  <div className="col-md-6">
+                    <h3 className="h6 text-uppercase text-muted">Workout plan</h3>
+                    <p className="mb-2 d-flex flex-wrap gap-2">
+                      <span className="badge text-bg-light border">
+                        {recommendation.workout_record?.workout_type}
+                      </span>
+                      <span className="badge text-bg-light border">
+                        {recommendation.workout_record?.intensity} intensity
+                      </span>
+                      <span className="badge text-bg-light border">
+                        {recommendation.workout_record?.calories_burned} kcal burned
+                      </span>
+                    </p>
+                    <dl className="row mb-0 small">
+                      <dt className="col-5">Category</dt>
+                      <dd className="col-7">{recommendation.workout_record?.workout_category}</dd>
+                      <dt className="col-5">Duration</dt>
+                      <dd className="col-7">
+                        {recommendation.workout_record?.duration_min} min (
+                        {recommendation.workout_record?.warmup_min} min warm-up,{' '}
+                        {recommendation.workout_record?.cooldown_min} min cool-down)
+                      </dd>
+                      <dt className="col-5">Schedule</dt>
+                      <dd className="col-7">
+                        {recommendation.workout_record?.days_per_week} days/week &middot;{' '}
+                        {recommendation.workout_record?.indoor_outdoor}
+                      </dd>
+                      <dt className="col-5">Target muscle</dt>
+                      <dd className="col-7">{recommendation.workout_record?.target_muscle}</dd>
+                      <dt className="col-5">Equipment</dt>
+                      <dd className="col-7">{recommendation.workout_record?.equipment || 'None'}</dd>
+                      <dt className="col-5">Goal</dt>
+                      <dd className="col-7">{recommendation.workout_record?.goal}</dd>
+                    </dl>
                   </div>
                 </div>
               ) : (
                 <p className="text-muted mb-0">
-                  You haven&apos;t been analyzed yet. Photo-based body type classification and
-                  personalized meal/workout plans are coming in a future update.
+                  <Link to="/analyze">Analyze a body photo</Link> to get a personalized meal and
+                  workout plan matched to you.
                 </p>
               )}
             </div>
@@ -156,25 +218,20 @@ export default function Dashboard() {
         <div className="col-12">
           <h2 className="h5 mt-2">Quick actions</h2>
           <div className="row g-3">
-            <div className="col-sm-6 col-lg-3">
+            <div className="col-sm-6 col-lg-4">
               <Link to="/profile" className="btn btn-outline-primary w-100 h-100">
                 Edit profile
               </Link>
             </div>
-            <div className="col-sm-6 col-lg-3">
+            <div className="col-sm-6 col-lg-4">
               <Link to="/bmi-calculator" className="btn btn-outline-primary w-100 h-100">
                 Recalculate BMI
               </Link>
             </div>
-            <div className="col-sm-6 col-lg-3">
+            <div className="col-sm-6 col-lg-4">
               <Link to="/analyze" className="btn btn-outline-primary w-100 h-100">
                 Analyze body photo
               </Link>
-            </div>
-            <div className="col-sm-6 col-lg-3">
-              <button type="button" className="btn btn-outline-secondary w-100 h-100" disabled>
-                Meal &amp; workout plans (coming soon)
-              </button>
             </div>
           </div>
         </div>

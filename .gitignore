@@ -192,6 +192,7 @@ frontend/dist/
 # AI model artifacts (large binaries, not committed)
 ai_model/saved_models/*.h5
 ai_model/saved_models/*.keras
+ai_model/saved_models/*.joblib
 ai_model/.venv/
 
 # Runtime user uploads

@@ -7,7 +7,7 @@ Final Year Project — System Architecture & Development Reference
 
 ## 1. Project Overview
 
-SmartGen Fit is a full-stack web application that classifies a user's body type from an uploaded full-body image using a CNN, then retrieves a **predefined, rule-based** meal plan and workout schedule from a MySQL database. The AI component is strictly limited to image classification (Thin / Normal / Overweight). No AI is used to generate meal plans, workout plans, or health advice — all recommendations come from static database records selected via simple lookup rules.
+SmartGen Fit is a full-stack web application that classifies a user's body type from an uploaded full-body image using a CNN, then matches the user to a similar real record in a Sri Lankan meal + workout dataset (via a K-Nearest-Neighbors model) and returns that record's meal plan and workout schedule from a MySQL database. The AI component is strictly limited to image classification (Thin / Normal / Overweight) and to similarity matching. No AI generates meal plans, workout plans, or health advice at request time — a KNN match always resolves to an existing, real database row, read and returned as-is. *(Module 11 replaced the original hand-written composite-key lookup table with this similarity-matched approach over a 2,000-row real dataset — see `documentation/module_reports/module11.md`.)*
 
 **Stack**
 | Layer | Technology |
@@ -34,10 +34,10 @@ Flask REST API
    │
    ├── Routes (Blueprints)        → HTTP endpoints only, no logic
    ├── Controllers                → request/response orchestration
-   ├── Services                   → business logic (recommendation rules, BMI calc, auth)
+   ├── Services                   → business logic (recommendation matching, BMI calc, auth)
    ├── Repositories                → DB access (query building via SQLAlchemy)
    ├── Models                     → SQLAlchemy ORM entities
-   ├── AI Module                  → preprocessing + CNN inference (called by a service, not a route)
+   ├── AI Module                  → preprocessing + CNN inference + KNN recommendation matching (called by a service, not a route)
    └── Utilities                  → validators, hashing, JWT helpers, logging, file handling
    │
    ▼
@@ -45,9 +45,9 @@ MySQL Database
 ```
 
 **Request flow example (image analysis):**
-`React upload form → POST /api/image-analysis → route → controller → ImageAnalysisService → (OpenCV preprocessing → CNN inference) → RecommendationService → MealPlanRepository / WorkoutPlanRepository → MySQL → JSON response → React dashboard`
+`React upload form → POST /api/image-analysis → route → controller → ImageAnalysisService → (OpenCV preprocessing → CNN inference) → RecommendationService.match_recommendation() → (KNN match via ai_model/recommendation/) → MealRecommendationRecord / WorkoutRecommendationRecord lookup by Person_ID → RecommendationService.save_recommendation() → MySQL → JSON response → React dashboard`
 
-The AI module is deliberately isolated behind `ImageAnalysisService`. It returns only a label (`thin` / `normal` / `overweight`) and a confidence score — it never touches meal/workout data. The `RecommendationService` is a separate, pure rule-based component that takes `(body_type, bmi_category, age_group, gender)` and queries the database. This separation is a hard project rule, not just a convenience — it keeps the AI boundary auditable.
+The AI module is deliberately isolated behind two narrow bridges: `app/ai_inference.py` (CNN classification) and `app/ml_recommendation.py` (KNN matching). `ai_inference.py` returns only a label (`thin` / `normal` / `overweight`) and a confidence score — it never touches meal/workout data. `ml_recommendation.py` takes `(predicted_body_type, age, gender)` and returns only a `Person_ID` — it never touches the database and has no idea what a meal plan looks like. `RecommendationService` is the only component that bridges the two: it calls `ml_recommendation.py` for a `Person_ID`, then reads that candidate's real row from `meal_recommendation_records` / `workout_recommendation_records` via ordinary repository queries. Nothing about the recommended content is generated, invented, or interpolated — it's always an existing dataset row, selected by nearest-neighbor distance instead of an exact composite key. This separation (classify → match → look up, each step decoupled and independently testable) is a hard project rule, not just a convenience — it keeps the AI boundary auditable.
 
 ---
 
@@ -91,10 +91,12 @@ smartgen-fit/
 │   ├── training/                   # train.py, model_architecture.py, data_generator.py
 │   ├── inference/                  # predict.py — loaded by backend service
 │   ├── preprocessing/              # opencv_pipeline.py (resize, crop, normalize)
-│   └── saved_models/               # versioned .h5 / SavedModel files
+│   ├── recommendation/             # train_recommender.py, recommend.py, encoding.py — KNN match (Module 11)
+│   └── saved_models/               # versioned .h5/.keras CNN files + recommender_*.joblib bundles
 ├── datasets/
 │   ├── body_images/                # Kaggle or manually curated, class-labeled subfolders
-│   └── sri_lankan_foods/           # CSV nutrition data
+│   ├── sri_lankan_foods/           # CSV nutrition data
+│   └── recommendations/            # Sri Lankan meal + workout xlsx datasets (Module 11), joined by Person_ID
 ├── uploads/                        # runtime user-uploaded images (gitignored)
 └── documentation/
     ├── SYSTEM.md (copy)
@@ -131,13 +133,19 @@ smartgen-fit/
 **image_analysis_records**
 `analysis_id (PK), user_id (FK), image_path, predicted_body_type_id (FK), confidence_score, created_at`
 
-**user_recommendations** *(drives the "Latest Meal/Workout Plan" dashboard widgets)*
-`recommendation_id (PK), user_id (FK), analysis_id (FK), meal_plan_id (FK), workout_plan_id (FK), bmi_value, created_at`
+**meal_recommendation_records** *(Module 11 — the KNN candidate pool, 2,000 rows loaded from `datasets/recommendations/Sri_Lankan_Meal_Dataset_Part_1.xlsx` via `flask seed-recommendations`)*
+`record_id (PK), person_id (unique, indexed), age, gender, height_cm, weight_kg, bmi, bmi_category, breakfast, morning_snack, lunch, evening_snack, dinner, daily_calories`
+
+**workout_recommendation_records** *(Module 11 — same dataset pairing, 2,000 rows loaded from `Workout_Dataset_Matched_Advanced.xlsx`; `person_id` is a real FK into `meal_recommendation_records`, verified 1:1 with no orphans on either side)*
+`record_id (PK), person_id (FK → meal_recommendation_records.person_id, unique, indexed), age, gender, fitness_level, workout_type, workout_category, intensity, duration_min, days_per_week, calories_burned, target_muscle, equipment, indoor_outdoor, goal, warmup_min, cooldown_min`
+
+**user_recommendations** *(drives the "Your personalized plan" dashboard widget)*
+`recommendation_id (PK), user_id (FK), analysis_id (FK), meal_plan_id (FK, nullable — legacy template-plan column, unused since Module 11), workout_plan_id (FK, nullable — same), matched_person_id (FK → meal_recommendation_records.person_id, nullable), bmi_value, created_at`
 
 **ai_model_files**
-`model_id (PK), version, file_path, accuracy, trained_date, is_active`
+`model_id (PK), version, file_path, accuracy, trained_date, is_active` — CNN models only. The Module 11 KNN recommender bundle is *not* registered here (its schema, e.g. `accuracy`, is CNN-specific); it's tracked by a filesystem pointer instead — see §6.
 
-Relationships: `meal_plans`/`workout_plans` are looked up by the composite of `(body_type_id, bmi_category_id, age_group_id, gender)` — this composite should be indexed (or unique-constrained if every combination maps to exactly one plan).
+Relationships: `meal_plans`/`workout_plans` (the original Module 2 template tables) are still looked up by the composite of `(body_type_id, bmi_category_id, age_group_id, gender)`, but `image_analysis_service.analyze()` no longer creates rows through that path — every new `user_recommendations` row is populated via the Module 11 KNN match instead, using `matched_person_id` to join `meal_recommendation_records` / `workout_recommendation_records`. The old columns/tables are kept for backward compatibility, not deleted.
 
 ---
 
@@ -150,9 +158,9 @@ Relationships: `meal_plans`/`workout_plans` are looked up by the composite of `(
 | GET/PUT | `/users/me` | View/edit profile |
 | POST | `/users/me/profile-picture` | Upload profile image |
 | POST | `/bmi/calculate` | BMI + category (stateless utility) |
-| POST | `/image-analysis` | Upload image → CNN classification → triggers recommendation |
+| POST | `/image-analysis` | Upload image → CNN classification → KNN match → triggers recommendation |
 | GET | `/image-analysis/history` | Past analyses for the user |
-| GET | `/recommendations/latest` | Latest meal + workout plan for dashboard |
+| GET | `/recommendations/latest` | Latest matched meal + workout record (full detail) for dashboard |
 | GET | `/meal-plans/:id`, `/workout-plans/:id` | Plan detail |
 | GET | `/foods` | Sri Lankan food/nutrition lookup |
 | CRUD | `/admin/users`, `/admin/meal-plans`, `/admin/workout-plans`, `/admin/foods`, `/admin/body-types`, `/admin/bmi-categories` | Admin management, JWT role-guarded |
@@ -170,11 +178,20 @@ Upload → Validation (type/size/dimensions)
        → Body Detection (bounding box / silhouette isolation)
        → Feature Extraction (CNN backbone feature maps)
        → CNN Classification → {Thin, Normal, Overweight} + confidence
+       → RecommendationService.match_recommendation(user, predicted_label)
+             → KNN match (ai_model/recommendation/recommend.py) on
+               [age, gender, predicted body type] → nearest Person_ID
+             → meal_recommendation_records / workout_recommendation_records
+               looked up by that Person_ID (validated to exist first)
        → Result stored in image_analysis_records
-       → RecommendationService (pure DB lookup, no AI) → meal_plan + workout_plan
+       → RecommendationService.save_recommendation() → user_recommendations
+         (matched_person_id, bmi_value) — no AI or lookup happens after this point,
+         the dashboard just reads back what was already matched
 ```
 
 Dataset strategy: search Kaggle for body-type/silhouette classification datasets first; if coverage is incomplete, supplement with a manually curated, clearly-labeled dataset so training isn't blocked. Same approach for Sri Lankan food nutrition data — Kaggle first, manual CSV fallback. The CNN is trained offline (`ai_model/training/`) and the backend only loads the exported model file for inference — training is never triggered from a request.
+
+**KNN recommender (Module 11):** trained offline via `ai_model/recommendation/train_recommender.py` directly from `datasets/recommendations/Sri_Lankan_Meal_Dataset_Part_1.xlsx` (Age/Gender/BMI_Category/Person_ID — the workout dataset shares the same Person_ID/Age/Gender so it isn't needed for training, only for the post-match DB lookup). Features: Age (raw), Gender (binary-encoded), BMI_Category (ordinal: Thin/Underweight=0, Normal=1, Overweight=2, Obese=3) — the CNN's predicted label is mapped onto that same ordinal scale at inference time (it never predicts "Obese", since `CLASS_NAMES` is Thin/Normal/Overweight only). `StandardScaler` + `sklearn.neighbors.NearestNeighbors(n_neighbors=1)`, persisted via `joblib` to `ai_model/saved_models/recommender_<version>.joblib`, with a `recommender_active.json` pointer file (analogous to `ai_model_files.is_active`, but filesystem-based since this model type isn't in that table). Re-run `train_recommender.py` any time the dataset changes; `flask seed-recommendations` reloads the DB candidate pool independently (idempotent, replaces rows by Person_ID).
 
 ---
 
@@ -208,7 +225,7 @@ Dataset strategy: search Kaggle for body-type/silhouette classification datasets
 8. AI dataset preparation (Kaggle sourcing / manual curation, preprocessing scripts)
 9. CNN training pipeline + model export
 10. Image analysis module (upload, OpenCV pipeline, inference API, history)
-11. Recommendation engine (rule-based lookup service)
+11. Recommendation engine (KNN similarity-match service — amended from the original rule-based lookup, see §11)
 12. Meal plan module (frontend + backend + Sri Lankan food data)
 13. Workout plan module (frontend + backend)
 14. Admin panel (CRUD for all managed entities)
@@ -225,10 +242,10 @@ Dataset strategy: search Kaggle for body-type/silhouette classification datasets
 
 ## 11. Project Rules (hard constraints)
 
-- AI performs **only** image classification (Thin/Normal/Overweight) — never generates meal plans, workouts, calories, or health advice.
-- All recommendations are predefined records retrieved by rule-based DB lookup on Body Type + BMI Category + Age Group + Gender.
+- AI performs **only** image classification (Thin/Normal/Overweight) and, since Module 11, similarity matching (KNN) — neither one generates meal plans, workouts, calories, or health advice as free text. Every recommendation the user sees is an existing, real row read verbatim from `meal_recommendation_records` / `workout_recommendation_records`.
+- **(Amended in Module 11 — project owner's explicit decision, see `documentation/module_reports/module11.md`.)** Recommendations are no longer a simple 4-key rule-based lookup. A KNN model matches (predicted body type, age, gender) against a 2,000-row real dataset and returns the nearest candidate's `Person_ID`; that candidate's own meal + workout row is then read from the DB unmodified. This is still not generative — nothing is invented at request time — but it replaces the original small hand-written template table with a much larger dataset and a similarity match instead of an exact key.
 - Minimum registration age: 15. Passwords hashed (bcrypt), never stored/logged in plaintext.
-- Admins can manage meal/workout/food data without ever retraining or redeploying the CNN.
+- Admins can manage meal/workout/food data without ever retraining or redeploying the CNN. (The KNN recommender is a separate offline training step, same principle — see §6.)
 - No module's code is generated until the prior module is confirmed by the project owner.
 
 ---

@@ -4,7 +4,8 @@ from io import BytesIO
 from PIL import Image
 
 from app.extensions import db
-from app.models import AIModelFile, BodyTypeCategory
+from app.models import AIModelFile, BodyTypeCategory, MealRecommendationRecord
+from app.models.workout_recommendation_record import WorkoutRecommendationRecord
 
 
 def make_test_image_bytes():
@@ -50,6 +51,54 @@ def seed_body_types():
     db.session.commit()
 
 
+def seed_recommendation_records(person_id="P001"):
+    db.session.add(
+        MealRecommendationRecord(
+            person_id=person_id,
+            age=30,
+            gender="Female",
+            height_cm=165,
+            weight_kg=60,
+            bmi=22.0,
+            bmi_category="Normal",
+            breakfast="x",
+            morning_snack="x",
+            lunch="x",
+            evening_snack="x",
+            dinner="x",
+            daily_calories=2000,
+        )
+    )
+    db.session.add(
+        WorkoutRecommendationRecord(
+            person_id=person_id,
+            age=30,
+            gender="Female",
+            fitness_level="Intermediate",
+            workout_type="Yoga",
+            workout_category="Flexibility",
+            intensity="Low",
+            duration_min=45,
+            days_per_week=5,
+            calories_burned=180,
+            target_muscle="Core",
+            equipment="Mat",
+            indoor_outdoor="Indoor",
+            goal="Maintenance",
+            warmup_min=10,
+            cooldown_min=5,
+        )
+    )
+    db.session.commit()
+
+
+def mock_recommendation_match(monkeypatch, person_id="P001"):
+    monkeypatch.setattr(
+        "app.services.recommendation_service.ml_recommendation.find_matching_person",
+        lambda label, age, gender: person_id,
+    )
+
+
 def test_analyze_requires_auth(client, db):
     response = client.post(
         "/api/v1/image-analysis",
@@ -88,12 +137,14 @@ def test_analyze_rejects_non_image(client, db):
 def test_analyze_success_with_mocked_inference(client, db, monkeypatch):
     seed_active_model()
     seed_body_types()
+    seed_recommendation_records()
     token = register_and_get_token(client)
 
     monkeypatch.setattr(
         "app.services.image_analysis_service.classify_body_image",
         lambda image_path, model_path: ("normal", 0.87),
     )
+    mock_recommendation_match(monkeypatch)
 
     response = client.post(
         "/api/v1/image-analysis",
@@ -120,10 +171,12 @@ def test_history_requires_auth(client, db):
 def test_history_returns_only_the_current_users_records(client, db, monkeypatch):
     seed_active_model()
     seed_body_types()
+    seed_recommendation_records()
     monkeypatch.setattr(
         "app.services.image_analysis_service.classify_body_image",
         lambda image_path, model_path: ("thin", 0.75),
     )
+    mock_recommendation_match(monkeypatch)
 
     token_a = register_and_get_token(client, username="user_a")
     client.post(
@@ -163,3 +216,65 @@ def test_analyze_returns_error_when_predicted_label_has_no_matching_body_type(
         content_type="multipart/form-data",
     )
     assert response.status_code == 500
+
+
+def test_analyze_creates_a_matched_recommendation(client, db, monkeypatch):
+    from app.models import UserRecommendation
+
+    seed_active_model()
+    seed_body_types()
+    seed_recommendation_records(person_id="P042")
+    token = register_and_get_token(client)
+
+    monkeypatch.setattr(
+        "app.services.image_analysis_service.classify_body_image",
+        lambda image_path, model_path: ("normal", 0.87),
+    )
+    mock_recommendation_match(monkeypatch, person_id="P042")
+
+    response = client.post(
+        "/api/v1/image-analysis",
+        headers=auth_headers(token),
+        data={"image": (make_test_image_bytes(), "photo.png")},
+        content_type="multipart/form-data",
+    )
+    assert response.status_code == 201
+    analysis_id = response.get_json()["analysis"]["analysis_id"]
+
+    recommendation = UserRecommendation.query.filter_by(analysis_id=analysis_id).first()
+    assert recommendation is not None
+    assert recommendation.matched_person_id == "P042"
+
+
+def test_analyze_returns_503_and_creates_no_orphaned_analysis_when_recommender_missing(
+    client, db, monkeypatch
+):
+    from app.models import ImageAnalysisRecord
+
+    seed_active_model()
+    seed_body_types()
+    # deliberately not seeding meal/workout recommendation records
+    token = register_and_get_token(client)
+
+    monkeypatch.setattr(
+        "app.services.image_analysis_service.classify_body_image",
+        lambda image_path, model_path: ("normal", 0.87),
+    )
+
+    def raise_not_found(label, age, gender):
+        raise FileNotFoundError()
+
+    monkeypatch.setattr(
+        "app.services.recommendation_service.ml_recommendation.find_matching_person",
+        raise_not_found,
+    )
+
+    response = client.post(
+        "/api/v1/image-analysis",
+        headers=auth_headers(token),
+        data={"image": (make_test_image_bytes(), "photo.png")},
+        content_type="multipart/form-data",
+    )
+    assert response.status_code == 503
+    assert response.get_json()["error"] == "NoRecommenderModelError"
+    assert ImageAnalysisRecord.query.count() == 0
