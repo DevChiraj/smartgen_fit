@@ -72,20 +72,14 @@ const FEATURES = [
   },
 ]
 
-const PIPELINE = [
-  { label: 'Upload a body photo', done: true },
-  { label: 'AI classifies your body type', done: true },
-  { label: 'Matched to a real meal + workout plan', done: false },
-]
-
 export default function LandingPage() {
   const { isAuthenticated } = useAuth()
 
   return (
     <div>
       <section className="py-5">
-        <div className="row align-items-center g-5">
-          <div className="col-lg-7">
+        <div className="row justify-content-center text-center">
+          <div className="col-lg-9">
             <span className="hero-badge mb-4">
               <span className="dot" />
               AI-Powered Body Analysis
@@ -95,12 +89,12 @@ export default function LandingPage() {
               <br />
               <span className="text-accent">Match your plan.</span>
             </h1>
-            <p className="lead text-secondary-emphasis col-lg-10">
+            <p className="lead text-secondary-emphasis mx-auto" style={{ maxWidth: 640 }}>
               SmartGen Fit analyzes a photo to classify your body type, then matches you with a Sri
               Lankan meal plan and workout routine — chosen from a curated database, never invented
               by AI.
             </p>
-            <div className="d-flex flex-wrap gap-3 mt-4">
+            <div className="d-flex flex-wrap justify-content-center gap-3 mt-4">
               {isAuthenticated ? (
                 <Link to="/dashboard" className="btn btn-primary btn-lg rounded-pill px-4">
                   Go to your dashboard
@@ -115,61 +109,6 @@ export default function LandingPage() {
                   </Link>
                 </>
               )}
-            </div>
-          </div>
-
-          <div className="col-lg-5">
-            <div className="card p-4 shadow-lg">
-              <div className="d-flex align-items-center gap-3 mb-4">
-                <span className="icon-badge">
-                  <svg
-                    width="22"
-                    height="22"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                  >
-                    <path d="M13 2 3 14h7l-1 8 10-12h-7l1-8z" />
-                  </svg>
-                </span>
-                <div>
-                  <div className="fw-bold">Your Analysis Pipeline</div>
-                  <div className="text-secondary small">Classify → Match → Recommend</div>
-                </div>
-              </div>
-              <ul className="list-unstyled mb-4">
-                {PIPELINE.map((step) => (
-                  <li key={step.label} className="d-flex align-items-center gap-3 py-2">
-                    <span
-                      className={`d-inline-flex align-items-center justify-content-center rounded-circle ${
-                        step.done ? 'bg-success' : 'border border-secondary'
-                      }`}
-                      style={{ width: 24, height: 24, flexShrink: 0 }}
-                    >
-                      {step.done && (
-                        <svg
-                          width="14"
-                          height="14"
-                          viewBox="0 0 24 24"
-                          fill="none"
-                          stroke="white"
-                          strokeWidth="3"
-                        >
-                          <path d="M20 6 9 17l-5-5" />
-                        </svg>
-                      )}
-                    </span>
-                    <span className={step.done ? '' : 'text-secondary'}>{step.label}</span>
-                  </li>
-                ))}
-              </ul>
-              <div className="progress" style={{ height: 6 }}>
-                <div className="progress-bar bg-success" style={{ width: '66%' }} />
-              </div>
-              <p className="text-secondary small mt-2 mb-0">
-                2 of 3 steps &mdash; matched plan next
-              </p>
             </div>
           </div>
         </div>
