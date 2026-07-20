@@ -1,8 +1,5 @@
-"""Idempotent seed data: reference tables + a handful of sample plans/foods.
-
-Manually curated, not sourced from Kaggle - flagged per CLAUDE.md rule 6 as a
-placeholder dataset. Module 8/12 will replace/extend the food data with a
-Kaggle-first dataset once AI dataset preparation begins.
+"""Idempotent seed data: reference tables + a handful of sample plans, plus
+the Module 12 Kaggle-sourced Sri Lankan food nutrition data.
 """
 
 from app.extensions import db
@@ -14,6 +11,7 @@ from app.models import (
     SriLankanFood,
     WorkoutPlan,
 )
+from app.seed_food_data import load_food_records
 
 BODY_TYPES = [
     ("Thin", "Below-average body mass; benefits from a calorie surplus and strength training."),
@@ -32,141 +30,6 @@ AGE_GROUPS = [
     ("Teenager", 15, 19),
     ("Adult", 20, 59),
     ("Senior", 60, 120),
-]
-
-SRI_LANKAN_FOODS = [
-    dict(
-        food_name="Red rice (boiled, 1 cup)",
-        category="Grain",
-        calories=216,
-        protein_g=5,
-        carbs_g=45,
-        fat_g=1.8,
-        fiber_g=3.5,
-        vitamins="B1, B3",
-        minerals="Magnesium, Manganese",
-    ),
-    dict(
-        food_name="Dhal curry (parippu, 1 cup)",
-        category="Legume",
-        calories=198,
-        protein_g=12,
-        carbs_g=28,
-        fat_g=4.5,
-        fiber_g=8,
-        vitamins="Folate, B6",
-        minerals="Iron, Potassium",
-    ),
-    dict(
-        food_name="Fish curry (ambul thiyal, 100g)",
-        category="Protein",
-        calories=180,
-        protein_g=22,
-        carbs_g=3,
-        fat_g=9,
-        fiber_g=0.5,
-        vitamins="B12, D",
-        minerals="Selenium, Iodine",
-    ),
-    dict(
-        food_name="Kottu roti (vegetable, 1 plate)",
-        category="Mixed",
-        calories=430,
-        protein_g=10,
-        carbs_g=60,
-        fat_g=16,
-        fiber_g=4,
-        vitamins="C, A",
-        minerals="Iron, Calcium",
-    ),
-    dict(
-        food_name="String hoppers (idiyappam, 5 pcs)",
-        category="Grain",
-        calories=200,
-        protein_g=4,
-        carbs_g=44,
-        fat_g=0.5,
-        fiber_g=1,
-        vitamins="B1",
-        minerals="Manganese",
-    ),
-    dict(
-        food_name="Jackfruit curry (polos, 1 cup)",
-        category="Vegetable",
-        calories=150,
-        protein_g=3,
-        carbs_g=22,
-        fat_g=6,
-        fiber_g=5,
-        vitamins="C, B6",
-        minerals="Potassium, Magnesium",
-    ),
-    dict(
-        food_name="Coconut sambol (1 tbsp)",
-        category="Condiment",
-        calories=45,
-        protein_g=0.5,
-        carbs_g=2,
-        fat_g=4,
-        fiber_g=1.5,
-        vitamins="C",
-        minerals="Manganese",
-    ),
-    dict(
-        food_name="Egg hopper (appa with egg, 1 pc)",
-        category="Mixed",
-        calories=160,
-        protein_g=6,
-        carbs_g=20,
-        fat_g=6,
-        fiber_g=0.5,
-        vitamins="B12, D",
-        minerals="Iron",
-    ),
-    dict(
-        food_name="Green gram curry (mung ata, 1 cup)",
-        category="Legume",
-        calories=210,
-        protein_g=14,
-        carbs_g=32,
-        fat_g=3,
-        fiber_g=9,
-        vitamins="Folate",
-        minerals="Iron, Magnesium",
-    ),
-    dict(
-        food_name="Chicken curry (100g)",
-        category="Protein",
-        calories=190,
-        protein_g=24,
-        carbs_g=4,
-        fat_g=9,
-        fiber_g=0.5,
-        vitamins="B3, B6",
-        minerals="Phosphorus, Zinc",
-    ),
-    dict(
-        food_name="Papaya (1 cup, cubed)",
-        category="Fruit",
-        calories=62,
-        protein_g=0.7,
-        carbs_g=16,
-        fat_g=0.2,
-        fiber_g=2.5,
-        vitamins="C, A",
-        minerals="Potassium",
-    ),
-    dict(
-        food_name="Gotu kola sambol (mallum, 1 cup)",
-        category="Vegetable",
-        calories=70,
-        protein_g=2,
-        carbs_g=6,
-        fat_g=4.5,
-        fiber_g=3,
-        vitamins="A, C, K",
-        minerals="Iron, Calcium",
-    ),
 ]
 
 # (body_type_name, bmi_category_name, age_group_name, gender) -> plan content
@@ -383,7 +246,13 @@ def _get_or_create_reference_tables():
 
 
 def _seed_foods():
-    for food in SRI_LANKAN_FOODS:
+    # Drop the pre-Module-12 manually-curated placeholder rows (identifiable by
+    # having no serving_size - every Kaggle-sourced row below always sets one)
+    # so re-running `flask seed` on a database seeded before this module
+    # converges to the same real dataset instead of keeping both.
+    SriLankanFood.query.filter(SriLankanFood.serving_size.is_(None)).delete()
+
+    for food in load_food_records():
         if SriLankanFood.query.filter_by(food_name=food["food_name"]).first() is None:
             db.session.add(SriLankanFood(**food))
 

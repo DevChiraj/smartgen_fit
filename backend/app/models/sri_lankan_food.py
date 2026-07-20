@@ -9,6 +9,7 @@ class SriLankanFood(db.Model):
     food_id = db.Column(db.Integer, primary_key=True)
     food_name = db.Column(db.String(150), nullable=False)
     category = db.Column(db.String(50), nullable=False)
+    serving_size = db.Column(db.String(50), nullable=True)
 
     calories = db.Column(db.Integer, nullable=False)
     protein_g = db.Column(db.Numeric(6, 2), nullable=False)

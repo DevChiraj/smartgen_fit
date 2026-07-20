@@ -20,6 +20,11 @@ export default function AuthenticatedLayout({ children }) {
             Analyze Photo
           </NavLink>
         </li>
+        <li className="nav-item">
+          <NavLink className="nav-link" to="/meal-plan">
+            My Meal Plan
+          </NavLink>
+        </li>
       </ul>
       {children}
     </div>
