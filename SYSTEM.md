@@ -244,7 +244,7 @@ Dataset strategy: search Kaggle for body-type/silhouette classification datasets
 13. Workout plan module: exercise reference library (frontend + backend) + suggested weekly schedule for the user's matched plan
 14. Admin panel: CRUD for users, foods, exercises, body types (description only), BMI categories — no CRUD for the legacy `meal_plans`/`workout_plans` tables (dead since Module 11, same reasoning as Modules 12/13)
 15. Swagger documentation pass: all 37 endpoints documented via Flasgger, served at `/api/docs`, with a regression test guarding against undocumented future routes
-16. Testing (backend unit/integration, frontend component tests)
+16. Testing pass: backend coverage audit (pytest-cov) with targeted gap-filling (99% line coverage, 137 tests), frontend test framework introduced from scratch (Vitest + React Testing Library, 89 tests across utils/services/context/route guards/representative pages), both wired into CI
 17. Final review, deployment docs, polish
 
 ## 10. Implementation Strategy

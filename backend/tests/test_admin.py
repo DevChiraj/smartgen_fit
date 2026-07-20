@@ -61,6 +61,15 @@ def test_admin_can_list_and_get_users(client, db):
     assert "admin1" in usernames and "plainuser" in usernames
 
 
+def test_admin_can_get_a_single_user(client, db):
+    admin_token, _ = register(client, "admin1", role="admin")
+    _, other_id = register(client, "plainuser")
+
+    response = client.get(f"/api/v1/admin/users/{other_id}", headers=auth_headers(admin_token))
+    assert response.status_code == 200
+    assert response.get_json()["user"]["username"] == "plainuser"
+
+
 def test_admin_get_user_404_for_missing_id(client, db):
     admin_token, _ = register(client, "admin1", role="admin")
     response = client.get("/api/v1/admin/users/999999", headers=auth_headers(admin_token))
@@ -271,6 +280,17 @@ def test_admin_update_body_type_does_not_accept_name_change(client, db):
 # --- BMI categories ---
 
 
+def test_admin_can_list_bmi_categories(client, db):
+    admin_token, _ = register(client, "admin1", role="admin")
+    db.session.add(BMICategory(category_name="Normal weight", min_bmi=18.5, max_bmi=25))
+    db.session.commit()
+
+    response = client.get("/api/v1/admin/bmi-categories", headers=auth_headers(admin_token))
+    assert response.status_code == 200
+    names = [c["category_name"] for c in response.get_json()["bmi_categories"]]
+    assert "Normal weight" in names
+
+
 def test_admin_can_crud_bmi_categories(client, db):
     admin_token, _ = register(client, "admin1", role="admin")
     # a second category must already exist, or deleting the one created
@@ -312,3 +332,31 @@ def test_admin_cannot_delete_the_last_bmi_category(client, db):
         headers=auth_headers(admin_token),
     )
     assert response.status_code == 409
+
+
+def test_admin_update_bmi_category_returns_404_for_missing_id(client, db):
+    admin_token, _ = register(client, "admin1", role="admin")
+    response = client.put(
+        "/api/v1/admin/bmi-categories/999999",
+        json={"max_bmi": 20},
+        headers=auth_headers(admin_token),
+    )
+    assert response.status_code == 404
+
+
+def test_admin_delete_bmi_category_returns_404_for_missing_id(client, db):
+    admin_token, _ = register(client, "admin1", role="admin")
+    response = client.delete(
+        "/api/v1/admin/bmi-categories/999999", headers=auth_headers(admin_token)
+    )
+    assert response.status_code == 404
+
+
+def test_admin_update_body_type_returns_404_for_missing_id(client, db):
+    admin_token, _ = register(client, "admin1", role="admin")
+    response = client.put(
+        "/api/v1/admin/body-types/999999",
+        json={"description": "updated"},
+        headers=auth_headers(admin_token),
+    )
+    assert response.status_code == 404
