@@ -96,7 +96,8 @@ smartgen-fit/
 ├── datasets/
 │   ├── body_images/                # Kaggle or manually curated, class-labeled subfolders
 │   ├── sri_lankan_foods/           # Kaggle nutrition dataset (Module 12), 119 real foods
-│   └── recommendations/            # Sri Lankan meal + workout xlsx datasets (Module 11), joined by Person_ID
+│   ├── recommendations/            # Sri Lankan meal + workout xlsx datasets (Module 11), joined by Person_ID
+│   └── workouts/                   # Kaggle exercise dataset (Module 13), 50 real exercises
 ├── uploads/                        # runtime user-uploaded images (gitignored)
 └── documentation/
     ├── SYSTEM.md (copy)
@@ -130,6 +131,9 @@ smartgen-fit/
 **sri_lankan_foods** *(Module 12 — 119 rows loaded from `datasets/sri_lankan_foods/SrilankanCommonFoods.xlsx`, a real Kaggle dataset replacing the original 12-row manual placeholder)*
 `food_id (PK), food_name, category, serving_size, calories, protein_g, carbs_g, fat_g, fiber_g (nullable), vitamins (nullable), minerals (nullable), image_url (nullable)` — the Kaggle source has no category/fiber/vitamin/mineral/image columns; `category` is assigned via an explicit per-food mapping in `backend/app/seed_food_data.py` (auditable, not keyword heuristics), the rest are left null rather than invented.
 
+**exercises** *(Module 13 — 50 rows loaded from `datasets/workouts/Top50ExercisesForYourBody.csv`, a real Kaggle dataset; a standalone exercise reference library, unrelated to the Module 11 KNN pipeline or the legacy `workout_plans` table)*
+`exercise_id (PK), exercise_name, target_muscle, difficulty (Beginner/Intermediate/Advanced), equipment (nullable), sets, reps, calories_per_30min, benefit`
+
 **image_analysis_records**
 `analysis_id (PK), user_id (FK), image_path, predicted_body_type_id (FK), confidence_score, created_at`
 
@@ -145,7 +149,9 @@ smartgen-fit/
 **ai_model_files**
 `model_id (PK), version, file_path, accuracy, trained_date, is_active` — CNN models only. The Module 11 KNN recommender bundle is *not* registered here (its schema, e.g. `accuracy`, is CNN-specific); it's tracked by a filesystem pointer instead — see §6.
 
-Relationships: `meal_plans`/`workout_plans` (the original Module 2 template tables) are still looked up by the composite of `(body_type_id, bmi_category_id, age_group_id, gender)`, but `image_analysis_service.analyze()` no longer creates rows through that path — every new `user_recommendations` row is populated via the Module 11 KNN match instead, using `matched_person_id` to join `meal_recommendation_records` / `workout_recommendation_records`. The old columns/tables are kept for backward compatibility, not deleted. **Module 12 decision:** since no live flow ever populates a `meal_plans`/`workout_plans` row anymore, Module 12 does not build detail endpoints for them (the `/meal-plans/:id`/`/workout-plans/:id` endpoints once planned here are dropped from §5) — building a page around permanently-empty user data would be dead surface area. `sri_lankan_foods` is unrelated to this and *is* fully wired up (§5), since it's independent public reference data, not part of the matching pipeline.
+Relationships: `meal_plans`/`workout_plans` (the original Module 2 template tables) are still looked up by the composite of `(body_type_id, bmi_category_id, age_group_id, gender)`, but `image_analysis_service.analyze()` no longer creates rows through that path — every new `user_recommendations` row is populated via the Module 11 KNN match instead, using `matched_person_id` to join `meal_recommendation_records` / `workout_recommendation_records`. The old columns/tables are kept for backward compatibility, not deleted. **Module 12 decision:** since no live flow ever populates a `meal_plans`/`workout_plans` row anymore, Module 12 does not build detail endpoints for them (the `/meal-plans/:id`/`/workout-plans/:id` endpoints once planned here are dropped from §5) — building a page around permanently-empty user data would be dead surface area. `sri_lankan_foods`/`exercises` are unrelated to this and *are* fully wired up (§5), since both are independent public reference data, not part of the matching pipeline.
+
+**Module 13 note on "weekly schedule":** neither `workout_recommendation_records` (live) nor the legacy `workout_plans.weekly_schedule` string (dead) has any real per-day-of-week data — `workout_recommendation_records` only has a `days_per_week` integer count. The frontend's "suggested weekly schedule" (`frontend/src/utils/weeklySchedule.js`) deterministically spreads that count across a 7-day grid and is explicitly labeled as a suggestion, not sourced data — see `module13.md`.
 
 ---
 
@@ -164,6 +170,9 @@ Relationships: `meal_plans`/`workout_plans` (the original Module 2 template tabl
 | GET | `/foods` | Sri Lankan food/nutrition list — `?category=`, `?q=` filters (public, no auth) |
 | GET | `/foods/categories` | Distinct food categories, for the filter dropdown (public) |
 | GET | `/foods/:id` | Single food's full nutrition detail (public) |
+| GET | `/exercises` | Exercise library list — `?difficulty=`, `?q=` filters (public, no auth) |
+| GET | `/exercises/difficulties` | Distinct difficulty levels, for the filter dropdown (public) |
+| GET | `/exercises/:id` | Single exercise's full detail (public) |
 | CRUD | `/admin/users`, `/admin/foods`, `/admin/body-types`, `/admin/bmi-categories` | Admin management, JWT role-guarded |
 
 Swagger docs generated via Flasgger/Flask-RESTX, served at `/api/docs`.
@@ -228,7 +237,7 @@ Dataset strategy: search Kaggle for body-type/silhouette classification datasets
 10. Image analysis module (upload, OpenCV pipeline, inference API, history)
 11. Recommendation engine (KNN similarity-match service — amended from the original rule-based lookup, see §11)
 12. Meal plan module (frontend + backend + Sri Lankan food data)
-13. Workout plan module (frontend + backend)
+13. Workout plan module: exercise reference library (frontend + backend) + suggested weekly schedule for the user's matched plan
 14. Admin panel (CRUD for all managed entities)
 15. Swagger documentation pass
 16. Testing (backend unit/integration, frontend component tests)

@@ -1,5 +1,6 @@
 """Idempotent seed data: reference tables + a handful of sample plans, plus
-the Module 12 Kaggle-sourced Sri Lankan food nutrition data.
+the Module 12 Kaggle-sourced Sri Lankan food nutrition data and the
+Module 13 Kaggle-sourced exercise library.
 """
 
 from app.extensions import db
@@ -7,10 +8,12 @@ from app.models import (
     AgeGroup,
     BMICategory,
     BodyTypeCategory,
+    Exercise,
     MealPlan,
     SriLankanFood,
     WorkoutPlan,
 )
+from app.seed_exercise_data import load_exercise_records
 from app.seed_food_data import load_food_records
 
 BODY_TYPES = [
@@ -257,6 +260,12 @@ def _seed_foods():
             db.session.add(SriLankanFood(**food))
 
 
+def _seed_exercises():
+    for exercise in load_exercise_records():
+        if Exercise.query.filter_by(exercise_name=exercise["exercise_name"]).first() is None:
+            db.session.add(Exercise(**exercise))
+
+
 def _seed_meal_plans(body_types, bmi_categories, age_groups):
     for plan in MEAL_PLANS:
         if MealPlan.query.filter_by(plan_code=plan["plan_code"]).first() is not None:
@@ -314,6 +323,7 @@ def seed_data():
     """Populate reference tables and sample plans/foods. Safe to run repeatedly."""
     body_types, bmi_categories, age_groups = _get_or_create_reference_tables()
     _seed_foods()
+    _seed_exercises()
     _seed_meal_plans(body_types, bmi_categories, age_groups)
     _seed_workout_plans(body_types, bmi_categories, age_groups)
     db.session.commit()

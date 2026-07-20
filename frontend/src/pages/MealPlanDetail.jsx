@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { getLatestRecommendation } from '../services/recommendationService'
+import { getSuggestedWorkoutDays } from '../utils/weeklySchedule'
 
 const BODY_TYPE_VARIANT = {
   Thin: 'info',
@@ -93,7 +94,7 @@ export default function MealPlanDetail() {
                   {workout?.calories_burned} kcal burned
                 </span>
               </p>
-              <dl className="row mb-0">
+              <dl className="row mb-3">
                 <dt className="col-4">Category</dt>
                 <dd className="col-8">{workout?.workout_category}</dd>
                 <dt className="col-4">Duration</dt>
@@ -101,10 +102,8 @@ export default function MealPlanDetail() {
                   {workout?.duration_min} min ({workout?.warmup_min} min warm-up,{' '}
                   {workout?.cooldown_min} min cool-down)
                 </dd>
-                <dt className="col-4">Schedule</dt>
-                <dd className="col-8">
-                  {workout?.days_per_week} days/week &middot; {workout?.indoor_outdoor}
-                </dd>
+                <dt className="col-4">Location</dt>
+                <dd className="col-8">{workout?.indoor_outdoor}</dd>
                 <dt className="col-4">Target muscle</dt>
                 <dd className="col-8">{workout?.target_muscle}</dd>
                 <dt className="col-4">Equipment</dt>
@@ -112,6 +111,28 @@ export default function MealPlanDetail() {
                 <dt className="col-4">Goal</dt>
                 <dd className="col-8">{workout?.goal}</dd>
               </dl>
+
+              <h3 className="h6 text-uppercase text-muted">
+                Suggested weekly schedule ({workout?.days_per_week} days/week)
+              </h3>
+              <div className="d-flex gap-2 mb-2">
+                {getSuggestedWorkoutDays(workout?.days_per_week).map(({ day, isWorkoutDay }) => (
+                  <span
+                    key={day}
+                    className={`badge rounded-pill ${
+                      isWorkoutDay ? 'text-bg-primary' : 'text-bg-light border'
+                    }`}
+                    style={{ width: 48 }}
+                  >
+                    {day}
+                  </span>
+                ))}
+              </div>
+              <p className="text-muted small mb-0">
+                A suggested spread based on your {workout?.days_per_week}-day/week frequency, not a
+                specific day-by-day exercise plan. Browse <Link to="/workouts">Workouts</Link> for
+                exercises to fill each session.
+              </p>
             </div>
           </div>
         </div>

@@ -2,9 +2,11 @@
 
 Read this file, `SYSTEM.md`, and `README.md` at the start of every session, in that order. `SYSTEM.md` is the architecture reference (DB schema, API list, folder structure, AI workflow) — don't duplicate it here, look it up there. This file is the operating contract: the rules that don't change and the checklist of what's left to build.
 
-**Status:** Modules 1-12 complete — see `documentation/module_reports/`. Current target: **Module 13**.
+**Status:** Modules 1-13 complete — see `documentation/module_reports/`. Current target: **Module 14**.
 
 **Standing heads-up:** the Module 9 CNN is a pipeline proof-of-concept only — trained on a 48-image dataset with known label-accuracy issues, kept as-is per explicit supervisor direction (see `module9.md`). It is not fit for real classification. Module 11's KNN recommender consumes that same predicted label as one of its match features, so a wrong CNN prediction now also produces a mismatched meal/workout recommendation — this is expected given the CNN's documented status, not a Module 11 bug. Retrain the CNN on corrected/larger data before treating either its predictions or the recommendations derived from them as meaningful.
+
+**Standing heads-up (MySQL engine):** the local dev MySQL server has `default_storage_engine = MyISAM` (server-level, non-standard) instead of InnoDB — discovered and fixed for all *existing* tables in Module 11, but the server default itself was never changed. **Every new migration that creates a table must pass `mysql_engine='InnoDB'` explicitly to `op.create_table(...)`** (see Module 13's `f2895c49193b_add_exercises_table.py` for the pattern), or the new table silently gets MyISAM again — no foreign keys, no transaction rollback. Check this on every future migration until the server config itself is fixed.
 
 ## Non-negotiable rules
 
@@ -60,7 +62,7 @@ Read this file, `SYSTEM.md`, and `README.md` at the start of every session, in t
 - [x] **Module 10** — Image analysis module: upload → validation → OpenCV preprocessing → CNN inference API → `image_analysis_records`, wired to frontend upload page
 - [x] **Module 11** — Recommendation engine: KNN similarity match (Age/Gender/predicted body type) over a 2,000-row Sri Lankan meal + workout dataset pair, triggered after classification, populates `user_recommendations` with a matched `Person_ID`; dashboard shows the full matched meal + workout detail
 - [x] **Module 12** — Meal plan module: 119-row real Kaggle Sri Lankan nutrition dataset (`sri_lankan_foods`, replacing the 12-row placeholder), public `/foods` search+category-filter API and Healthy Foods page, authenticated `/meal-plan` detail page for the user's live Module 11 match
-- [ ] **Module 13** — Workout plan module: workout detail pages, weekly schedule display
+- [x] **Module 13** — Workout plan module: 50-row real Kaggle exercise dataset (`exercises`, replacing nothing — no prior workout reference data existed), public `/exercises` search+difficulty-filter API and Workouts page, suggested weekly schedule (derived from `days_per_week`, clearly labeled as a suggestion) added to the `/meal-plan` page
 - [ ] **Module 14** — Admin panel: CRUD for users, meal/workout plans, foods, body types, BMI categories — no CNN retraining required
 - [ ] **Module 15** — Swagger docs pass over every endpoint (`/api/docs`)
 - [ ] **Module 16** — Testing pass: backend unit/integration tests per service, frontend component tests, fix gaps found
