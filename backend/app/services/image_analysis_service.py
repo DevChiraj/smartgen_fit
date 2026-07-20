@@ -1,7 +1,11 @@
-"""Upload -> validate -> preprocess -> classify -> store. No meal/workout
-data touched here - this service returns a body-type label and
-confidence only, matching rule 1. Populating user_recommendations from
-a classification is RecommendationService's job (Module 11).
+"""Upload -> validate -> preprocess -> classify -> match -> store -> save.
+The classify step returns a body-type label and confidence only,
+matching rule 1 - ai_model/ never sees meal/workout data. The KNN match
+(Module 11's recommendation_service) is resolved and validated *before*
+the ImageAnalysisRecord is persisted, then saved right after - same
+"validate everything before the first write" contract the body-type
+lookup already follows, so a bad match never leaves an orphaned
+analysis row with no recommendation.
 """
 
 import os
@@ -15,7 +19,9 @@ from app.repositories import (
     ai_model_file_repository,
     body_type_repository,
     image_analysis_repository,
+    user_repository,
 )
+from app.services import recommendation_service
 from app.utils.exceptions import AppError
 from app.utils.file_handler import validate_and_save_image
 
@@ -55,12 +61,18 @@ def analyze(user_id: int, file) -> ImageAnalysisRecord:
             status_code=500,
         )
 
-    return image_analysis_repository.create(
+    user = user_repository.get_by_id(user_id)
+    match = recommendation_service.match_recommendation(user, label)
+
+    analysis = image_analysis_repository.create(
         user_id=user_id,
         image_path=f"{IMAGE_URL_PREFIX}/{filename}",
         predicted_body_type_id=body_type.body_type_id,
         confidence_score=confidence,
     )
+    recommendation_service.save_recommendation(user, analysis, match)
+
+    return analysis
 
 
 def get_history(user_id: int) -> list[ImageAnalysisRecord]:

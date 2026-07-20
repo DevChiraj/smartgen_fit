@@ -1,13 +1,14 @@
+from app.extensions import db as _db
 from app.models import (
     AgeGroup,
     BMICategory,
     BodyTypeCategory,
     ImageAnalysisRecord,
-    MealPlan,
+    MealRecommendationRecord,
     User,
     UserRecommendation,
-    WorkoutPlan,
 )
+from app.models.workout_recommendation_record import WorkoutRecommendationRecord
 
 
 def register_and_get_token(client, username="dash_user"):
@@ -27,6 +28,54 @@ def auth_headers(token):
     return {"Authorization": f"Bearer {token}"}
 
 
+def seed_reference_tables():
+    body_type = BodyTypeCategory(name="Normal", description="Healthy body composition.")
+    bmi_category = BMICategory(category_name="Normal weight", min_bmi=18.5, max_bmi=25.0)
+    age_group = AgeGroup(name="Adult", min_age=20, max_age=59)
+    _db.session.add_all([body_type, bmi_category, age_group])
+    _db.session.commit()
+    return body_type
+
+
+def seed_matched_records(db, person_id="MP-TEST"):
+    meal_record = MealRecommendationRecord(
+        person_id=person_id,
+        age=28,
+        gender="Female",
+        height_cm=165,
+        weight_kg=58,
+        bmi=21.3,
+        bmi_category="Normal",
+        breakfast="String hoppers and dhal curry",
+        morning_snack="Papaya",
+        lunch="Red rice, fish curry, gotu kola sambol",
+        evening_snack="Roasted peanuts",
+        dinner="Kottu roti",
+        daily_calories=1900,
+    )
+    workout_record = WorkoutRecommendationRecord(
+        person_id=person_id,
+        age=28,
+        gender="Female",
+        fitness_level="Intermediate",
+        workout_type="Cycling",
+        workout_category="Cardio",
+        intensity="Moderate",
+        duration_min=40,
+        days_per_week=4,
+        calories_burned=400,
+        target_muscle="Full body",
+        equipment="Bicycle",
+        indoor_outdoor="Outdoor",
+        goal="Weight maintenance",
+        warmup_min=8,
+        cooldown_min=5,
+    )
+    db.session.add_all([meal_record, workout_record])
+    db.session.commit()
+    return meal_record, workout_record
+
+
 def test_latest_recommendation_requires_auth(client, db):
     response = client.get("/api/v1/recommendations/latest")
     assert response.status_code == 401
@@ -39,46 +88,12 @@ def test_latest_recommendation_returns_null_when_none_exists(client, db):
     assert response.get_json()["recommendation"] is None
 
 
-def test_latest_recommendation_returns_full_summary_when_one_exists(client, db):
+def test_latest_recommendation_returns_full_matched_details_when_one_exists(client, db):
     token = register_and_get_token(client)
     user = User.query.filter_by(username="dash_user").first()
 
-    body_type = BodyTypeCategory(name="Normal", description="Healthy body composition.")
-    bmi_category = BMICategory(category_name="Normal weight", min_bmi=18.5, max_bmi=25.0)
-    age_group = AgeGroup(name="Adult", min_age=20, max_age=59)
-    db.session.add_all([body_type, bmi_category, age_group])
-    db.session.commit()
-
-    meal_plan = MealPlan(
-        plan_code="MP-TEST",
-        body_type_id=body_type.body_type_id,
-        bmi_category_id=bmi_category.bmi_category_id,
-        age_group_id=age_group.age_group_id,
-        gender="female",
-        breakfast="x",
-        lunch="x",
-        dinner="x",
-        calories=1900,
-        protein_g=75,
-        carbs_g=240,
-        fat_g=55,
-    )
-    workout_plan = WorkoutPlan(
-        plan_code="WP-TEST",
-        body_type_id=body_type.body_type_id,
-        bmi_category_id=bmi_category.bmi_category_id,
-        age_group_id=age_group.age_group_id,
-        gender="female",
-        warm_up="x",
-        cardio="x",
-        strength_training="x",
-        stretching="x",
-        cool_down="x",
-        duration_minutes=55,
-        calories_burned=400,
-    )
-    db.session.add_all([meal_plan, workout_plan])
-    db.session.commit()
+    body_type = seed_reference_tables()
+    meal_record, workout_record = seed_matched_records(db)
 
     analysis = ImageAnalysisRecord(
         user_id=user.user_id,
@@ -92,8 +107,7 @@ def test_latest_recommendation_returns_full_summary_when_one_exists(client, db):
     recommendation = UserRecommendation(
         user_id=user.user_id,
         analysis_id=analysis.analysis_id,
-        meal_plan_id=meal_plan.meal_plan_id,
-        workout_plan_id=workout_plan.workout_plan_id,
+        matched_person_id=meal_record.person_id,
         bmi_value=21.4,
     )
     db.session.add(recommendation)
@@ -105,52 +119,19 @@ def test_latest_recommendation_returns_full_summary_when_one_exists(client, db):
 
     assert body["bmi_value"] == "21.4"
     assert body["body_type"]["name"] == "Normal"
-    assert body["meal_plan"]["plan_code"] == "MP-TEST"
-    assert body["meal_plan"]["calories"] == 1900
-    assert body["workout_plan"]["plan_code"] == "WP-TEST"
-    assert body["workout_plan"]["calories_burned"] == 400
+    assert body["matched_person_id"] == "MP-TEST"
+    assert body["meal_record"]["breakfast"] == "String hoppers and dhal curry"
+    assert body["meal_record"]["daily_calories"] == 1900
+    assert body["workout_record"]["workout_type"] == "Cycling"
+    assert body["workout_record"]["calories_burned"] == 400
 
 
 def test_latest_recommendation_returns_most_recent_of_several(client, db):
     token = register_and_get_token(client)
     user = User.query.filter_by(username="dash_user").first()
 
-    body_type = BodyTypeCategory(name="Normal", description="d")
-    bmi_category = BMICategory(category_name="Normal weight", min_bmi=18.5, max_bmi=25.0)
-    age_group = AgeGroup(name="Adult", min_age=20, max_age=59)
-    db.session.add_all([body_type, bmi_category, age_group])
-    db.session.commit()
-
-    meal_plan = MealPlan(
-        plan_code="MP-1",
-        body_type_id=body_type.body_type_id,
-        bmi_category_id=bmi_category.bmi_category_id,
-        age_group_id=age_group.age_group_id,
-        gender="female",
-        breakfast="x",
-        lunch="x",
-        dinner="x",
-        calories=1900,
-        protein_g=75,
-        carbs_g=240,
-        fat_g=55,
-    )
-    workout_plan = WorkoutPlan(
-        plan_code="WP-1",
-        body_type_id=body_type.body_type_id,
-        bmi_category_id=bmi_category.bmi_category_id,
-        age_group_id=age_group.age_group_id,
-        gender="female",
-        warm_up="x",
-        cardio="x",
-        strength_training="x",
-        stretching="x",
-        cool_down="x",
-        duration_minutes=55,
-        calories_burned=400,
-    )
-    db.session.add_all([meal_plan, workout_plan])
-    db.session.commit()
+    body_type = seed_reference_tables()
+    meal_record, _workout_record = seed_matched_records(db)
 
     older_analysis = ImageAnalysisRecord(
         user_id=user.user_id,
@@ -170,8 +151,7 @@ def test_latest_recommendation_returns_most_recent_of_several(client, db):
     older = UserRecommendation(
         user_id=user.user_id,
         analysis_id=older_analysis.analysis_id,
-        meal_plan_id=meal_plan.meal_plan_id,
-        workout_plan_id=workout_plan.workout_plan_id,
+        matched_person_id=meal_record.person_id,
         bmi_value=21.0,
     )
     db.session.add(older)
@@ -180,8 +160,7 @@ def test_latest_recommendation_returns_most_recent_of_several(client, db):
     newer = UserRecommendation(
         user_id=user.user_id,
         analysis_id=newer_analysis.analysis_id,
-        meal_plan_id=meal_plan.meal_plan_id,
-        workout_plan_id=workout_plan.workout_plan_id,
+        matched_person_id=meal_record.person_id,
         bmi_value=22.0,
     )
     db.session.add(newer)

@@ -45,9 +45,11 @@ def create_app(config_name: str | None = None) -> Flask:
     app.register_blueprint(image_analysis_bp)
 
     from app.seed import register_seed_command
+    from app.seed_recommendation_data import register_seed_recommendation_command
     from app.register_model import register_model_command
 
     register_seed_command(app)
+    register_seed_recommendation_command(app)
     register_model_command(app)
 
     return app
