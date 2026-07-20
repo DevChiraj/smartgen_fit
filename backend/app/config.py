@@ -19,6 +19,9 @@ class Config:
         "DATABASE_URL",
         "mysql+pymysql://root:@localhost:3306/smartgen_fit_db",
     )
+    # MySQL closes idle connections (wait_timeout) before SQLAlchemy's pool expires them;
+    # without pre_ping, the first request after an idle period fails instead of reconnecting.
+    SQLALCHEMY_ENGINE_OPTIONS = {"pool_pre_ping": True, "pool_recycle": 280}
     CORS_ORIGINS = os.environ.get("CORS_ORIGINS", "http://localhost:5173").split(",")
     MAX_CONTENT_LENGTH = 5 * 1024 * 1024  # 5 MB request body cap
 
