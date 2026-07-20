@@ -4,6 +4,7 @@ from app.models.age_group import AgeGroup
 from app.models.ai_model_file import AIModelFile
 from app.models.bmi_category import BMICategory
 from app.models.body_type_category import BodyTypeCategory
+from app.models.exercise import Exercise
 from app.models.image_analysis_record import ImageAnalysisRecord
 from app.models.meal_plan import MealPlan
 from app.models.meal_recommendation_record import MealRecommendationRecord
@@ -18,6 +19,7 @@ __all__ = [
     "AIModelFile",
     "BMICategory",
     "BodyTypeCategory",
+    "Exercise",
     "ImageAnalysisRecord",
     "MealPlan",
     "MealRecommendationRecord",
