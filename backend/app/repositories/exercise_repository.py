@@ -22,3 +22,22 @@ def get_by_id(exercise_id: int) -> Exercise | None:
 def get_difficulties() -> list[str]:
     rows = Exercise.query.with_entities(Exercise.difficulty).distinct().all()
     return sorted(row[0] for row in rows)
+
+
+def create(**kwargs) -> Exercise:
+    exercise = Exercise(**kwargs)
+    db.session.add(exercise)
+    db.session.commit()
+    return exercise
+
+
+def update(exercise: Exercise, **kwargs) -> Exercise:
+    for key, value in kwargs.items():
+        setattr(exercise, key, value)
+    db.session.commit()
+    return exercise
+
+
+def delete(exercise: Exercise) -> None:
+    db.session.delete(exercise)
+    db.session.commit()

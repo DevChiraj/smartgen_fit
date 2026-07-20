@@ -25,3 +25,16 @@ def create(user: User) -> User:
 def save(user: User) -> User:
     db.session.commit()
     return user
+
+
+def get_all() -> list[User]:
+    return User.query.order_by(User.user_id).all()
+
+
+def count_by_role(role: str) -> int:
+    return User.query.filter_by(role=role).count()
+
+
+def delete(user: User) -> None:
+    db.session.delete(user)
+    db.session.commit()

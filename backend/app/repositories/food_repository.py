@@ -22,3 +22,22 @@ def get_by_id(food_id: int) -> SriLankanFood | None:
 def get_categories() -> list[str]:
     rows = SriLankanFood.query.with_entities(SriLankanFood.category).distinct().all()
     return sorted(row[0] for row in rows)
+
+
+def create(**kwargs) -> SriLankanFood:
+    food = SriLankanFood(**kwargs)
+    db.session.add(food)
+    db.session.commit()
+    return food
+
+
+def update(food: SriLankanFood, **kwargs) -> SriLankanFood:
+    for key, value in kwargs.items():
+        setattr(food, key, value)
+    db.session.commit()
+    return food
+
+
+def delete(food: SriLankanFood) -> None:
+    db.session.delete(food)
+    db.session.commit()

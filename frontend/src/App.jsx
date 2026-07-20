@@ -1,8 +1,10 @@
-import { BrowserRouter, Routes, Route } from 'react-router-dom'
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
 import { AuthProvider } from './context/AuthContext'
 import ProtectedRoute from './components/ProtectedRoute'
+import AdminRoute from './components/AdminRoute'
 import PublicLayout from './layouts/PublicLayout'
 import AuthenticatedLayout from './layouts/AuthenticatedLayout'
+import AdminLayout from './layouts/AdminLayout'
 import LandingPage from './pages/LandingPage'
 import About from './pages/About'
 import Contact from './pages/Contact'
@@ -15,6 +17,11 @@ import ImageAnalysis from './pages/ImageAnalysis'
 import HealthyFoods from './pages/HealthyFoods'
 import MealPlanDetail from './pages/MealPlanDetail'
 import Workouts from './pages/Workouts'
+import AdminUsers from './pages/admin/AdminUsers'
+import AdminFoods from './pages/admin/AdminFoods'
+import AdminExercises from './pages/admin/AdminExercises'
+import AdminBodyTypes from './pages/admin/AdminBodyTypes'
+import AdminBmiCategories from './pages/admin/AdminBmiCategories'
 
 function App() {
   return (
@@ -68,6 +75,57 @@ function App() {
                     <MealPlanDetail />
                   </AuthenticatedLayout>
                 </ProtectedRoute>
+              }
+            />
+            <Route path="/admin" element={<Navigate to="/admin/users" replace />} />
+            <Route
+              path="/admin/users"
+              element={
+                <AdminRoute>
+                  <AdminLayout>
+                    <AdminUsers />
+                  </AdminLayout>
+                </AdminRoute>
+              }
+            />
+            <Route
+              path="/admin/foods"
+              element={
+                <AdminRoute>
+                  <AdminLayout>
+                    <AdminFoods />
+                  </AdminLayout>
+                </AdminRoute>
+              }
+            />
+            <Route
+              path="/admin/exercises"
+              element={
+                <AdminRoute>
+                  <AdminLayout>
+                    <AdminExercises />
+                  </AdminLayout>
+                </AdminRoute>
+              }
+            />
+            <Route
+              path="/admin/body-types"
+              element={
+                <AdminRoute>
+                  <AdminLayout>
+                    <AdminBodyTypes />
+                  </AdminLayout>
+                </AdminRoute>
+              }
+            />
+            <Route
+              path="/admin/bmi-categories"
+              element={
+                <AdminRoute>
+                  <AdminLayout>
+                    <AdminBmiCategories />
+                  </AdminLayout>
+                </AdminRoute>
               }
             />
           </Routes>

@@ -173,7 +173,11 @@ Relationships: `meal_plans`/`workout_plans` (the original Module 2 template tabl
 | GET | `/exercises` | Exercise library list — `?difficulty=`, `?q=` filters (public, no auth) |
 | GET | `/exercises/difficulties` | Distinct difficulty levels, for the filter dropdown (public) |
 | GET | `/exercises/:id` | Single exercise's full detail (public) |
-| CRUD | `/admin/users`, `/admin/foods`, `/admin/body-types`, `/admin/bmi-categories` | Admin management, JWT role-guarded |
+| GET/PUT/DELETE | `/admin/users`, `/admin/users/:id` | List/update (role, profile)/delete users — role="admin" required |
+| POST/PUT/DELETE | `/admin/foods`, `/admin/foods/:id` | Full CRUD on `sri_lankan_foods` (reads stay on the public `/foods` endpoints) — admin only |
+| POST/PUT/DELETE | `/admin/exercises`, `/admin/exercises/:id` | Full CRUD on `exercises` (reads stay on the public `/exercises` endpoints) — admin only |
+| GET/PUT | `/admin/body-types`, `/admin/body-types/:id` | List/update — description only, `name` is fixed (see §11) — admin only |
+| GET/POST/PUT/DELETE | `/admin/bmi-categories`, `/admin/bmi-categories/:id` | Full CRUD on BMI category thresholds — admin only |
 
 Swagger docs generated via Flasgger/Flask-RESTX, served at `/api/docs`.
 
@@ -238,7 +242,7 @@ Dataset strategy: search Kaggle for body-type/silhouette classification datasets
 11. Recommendation engine (KNN similarity-match service — amended from the original rule-based lookup, see §11)
 12. Meal plan module (frontend + backend + Sri Lankan food data)
 13. Workout plan module: exercise reference library (frontend + backend) + suggested weekly schedule for the user's matched plan
-14. Admin panel (CRUD for all managed entities)
+14. Admin panel: CRUD for users, foods, exercises, body types (description only), BMI categories — no CRUD for the legacy `meal_plans`/`workout_plans` tables (dead since Module 11, same reasoning as Modules 12/13)
 15. Swagger documentation pass
 16. Testing (backend unit/integration, frontend component tests)
 17. Final review, deployment docs, polish
@@ -255,7 +259,8 @@ Dataset strategy: search Kaggle for body-type/silhouette classification datasets
 - AI performs **only** image classification (Thin/Normal/Overweight) and, since Module 11, similarity matching (KNN) — neither one generates meal plans, workouts, calories, or health advice as free text. Every recommendation the user sees is an existing, real row read verbatim from `meal_recommendation_records` / `workout_recommendation_records`.
 - **(Amended in Module 11 — project owner's explicit decision, see `documentation/module_reports/module11.md`.)** Recommendations are no longer a simple 4-key rule-based lookup. A KNN model matches (predicted body type, age, gender) against a 2,000-row real dataset and returns the nearest candidate's `Person_ID`; that candidate's own meal + workout row is then read from the DB unmodified. This is still not generative — nothing is invented at request time — but it replaces the original small hand-written template table with a much larger dataset and a similarity match instead of an exact key.
 - Minimum registration age: 15. Passwords hashed (bcrypt), never stored/logged in plaintext.
-- Admins can manage meal/workout/food data without ever retraining or redeploying the CNN. (The KNN recommender is a separate offline training step, same principle — see §6.)
+- Admins can manage meal/workout/food data without ever retraining or redeploying the CNN. (The KNN recommender is a separate offline training step, same principle — see §6.) **Module 14** delivers this as CRUD over `sri_lankan_foods`/`exercises`/`bmi_categories` (full CRUD) and `body_type_categories` (description only — `name` is fixed since it keys `image_analysis_service`'s classification lookup directly against the CNN's `CLASS_NAMES`). There is no admin CRUD over `meal_recommendation_records`/`workout_recommendation_records` (the 2,000-row Module 11 candidate pool) — that's bulk reference data refreshed via `flask seed-recommendations`, not one-off editable content.
+- The first admin account is bootstrapped via `flask promote-admin <email>` (CLI only, never an HTTP endpoint — self-service admin escalation is not possible). Every subsequent admin write requires the `admin` role (`role_required`, JWT claim set at login). The admin user-management endpoints refuse to demote/delete the last remaining admin or let an admin delete their own account, to prevent an accidental full lockout.
 - No module's code is generated until the prior module is confirmed by the project owner.
 
 ---

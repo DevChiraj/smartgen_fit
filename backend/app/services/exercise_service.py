@@ -22,3 +22,17 @@ def get_exercise(exercise_id: int) -> Exercise:
 
 def list_difficulties() -> list[str]:
     return exercise_repository.get_difficulties()
+
+
+def create_exercise(data: dict) -> Exercise:
+    return exercise_repository.create(**data)
+
+
+def update_exercise(exercise_id: int, data: dict) -> Exercise:
+    exercise = get_exercise(exercise_id)
+    return exercise_repository.update(exercise, **data)
+
+
+def delete_exercise(exercise_id: int) -> None:
+    exercise = get_exercise(exercise_id)
+    exercise_repository.delete(exercise)
