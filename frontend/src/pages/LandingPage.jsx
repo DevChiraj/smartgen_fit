@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
+import heroBg from '../assets/hero-bg.png'
 
 const FEATURES = [
   {
@@ -77,7 +78,14 @@ export default function LandingPage() {
 
   return (
     <div>
-      <section className="py-5">
+      <section
+        className="py-5 rounded-4 hero-section"
+        style={{
+          backgroundImage: `linear-gradient(rgba(10, 10, 12, 0.82), rgba(10, 10, 12, 0.93)), url(${heroBg})`,
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
+        }}
+      >
         <div className="row justify-content-center text-center">
           <div className="col-lg-9">
             <span className="hero-badge mb-4">
