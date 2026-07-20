@@ -199,18 +199,20 @@ h6,
   font-size: 1.4rem;
 }
 
-/* --- Nav links: uppercase, tracked, matches reference nav style --- */
+/* --- Nav links: uppercase, tracked, orange text. !important beats Bootstrap's
+   own .navbar-light/.navbar-dark .navbar-nav .nav-link color rules, which have
+   equal-or-higher selector specificity than a plain .navbar-nav .nav-link. --- */
 .navbar-nav .nav-link {
   text-transform: uppercase;
   font-size: 0.82rem;
   font-weight: 600;
   letter-spacing: 0.04em;
-  color: var(--bs-secondary-color);
+  color: var(--sgf-orange) !important;
   white-space: nowrap;
 }
 .navbar-nav .nav-link.active,
 .navbar-nav .nav-link:hover {
-  color: #fff;
+  color: var(--sgf-orange-hover) !important;
 }
 
 .navbar .btn {
