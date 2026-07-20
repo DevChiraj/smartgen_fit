@@ -54,118 +54,125 @@ export default function Register() {
   }
 
   return (
-    <div style={{ maxWidth: 480 }}>
-      <h1>Create an account</h1>
-      {error && <div className="alert alert-danger">{error}</div>}
-      <form onSubmit={handleSubmit}>
-        <div className="mb-3">
-          <label className="form-label" htmlFor="full_name">
-            Full name
-          </label>
-          <input
-            id="full_name"
-            name="full_name"
-            className="form-control"
-            value={form.full_name}
-            onChange={handleChange}
-            required
-          />
-        </div>
-        <div className="mb-3">
-          <label className="form-label" htmlFor="date_of_birth">
-            Date of birth
-          </label>
-          <input
-            id="date_of_birth"
-            name="date_of_birth"
-            type="date"
-            className="form-control"
-            value={form.date_of_birth}
-            onChange={handleChange}
-            required
-          />
-        </div>
-        <div className="mb-3">
-          <label className="form-label" htmlFor="gender">
-            Gender
-          </label>
-          <select
-            id="gender"
-            name="gender"
-            className="form-select"
-            value={form.gender}
-            onChange={handleChange}
+    <div className="mx-auto py-4" style={{ maxWidth: 480 }}>
+      <div className="card p-4 p-md-5 shadow-lg">
+        <h1 className="h3 fw-bold mb-1">Create an account</h1>
+        <p className="text-secondary mb-4">Get your body type analyzed and matched to a plan.</p>
+        {error && <div className="alert alert-danger">{error}</div>}
+        <form onSubmit={handleSubmit}>
+          <div className="mb-3">
+            <label className="form-label" htmlFor="full_name">
+              Full name
+            </label>
+            <input
+              id="full_name"
+              name="full_name"
+              className="form-control"
+              value={form.full_name}
+              onChange={handleChange}
+              required
+            />
+          </div>
+          <div className="mb-3">
+            <label className="form-label" htmlFor="date_of_birth">
+              Date of birth
+            </label>
+            <input
+              id="date_of_birth"
+              name="date_of_birth"
+              type="date"
+              className="form-control"
+              value={form.date_of_birth}
+              onChange={handleChange}
+              required
+            />
+          </div>
+          <div className="mb-3">
+            <label className="form-label" htmlFor="gender">
+              Gender
+            </label>
+            <select
+              id="gender"
+              name="gender"
+              className="form-select"
+              value={form.gender}
+              onChange={handleChange}
+            >
+              <option value="female">Female</option>
+              <option value="male">Male</option>
+              <option value="other">Other</option>
+            </select>
+          </div>
+          <div className="mb-3">
+            <label className="form-label" htmlFor="email">
+              Email
+            </label>
+            <input
+              id="email"
+              name="email"
+              type="email"
+              className="form-control"
+              value={form.email}
+              onChange={handleChange}
+              required
+            />
+          </div>
+          <div className="mb-3">
+            <label className="form-label" htmlFor="username">
+              Username
+            </label>
+            <input
+              id="username"
+              name="username"
+              className="form-control"
+              value={form.username}
+              onChange={handleChange}
+              required
+              minLength={3}
+              maxLength={50}
+              pattern="[a-zA-Z0-9_]+"
+              title="Letters, numbers, and underscores only"
+            />
+          </div>
+          <div className="mb-3">
+            <label className="form-label" htmlFor="password">
+              Password
+            </label>
+            <input
+              id="password"
+              name="password"
+              type="password"
+              className="form-control"
+              value={form.password}
+              onChange={handleChange}
+              required
+              minLength={8}
+            />
+          </div>
+          <div className="mb-3">
+            <label className="form-label" htmlFor="phone_number">
+              Phone number (optional)
+            </label>
+            <input
+              id="phone_number"
+              name="phone_number"
+              className="form-control"
+              value={form.phone_number}
+              onChange={handleChange}
+            />
+          </div>
+          <button
+            type="submit"
+            className="btn btn-primary rounded-pill w-100 mt-2"
+            disabled={isSubmitting}
           >
-            <option value="female">Female</option>
-            <option value="male">Male</option>
-            <option value="other">Other</option>
-          </select>
-        </div>
-        <div className="mb-3">
-          <label className="form-label" htmlFor="email">
-            Email
-          </label>
-          <input
-            id="email"
-            name="email"
-            type="email"
-            className="form-control"
-            value={form.email}
-            onChange={handleChange}
-            required
-          />
-        </div>
-        <div className="mb-3">
-          <label className="form-label" htmlFor="username">
-            Username
-          </label>
-          <input
-            id="username"
-            name="username"
-            className="form-control"
-            value={form.username}
-            onChange={handleChange}
-            required
-            minLength={3}
-            maxLength={50}
-            pattern="[a-zA-Z0-9_]+"
-            title="Letters, numbers, and underscores only"
-          />
-        </div>
-        <div className="mb-3">
-          <label className="form-label" htmlFor="password">
-            Password
-          </label>
-          <input
-            id="password"
-            name="password"
-            type="password"
-            className="form-control"
-            value={form.password}
-            onChange={handleChange}
-            required
-            minLength={8}
-          />
-        </div>
-        <div className="mb-3">
-          <label className="form-label" htmlFor="phone_number">
-            Phone number (optional)
-          </label>
-          <input
-            id="phone_number"
-            name="phone_number"
-            className="form-control"
-            value={form.phone_number}
-            onChange={handleChange}
-          />
-        </div>
-        <button type="submit" className="btn btn-primary" disabled={isSubmitting}>
-          {isSubmitting ? 'Creating account...' : 'Create account'}
-        </button>
-      </form>
-      <p className="mt-3">
-        Already have an account? <Link to="/login">Log in</Link>
-      </p>
+            {isSubmitting ? 'Creating account...' : 'Create account'}
+          </button>
+        </form>
+        <p className="mt-4 mb-0 text-secondary">
+          Already have an account? <Link to="/login">Log in</Link>
+        </p>
+      </div>
     </div>
   )
 }

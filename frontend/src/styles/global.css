@@ -1,1 +1,218 @@
 @import 'bootstrap/dist/css/bootstrap.min.css';
+
+/* ==========================================================================
+   SmartGen Fit dark theme
+   Bootstrap 5.3's compiled CSS is CSS-variable driven for most components
+   (body, card, form-control, alerts, badges via `--bs-*-rgb`), so overriding
+   those variables under [data-bs-theme=dark] cascades correctly. A few
+   components (`.btn-primary`, `.btn-outline-primary`, `.btn-outline-secondary`,
+   `.form-control:focus`'s box-shadow) bake fixed hex colors into their own
+   `--bs-btn-*` variables at the component level instead of referencing
+   `--bs-primary`, so those need direct overrides too - verified by reading
+   the actual compiled bootstrap.css rather than assuming.
+   ========================================================================== */
+
+:root {
+  --bs-body-font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --sgf-heading-font: 'Poppins', 'Inter', sans-serif;
+  --sgf-orange: #ff5a1f;
+  --sgf-orange-hover: #ff7a47;
+  --sgf-orange-active: #e64a0f;
+  --sgf-green: #22c55e;
+}
+
+[data-bs-theme='dark'] {
+  --bs-body-bg: #0a0a0c;
+  --bs-body-bg-rgb: 10, 10, 12;
+  --bs-body-color: #f2f2f4;
+  --bs-body-color-rgb: 242, 242, 244;
+  --bs-emphasis-color: #ffffff;
+  --bs-secondary-color: #a1a1aa;
+  --bs-secondary-bg: #151517;
+  --bs-secondary-bg-rgb: 21, 21, 23;
+  --bs-tertiary-bg: #17171a;
+  --bs-tertiary-bg-rgb: 23, 23, 26;
+  --bs-border-color: #2a2a2e;
+  --bs-border-color-translucent: #2a2a2e;
+
+  --bs-primary: var(--sgf-orange);
+  --bs-primary-rgb: 255, 90, 31;
+  --bs-primary-text-emphasis: #ff8a5c;
+  --bs-primary-bg-subtle: #2a1408;
+  --bs-primary-border-subtle: #5c2a10;
+  --bs-link-color: var(--sgf-orange);
+  --bs-link-color-rgb: 255, 90, 31;
+  --bs-link-hover-color: var(--sgf-orange-hover);
+  --bs-link-hover-color-rgb: 255, 122, 71;
+
+  --bs-success: var(--sgf-green);
+  --bs-success-rgb: 34, 197, 94;
+
+  color-scheme: dark;
+}
+
+body {
+  background-color: var(--bs-body-bg);
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+.display-1,
+.display-2,
+.display-3,
+.display-4,
+.display-5,
+.display-6 {
+  font-family: var(--sgf-heading-font);
+  font-weight: 800;
+  letter-spacing: -0.01em;
+}
+
+/* --- Buttons: Bootstrap bakes fixed colors into --bs-btn-* per component,
+   so --bs-primary alone doesn't recolor these - override directly. --- */
+.btn {
+  font-weight: 600;
+}
+
+.btn-primary {
+  --bs-btn-color: #fff;
+  --bs-btn-bg: var(--sgf-orange);
+  --bs-btn-border-color: var(--sgf-orange);
+  --bs-btn-hover-color: #fff;
+  --bs-btn-hover-bg: var(--sgf-orange-hover);
+  --bs-btn-hover-border-color: var(--sgf-orange-hover);
+  --bs-btn-active-bg: var(--sgf-orange-active);
+  --bs-btn-active-border-color: var(--sgf-orange-active);
+  --bs-btn-focus-shadow-rgb: 255, 90, 31;
+  --bs-btn-disabled-bg: var(--sgf-orange);
+  --bs-btn-disabled-border-color: var(--sgf-orange);
+}
+
+.btn-outline-primary {
+  --bs-btn-color: var(--sgf-orange);
+  --bs-btn-border-color: var(--sgf-orange);
+  --bs-btn-hover-color: #fff;
+  --bs-btn-hover-bg: var(--sgf-orange);
+  --bs-btn-hover-border-color: var(--sgf-orange);
+  --bs-btn-active-bg: var(--sgf-orange);
+  --bs-btn-active-border-color: var(--sgf-orange);
+  --bs-btn-focus-shadow-rgb: 255, 90, 31;
+  --bs-btn-disabled-color: var(--sgf-orange);
+  --bs-btn-disabled-border-color: var(--sgf-orange);
+}
+
+.btn-outline-secondary {
+  --bs-btn-color: #d4d4d8;
+  --bs-btn-border-color: #3f3f46;
+  --bs-btn-hover-color: #0a0a0c;
+  --bs-btn-hover-bg: #d4d4d8;
+  --bs-btn-hover-border-color: #d4d4d8;
+  --bs-btn-active-bg: #d4d4d8;
+  --bs-btn-active-border-color: #d4d4d8;
+}
+
+.form-control:focus,
+.form-select:focus {
+  border-color: var(--sgf-orange);
+  box-shadow: 0 0 0 0.25rem rgba(255, 90, 31, 0.25);
+}
+
+/* --- Cards --- */
+.card {
+  --bs-card-bg: #131315;
+  --bs-card-border-color: #232326;
+  border-radius: 0.9rem;
+}
+
+/* --- Nav tabs (AuthenticatedLayout / AdminLayout) --- */
+.nav-tabs {
+  --bs-nav-tabs-link-active-color: var(--sgf-orange);
+  --bs-nav-tabs-link-active-bg: var(--bs-body-bg);
+  --bs-nav-tabs-link-active-border-color: var(--bs-border-color) var(--bs-border-color)
+    var(--bs-body-bg);
+}
+.nav-tabs .nav-link {
+  color: var(--bs-secondary-color);
+  font-weight: 600;
+}
+.nav-tabs .nav-link:hover {
+  color: var(--bs-emphasis-color);
+}
+
+/* --- Landing page hero --- */
+.hero-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.4rem 0.9rem;
+  border-radius: 999px;
+  border: 1px solid var(--bs-border-color);
+  color: var(--bs-secondary-color);
+  font-size: 0.8rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+}
+.hero-badge .dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--sgf-green);
+  display: inline-block;
+}
+
+.text-accent {
+  color: var(--sgf-orange);
+}
+
+.hero-display {
+  font-size: clamp(2.5rem, 6vw, 4.25rem);
+  line-height: 1.05;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: -0.02em;
+}
+
+.feature-card {
+  transition:
+    transform 0.15s ease,
+    border-color 0.15s ease;
+}
+.feature-card:hover {
+  transform: translateY(-4px);
+  border-color: var(--sgf-orange);
+}
+
+.icon-badge {
+  width: 52px;
+  height: 52px;
+  border-radius: 14px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 90, 31, 0.12);
+  color: var(--sgf-orange);
+  font-size: 1.4rem;
+}
+
+/* --- Nav links: uppercase, tracked, matches reference nav style --- */
+.navbar-nav .nav-link {
+  text-transform: uppercase;
+  font-size: 0.82rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  color: var(--bs-secondary-color);
+  white-space: nowrap;
+}
+.navbar-nav .nav-link.active,
+.navbar-nav .nav-link:hover {
+  color: #fff;
+}
+
+.navbar .btn {
+  white-space: nowrap;
+}
