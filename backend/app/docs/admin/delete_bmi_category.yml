@@ -1,0 +1,22 @@
+tags:
+  - Admin
+summary: Delete a BMI category
+description: Rejected with 409 if this is the last remaining category - the BMI calculator needs at least one range to classify into.
+security:
+  - BearerAuth: []
+parameters:
+  - in: path
+    name: bmi_category_id
+    type: integer
+    required: true
+responses:
+  204:
+    description: Deleted
+  401:
+    description: Missing/invalid/expired access token
+  403:
+    description: Not an admin
+  404:
+    description: No BMI category with that id
+  409:
+    description: Would delete the last remaining BMI category

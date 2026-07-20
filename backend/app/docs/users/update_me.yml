@@ -1,0 +1,34 @@
+tags:
+  - Users
+summary: Update the logged-in user's profile
+description: Partial update - only send the fields you want to change. Email/username/role are not editable here.
+security:
+  - BearerAuth: []
+consumes:
+  - application/json
+parameters:
+  - in: body
+    name: body
+    schema:
+      type: object
+      properties:
+        full_name:
+          type: string
+        phone_number:
+          type: string
+        height_cm:
+          type: number
+        weight_kg:
+          type: number
+responses:
+  200:
+    description: Updated profile
+    schema:
+      type: object
+      properties:
+        user:
+          $ref: '#/definitions/UserPublic'
+  400:
+    description: Validation error
+  401:
+    description: Missing/invalid/expired access token

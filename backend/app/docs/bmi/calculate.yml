@@ -1,0 +1,44 @@
+tags:
+  - BMI
+summary: Calculate BMI and its category
+description: Stateless - no auth, no DB write. Public utility also used by the BMI Calculator landing page widget.
+consumes:
+  - application/json
+parameters:
+  - in: body
+    name: body
+    required: true
+    schema:
+      type: object
+      required: [height_cm, weight_kg]
+      properties:
+        height_cm:
+          type: number
+          minimum: 50
+          maximum: 250
+        weight_kg:
+          type: number
+          minimum: 2
+          maximum: 300
+responses:
+  200:
+    description: BMI value and matched category
+    schema:
+      type: object
+      properties:
+        bmi:
+          type: string
+          example: "22.5"
+        category:
+          type: object
+          properties:
+            bmi_category_id:
+              type: integer
+            category_name:
+              type: string
+            min_bmi:
+              type: string
+            max_bmi:
+              type: string
+  400:
+    description: Missing/out-of-range height or weight

@@ -1,0 +1,19 @@
+tags:
+  - Exercises
+summary: Get a single exercise's full detail
+description: Public, no auth.
+parameters:
+  - in: path
+    name: exercise_id
+    type: integer
+    required: true
+responses:
+  200:
+    description: Exercise detail
+    schema:
+      type: object
+      properties:
+        exercise:
+          $ref: '#/definitions/Exercise'
+  404:
+    description: No exercise with that id

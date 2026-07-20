@@ -17,7 +17,7 @@ SmartGen Fit is a full-stack web application that classifies a user's body type 
 | Database | MySQL, SQLAlchemy ORM |
 | AI/CV | TensorFlow, Keras, OpenCV, CNN |
 | Auth | JWT, Bcrypt |
-| Docs | Swagger (Flask-RESTX or Flasgger) |
+| Docs | Swagger 2.0 via Flasgger, served at `/api/docs` (Module 15) |
 | Dev Env | Visual Studio Code |
 
 ---
@@ -179,7 +179,7 @@ Relationships: `meal_plans`/`workout_plans` (the original Module 2 template tabl
 | GET/PUT | `/admin/body-types`, `/admin/body-types/:id` | List/update — description only, `name` is fixed (see §11) — admin only |
 | GET/POST/PUT/DELETE | `/admin/bmi-categories`, `/admin/bmi-categories/:id` | Full CRUD on BMI category thresholds — admin only |
 
-Swagger docs generated via Flasgger/Flask-RESTX, served at `/api/docs`.
+**Swagger docs (Module 15):** every one of the 37 endpoints above (across all 9 blueprints) is documented and live at `/api/docs` — Flasgger, wired via `app/docs/swagger_config.py` + one hand-written YAML spec per endpoint under `app/docs/<blueprint>/<endpoint>.yml`, referenced from each route with `@swag_from(...)`. `backend/tests/test_swagger.py::test_every_registered_route_is_documented` diffs the live `url_map` against the generated spec and fails if a future route ships without docs, so this can't silently drift. JWT-protected endpoints are marked `security: BearerAuth` (Swagger UI's "Authorize" button); shared response shapes (`UserPublic`, `SriLankanFood`, `Exercise`, etc.) are defined once and referenced via `$ref` rather than repeated per file.
 
 ---
 
@@ -243,7 +243,7 @@ Dataset strategy: search Kaggle for body-type/silhouette classification datasets
 12. Meal plan module (frontend + backend + Sri Lankan food data)
 13. Workout plan module: exercise reference library (frontend + backend) + suggested weekly schedule for the user's matched plan
 14. Admin panel: CRUD for users, foods, exercises, body types (description only), BMI categories — no CRUD for the legacy `meal_plans`/`workout_plans` tables (dead since Module 11, same reasoning as Modules 12/13)
-15. Swagger documentation pass
+15. Swagger documentation pass: all 37 endpoints documented via Flasgger, served at `/api/docs`, with a regression test guarding against undocumented future routes
 16. Testing (backend unit/integration, frontend component tests)
 17. Final review, deployment docs, polish
 

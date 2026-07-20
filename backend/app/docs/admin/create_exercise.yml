@@ -1,0 +1,49 @@
+tags:
+  - Admin
+summary: Create an exercise
+security:
+  - BearerAuth: []
+consumes:
+  - application/json
+parameters:
+  - in: body
+    name: body
+    required: true
+    schema:
+      type: object
+      required: [exercise_name, target_muscle, difficulty, sets, reps, calories_per_30min, benefit]
+      properties:
+        exercise_name:
+          type: string
+        target_muscle:
+          type: string
+        difficulty:
+          type: string
+          enum: [Beginner, Intermediate, Advanced]
+        equipment:
+          type: string
+        sets:
+          type: integer
+          minimum: 1
+        reps:
+          type: integer
+          minimum: 1
+        calories_per_30min:
+          type: integer
+          minimum: 0
+        benefit:
+          type: string
+responses:
+  201:
+    description: Created
+    schema:
+      type: object
+      properties:
+        exercise:
+          $ref: '#/definitions/Exercise'
+  400:
+    description: Validation error
+  401:
+    description: Missing/invalid/expired access token
+  403:
+    description: Not an admin

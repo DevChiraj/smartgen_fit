@@ -1,0 +1,15 @@
+tags:
+  - Exercises
+summary: List distinct difficulty levels
+description: Public, no auth. For populating a filter dropdown.
+responses:
+  200:
+    description: Distinct difficulty levels, sorted
+    schema:
+      type: object
+      properties:
+        difficulties:
+          type: array
+          items:
+            type: string
+          example: [Advanced, Beginner, Intermediate]

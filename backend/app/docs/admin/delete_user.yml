@@ -1,0 +1,22 @@
+tags:
+  - Admin
+summary: Delete a user
+description: An admin cannot delete their own account, and cannot delete the last remaining admin - both rejected with 409 to prevent a full admin lockout.
+security:
+  - BearerAuth: []
+parameters:
+  - in: path
+    name: user_id
+    type: integer
+    required: true
+responses:
+  204:
+    description: Deleted
+  401:
+    description: Missing/invalid/expired access token
+  403:
+    description: Not an admin
+  404:
+    description: No user with that id
+  409:
+    description: Attempted self-delete, or would delete the last remaining admin
