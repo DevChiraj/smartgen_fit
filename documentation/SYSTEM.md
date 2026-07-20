@@ -95,7 +95,7 @@ smartgen-fit/
 │   └── saved_models/               # versioned .h5/.keras CNN files + recommender_*.joblib bundles
 ├── datasets/
 │   ├── body_images/                # Kaggle or manually curated, class-labeled subfolders
-│   ├── sri_lankan_foods/           # CSV nutrition data
+│   ├── sri_lankan_foods/           # Kaggle nutrition dataset (Module 12), 119 real foods
 │   └── recommendations/            # Sri Lankan meal + workout xlsx datasets (Module 11), joined by Person_ID
 ├── uploads/                        # runtime user-uploaded images (gitignored)
 └── documentation/
@@ -121,14 +121,14 @@ smartgen-fit/
 **age_groups** *(reference table, or enum in code)*
 `age_group_id (PK), name (Teenager 15-19 / Adult 20-59 / Senior 60+), min_age, max_age`
 
-**meal_plans**
+**meal_plans** *(legacy — the original Module 2 template table; not exposed via any API endpoint, see §5)*
 `meal_plan_id (PK), plan_code, body_type_id (FK), bmi_category_id (FK), age_group_id (FK), gender, breakfast, lunch, dinner, snacks, calories, protein_g, carbs_g, fat_g, fiber_g, vitamins, minerals, daily_water_ml`
 
-**workout_plans**
+**workout_plans** *(legacy — same status as `meal_plans`)*
 `workout_plan_id (PK), plan_code, body_type_id (FK), bmi_category_id (FK), age_group_id (FK), gender, warm_up, cardio, strength_training, stretching, cool_down, duration_minutes, repetitions, weekly_schedule, calories_burned`
 
-**sri_lankan_foods**
-`food_id (PK), food_name, category, calories, protein_g, carbs_g, fat_g, fiber_g, vitamins, minerals, image_url`
+**sri_lankan_foods** *(Module 12 — 119 rows loaded from `datasets/sri_lankan_foods/SrilankanCommonFoods.xlsx`, a real Kaggle dataset replacing the original 12-row manual placeholder)*
+`food_id (PK), food_name, category, serving_size, calories, protein_g, carbs_g, fat_g, fiber_g (nullable), vitamins (nullable), minerals (nullable), image_url (nullable)` — the Kaggle source has no category/fiber/vitamin/mineral/image columns; `category` is assigned via an explicit per-food mapping in `backend/app/seed_food_data.py` (auditable, not keyword heuristics), the rest are left null rather than invented.
 
 **image_analysis_records**
 `analysis_id (PK), user_id (FK), image_path, predicted_body_type_id (FK), confidence_score, created_at`
@@ -145,7 +145,7 @@ smartgen-fit/
 **ai_model_files**
 `model_id (PK), version, file_path, accuracy, trained_date, is_active` — CNN models only. The Module 11 KNN recommender bundle is *not* registered here (its schema, e.g. `accuracy`, is CNN-specific); it's tracked by a filesystem pointer instead — see §6.
 
-Relationships: `meal_plans`/`workout_plans` (the original Module 2 template tables) are still looked up by the composite of `(body_type_id, bmi_category_id, age_group_id, gender)`, but `image_analysis_service.analyze()` no longer creates rows through that path — every new `user_recommendations` row is populated via the Module 11 KNN match instead, using `matched_person_id` to join `meal_recommendation_records` / `workout_recommendation_records`. The old columns/tables are kept for backward compatibility, not deleted.
+Relationships: `meal_plans`/`workout_plans` (the original Module 2 template tables) are still looked up by the composite of `(body_type_id, bmi_category_id, age_group_id, gender)`, but `image_analysis_service.analyze()` no longer creates rows through that path — every new `user_recommendations` row is populated via the Module 11 KNN match instead, using `matched_person_id` to join `meal_recommendation_records` / `workout_recommendation_records`. The old columns/tables are kept for backward compatibility, not deleted. **Module 12 decision:** since no live flow ever populates a `meal_plans`/`workout_plans` row anymore, Module 12 does not build detail endpoints for them (the `/meal-plans/:id`/`/workout-plans/:id` endpoints once planned here are dropped from §5) — building a page around permanently-empty user data would be dead surface area. `sri_lankan_foods` is unrelated to this and *is* fully wired up (§5), since it's independent public reference data, not part of the matching pipeline.
 
 ---
 
@@ -161,9 +161,10 @@ Relationships: `meal_plans`/`workout_plans` (the original Module 2 template tabl
 | POST | `/image-analysis` | Upload image → CNN classification → KNN match → triggers recommendation |
 | GET | `/image-analysis/history` | Past analyses for the user |
 | GET | `/recommendations/latest` | Latest matched meal + workout record (full detail) for dashboard |
-| GET | `/meal-plans/:id`, `/workout-plans/:id` | Plan detail |
-| GET | `/foods` | Sri Lankan food/nutrition lookup |
-| CRUD | `/admin/users`, `/admin/meal-plans`, `/admin/workout-plans`, `/admin/foods`, `/admin/body-types`, `/admin/bmi-categories` | Admin management, JWT role-guarded |
+| GET | `/foods` | Sri Lankan food/nutrition list — `?category=`, `?q=` filters (public, no auth) |
+| GET | `/foods/categories` | Distinct food categories, for the filter dropdown (public) |
+| GET | `/foods/:id` | Single food's full nutrition detail (public) |
+| CRUD | `/admin/users`, `/admin/foods`, `/admin/body-types`, `/admin/bmi-categories` | Admin management, JWT role-guarded |
 
 Swagger docs generated via Flasgger/Flask-RESTX, served at `/api/docs`.
 

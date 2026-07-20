@@ -1,13 +1,9 @@
 from app.models import AgeGroup, BMICategory, BodyTypeCategory, MealPlan, SriLankanFood, WorkoutPlan
-from app.seed import (
-    AGE_GROUPS,
-    BMI_CATEGORIES,
-    BODY_TYPES,
-    MEAL_PLANS,
-    SRI_LANKAN_FOODS,
-    WORKOUT_PLANS,
-)
+from app.seed import AGE_GROUPS, BMI_CATEGORIES, BODY_TYPES, MEAL_PLANS, WORKOUT_PLANS
 from app.seed import seed_data
+from app.seed_food_data import load_food_records
+
+FOOD_COUNT = len(load_food_records())
 
 
 def test_seed_data_populates_expected_counts(app, db):
@@ -16,7 +12,7 @@ def test_seed_data_populates_expected_counts(app, db):
     assert BodyTypeCategory.query.count() == len(BODY_TYPES)
     assert BMICategory.query.count() == len(BMI_CATEGORIES)
     assert AgeGroup.query.count() == len(AGE_GROUPS)
-    assert SriLankanFood.query.count() == len(SRI_LANKAN_FOODS)
+    assert SriLankanFood.query.count() == FOOD_COUNT
     assert MealPlan.query.count() == len(MEAL_PLANS)
     assert WorkoutPlan.query.count() == len(WORKOUT_PLANS)
 
@@ -28,4 +24,25 @@ def test_seed_data_is_idempotent(app, db):
     assert BodyTypeCategory.query.count() == len(BODY_TYPES)
     assert MealPlan.query.count() == len(MEAL_PLANS)
     assert WorkoutPlan.query.count() == len(WORKOUT_PLANS)
-    assert SriLankanFood.query.count() == len(SRI_LANKAN_FOODS)
+    assert SriLankanFood.query.count() == FOOD_COUNT
+
+
+def test_seed_data_replaces_pre_module_12_placeholder_foods(app, db):
+    """A DB seeded before Module 12 had 12 manually-curated rows with no
+    serving_size - re-seeding should converge to just the real dataset."""
+    db.session.add(
+        SriLankanFood(
+            food_name="Old placeholder food",
+            category="Mixed",
+            calories=100,
+            protein_g=1,
+            carbs_g=1,
+            fat_g=1,
+        )
+    )
+    db.session.commit()
+
+    seed_data()
+
+    assert SriLankanFood.query.filter_by(food_name="Old placeholder food").first() is None
+    assert SriLankanFood.query.count() == FOOD_COUNT

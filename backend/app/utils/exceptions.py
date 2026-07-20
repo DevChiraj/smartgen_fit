@@ -29,3 +29,7 @@ class UnderMinimumAgeError(AppError):
 
 class ForbiddenError(AppError):
     status_code = 403
+
+
+class NotFoundError(AppError):
+    status_code = 404

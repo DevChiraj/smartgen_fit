@@ -134,13 +134,18 @@ export default function Dashboard() {
               <div className="d-flex flex-wrap align-items-center justify-content-between gap-2 mb-3">
                 <h2 className="h5 mb-0">Your personalized plan</h2>
                 {recommendation && (
-                  <span
-                    className={`badge text-bg-${
-                      BODY_TYPE_VARIANT[recommendation.body_type?.name] || 'secondary'
-                    }`}
-                  >
-                    {recommendation.body_type?.name} &middot; BMI {recommendation.bmi_value}
-                  </span>
+                  <div className="d-flex align-items-center gap-2">
+                    <span
+                      className={`badge text-bg-${
+                        BODY_TYPE_VARIANT[recommendation.body_type?.name] || 'secondary'
+                      }`}
+                    >
+                      {recommendation.body_type?.name} &middot; BMI {recommendation.bmi_value}
+                    </span>
+                    <Link to="/meal-plan" className="small">
+                      View full plan
+                    </Link>
+                  </div>
                 )}
               </div>
 

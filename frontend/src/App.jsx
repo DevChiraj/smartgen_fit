@@ -13,6 +13,8 @@ import Register from './pages/Register'
 import Profile from './pages/Profile'
 import Dashboard from './pages/Dashboard'
 import ImageAnalysis from './pages/ImageAnalysis'
+import HealthyFoods from './pages/HealthyFoods'
+import MealPlanDetail from './pages/MealPlanDetail'
 
 function App() {
   return (
@@ -23,15 +25,7 @@ function App() {
             <Route path="/" element={<LandingPage />} />
             <Route path="/about" element={<About />} />
             <Route path="/contact" element={<Contact />} />
-            <Route
-              path="/healthy-foods"
-              element={
-                <ComingSoon
-                  title="Healthy Foods"
-                  description="Sri Lankan meal plans and nutrition breakdowns are on their way."
-                />
-              }
-            />
+            <Route path="/healthy-foods" element={<HealthyFoods />} />
             <Route
               path="/workouts"
               element={
@@ -70,6 +64,16 @@ function App() {
                 <ProtectedRoute>
                   <AuthenticatedLayout>
                     <ImageAnalysis />
+                  </AuthenticatedLayout>
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/meal-plan"
+              element={
+                <ProtectedRoute>
+                  <AuthenticatedLayout>
+                    <MealPlanDetail />
                   </AuthenticatedLayout>
                 </ProtectedRoute>
               }
