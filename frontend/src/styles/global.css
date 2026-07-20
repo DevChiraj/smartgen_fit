@@ -144,6 +144,11 @@ h6,
 }
 
 /* --- Landing page hero --- */
+.hero-section {
+  padding-top: 4.5rem !important;
+  padding-bottom: 4.5rem !important;
+}
+
 .hero-badge {
   display: inline-flex;
   align-items: center;
