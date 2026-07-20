@@ -58,3 +58,40 @@ def test_seed_data_replaces_pre_module_12_placeholder_foods(app, db):
 
     assert SriLankanFood.query.filter_by(food_name="Old placeholder food").first() is None
     assert SriLankanFood.query.count() == FOOD_COUNT
+
+
+def test_load_food_records_rejects_a_food_name_with_no_category_mapping(tmp_path):
+    import pandas as pd
+
+    from app.seed_food_data import load_food_records
+
+    df = pd.DataFrame(
+        [
+            {
+                "Food": "Totally Unknown Dish",
+                "Quantity": "100g",
+                "Calories (kcal)": "100 kcal",
+                "Carbohydrate (g)": "10g",
+                "Protein (g)": "5g",
+                "Fat (g)": "2g",
+            }
+        ]
+    )
+    path = tmp_path / "unknown_food.xlsx"
+    df.to_excel(path, index=False)
+
+    try:
+        load_food_records(path)
+        assert False, "expected ValueError"
+    except ValueError as exc:
+        assert "No category mapped" in str(exc)
+
+
+def test_parse_number_rejects_unparseable_values():
+    from app.seed_food_data import _parse_number
+
+    try:
+        _parse_number("not-a-number")
+        assert False, "expected ValueError"
+    except ValueError as exc:
+        assert "Could not parse a number" in str(exc)

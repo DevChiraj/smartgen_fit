@@ -2,7 +2,7 @@
 
 Read this file, `SYSTEM.md`, and `README.md` at the start of every session, in that order. `SYSTEM.md` is the architecture reference (DB schema, API list, folder structure, AI workflow) — don't duplicate it here, look it up there. This file is the operating contract: the rules that don't change and the checklist of what's left to build.
 
-**Status:** Modules 1-15 complete — see `documentation/module_reports/`. Current target: **Module 16**.
+**Status:** Modules 1-16 complete — see `documentation/module_reports/`. Current target: **Module 17**.
 
 **Standing heads-up:** the Module 9 CNN is a pipeline proof-of-concept only — trained on a 48-image dataset with known label-accuracy issues, kept as-is per explicit supervisor direction (see `module9.md`). It is not fit for real classification. Module 11's KNN recommender consumes that same predicted label as one of its match features, so a wrong CNN prediction now also produces a mismatched meal/workout recommendation — this is expected given the CNN's documented status, not a Module 11 bug. Retrain the CNN on corrected/larger data before treating either its predictions or the recommendations derived from them as meaningful.
 
@@ -36,8 +36,8 @@ Read this file, `SYSTEM.md`, and `README.md` at the start of every session, in t
 
 ## Commands
 
-**Backend** (`backend/`): `pip install -r requirements.txt` · `flask run` · `pytest` · `flask db migrate -m "message"` / `flask db upgrade` (from Module 2 onward)
-**Frontend** (`frontend/`): `npm install` · `npm run dev` · `npm run build` · `npm run lint`
+**Backend** (`backend/`): `pip install -r requirements.txt` · `flask run` · `pytest` (add `--cov=app --cov-report=term-missing` for a coverage report) · `flask db migrate -m "message"` / `flask db upgrade` (from Module 2 onward)
+**Frontend** (`frontend/`): `npm install` · `npm run dev` · `npm run build` · `npm run lint` · `npm run test` (`npm run test:watch` for watch mode)
 **Health check:** `curl localhost:5000/api/health` and `/api/health/db`
 
 ## Conventions (full detail in `SYSTEM.md` §7-8)
@@ -65,7 +65,7 @@ Read this file, `SYSTEM.md`, and `README.md` at the start of every session, in t
 - [x] **Module 13** — Workout plan module: 50-row real Kaggle exercise dataset (`exercises`, replacing nothing — no prior workout reference data existed), public `/exercises` search+difficulty-filter API and Workouts page, suggested weekly schedule (derived from `days_per_week`, clearly labeled as a suggestion) added to the `/meal-plan` page
 - [x] **Module 14** — Admin panel: `flask promote-admin` CLI bootstrap, role-guarded `/admin/*` API, CRUD for users/foods/exercises/BMI categories, description-only edit for body types (name is fixed — keys the CNN's classification lookup); no CRUD for the legacy `meal_plans`/`workout_plans` tables (dead since Module 11) — no CNN retraining required
 - [x] **Module 15** — Swagger docs pass: all 37 endpoints across 9 blueprints documented via Flasgger at `/api/docs`, one YAML spec per endpoint, with a regression test (`test_every_registered_route_is_documented`) that fails if a future route ships undocumented
-- [ ] **Module 16** — Testing pass: backend unit/integration tests per service, frontend component tests, fix gaps found
+- [x] **Module 16** — Testing pass: backend coverage audit with `pytest-cov` (94%→99%, 97→137 tests, gap-driven not blind-100%), frontend test framework introduced from scratch (Vitest + RTL, 0→89 tests), both wired into CI (`npm run test` added to `frontend-ci.yml`)
 - [ ] **Module 17** — Deployment (see below)
 
 ## Module 17 — Deployment (default plan, adjust if you have a preferred host)
