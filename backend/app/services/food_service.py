@@ -22,3 +22,17 @@ def get_food(food_id: int) -> SriLankanFood:
 
 def list_categories() -> list[str]:
     return food_repository.get_categories()
+
+
+def create_food(data: dict) -> SriLankanFood:
+    return food_repository.create(**data)
+
+
+def update_food(food_id: int, data: dict) -> SriLankanFood:
+    food = get_food(food_id)
+    return food_repository.update(food, **data)
+
+
+def delete_food(food_id: int) -> None:
+    food = get_food(food_id)
+    food_repository.delete(food)
