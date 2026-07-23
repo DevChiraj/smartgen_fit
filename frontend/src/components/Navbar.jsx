@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { Link, NavLink } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
+import NotificationBell from './NotificationBell'
 
 const NAV_LINKS = [
   { to: '/', label: 'Home', end: true },
@@ -17,7 +18,7 @@ export default function Navbar() {
   const closeMenu = () => setIsOpen(false)
 
   return (
-    <nav className="navbar navbar-expand-lg navbar-light bg-white border-bottom">
+    <nav className="navbar navbar-expand-lg navbar-dark border-bottom">
       <div className="container">
         <Link className="navbar-brand fw-bold" to="/" onClick={closeMenu}>
           SmartGen Fit
@@ -41,9 +42,10 @@ export default function Navbar() {
               </li>
             ))}
           </ul>
-          <div className="d-flex gap-2">
+          <div className="d-flex align-items-center gap-2">
             {isAuthenticated ? (
               <>
+                <NotificationBell />
                 <Link to="/dashboard" className="btn btn-outline-primary" onClick={closeMenu}>
                   {user?.username}
                 </Link>

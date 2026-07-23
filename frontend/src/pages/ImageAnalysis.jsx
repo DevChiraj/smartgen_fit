@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import { API_ORIGIN } from '../services/apiClient'
+import { useNotifications } from '../context/NotificationContext'
 import { analyzeImage, getAnalysisHistory } from '../services/imageAnalysisService'
 import { formatApiError } from '../utils/formatApiError'
 
@@ -17,6 +18,7 @@ export default function ImageAnalysis() {
   const [error, setError] = useState('')
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [isLoadingHistory, setIsLoadingHistory] = useState(true)
+  const { showToast } = useNotifications()
 
   const fetchHistory = () => {
     return getAnalysisHistory()
@@ -47,6 +49,12 @@ export default function ImageAnalysis() {
     try {
       const data = await analyzeImage(file)
       setResult(data.analysis)
+      showToast(
+        `Body type analyzed: ${data.analysis.predicted_body_type?.name} (${(
+          Number(data.analysis.confidence_score) * 100
+        ).toFixed(0)}% confidence)`,
+        'success',
+      )
       fetchHistory()
     } catch (err) {
       setError(formatApiError(err, 'Could not analyze the photo.'))

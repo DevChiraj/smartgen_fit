@@ -79,7 +79,7 @@ export default function LandingPage() {
   return (
     <div>
       <section
-        className="py-5 rounded-4 hero-section"
+        className="py-5 rounded-4 hero-section animate-in"
         style={{
           backgroundImage: `linear-gradient(rgba(10, 10, 12, 0.82), rgba(10, 10, 12, 0.93)), url(${heroBg})`,
           backgroundSize: 'cover',
@@ -128,9 +128,13 @@ export default function LandingPage() {
           <h2 className="fw-bold mt-3">Everything matched to you</h2>
         </div>
         <div className="row g-4">
-          {FEATURES.map((feature) => (
-            <div className="col-md-3 col-sm-6" key={feature.title}>
-              <div className="card feature-card h-100">
+          {FEATURES.map((feature, index) => (
+            <div
+              className="col-md-3 col-sm-6 animate-in"
+              key={feature.title}
+              style={{ '--animate-delay': `${index * 90}ms` }}
+            >
+              <div className="card feature-card card-interactive h-100">
                 <div className="card-body">
                   <span className="icon-badge mb-3">{feature.icon}</span>
                   <h3 className="h6 fw-bold">{feature.title}</h3>
