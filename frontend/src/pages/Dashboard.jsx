@@ -4,6 +4,8 @@ import { useAuth } from '../context/AuthContext'
 import { API_ORIGIN } from '../services/apiClient'
 import { calculateBmi } from '../services/bmiService'
 import { getLatestRecommendation } from '../services/recommendationService'
+import { getAnalysisHistory } from '../services/imageAnalysisService'
+import AnalysisHistoryChart from '../components/AnalysisHistoryChart'
 
 const CATEGORY_VARIANT = {
   Underweight: 'info',
@@ -24,6 +26,7 @@ export default function Dashboard() {
   const [bmiError, setBmiError] = useState('')
   const [recommendation, setRecommendation] = useState(null)
   const [isLoadingRecommendation, setIsLoadingRecommendation] = useState(true)
+  const [analysisHistory, setAnalysisHistory] = useState([])
 
   useEffect(() => {
     if (!user?.height_cm || !user?.weight_kg) return
@@ -36,6 +39,12 @@ export default function Dashboard() {
     getLatestRecommendation()
       .then((data) => setRecommendation(data.recommendation))
       .finally(() => setIsLoadingRecommendation(false))
+  }, [])
+
+  useEffect(() => {
+    getAnalysisHistory()
+      .then((data) => setAnalysisHistory(data.history || []))
+      .catch(() => setAnalysisHistory([]))
   }, [])
 
   if (!user) {
@@ -62,8 +71,8 @@ export default function Dashboard() {
       <h1>Welcome back, {user.full_name}</h1>
 
       <div className="row g-4 mt-1">
-        <div className="col-md-6">
-          <div className="card h-100">
+        <div className="col-md-6 animate-in" style={{ '--animate-delay': '0ms' }}>
+          <div className="card card-interactive h-100">
             <div className="card-body d-flex align-items-center gap-3">
               {user.profile_picture_url ? (
                 <img
@@ -91,14 +100,14 @@ export default function Dashboard() {
           </div>
         </div>
 
-        <div className="col-md-6">
-          <div className="card h-100">
+        <div className="col-md-6 animate-in" style={{ '--animate-delay': '80ms' }}>
+          <div className="card card-interactive h-100">
             <div className="card-body">
               <h2 className="h5">Your BMI</h2>
               {!user.height_cm || !user.weight_kg ? (
                 <p className="text-muted mb-0">
-                  Add your height and weight in <Link to="/profile">your profile</Link> to see
-                  your BMI here.
+                  Add your height and weight in <Link to="/profile">your profile</Link> to see your
+                  BMI here.
                 </p>
               ) : bmiError ? (
                 <p className="text-danger mb-0">{bmiError}</p>
@@ -128,7 +137,7 @@ export default function Dashboard() {
           </div>
         </div>
 
-        <div className="col-12">
+        <div className="col-12 animate-in" style={{ '--animate-delay': '160ms' }}>
           <div className="card">
             <div className="card-body">
               <div className="d-flex flex-wrap align-items-center justify-content-between gap-2 mb-3">
@@ -204,7 +213,9 @@ export default function Dashboard() {
                       <dt className="col-5">Target muscle</dt>
                       <dd className="col-7">{recommendation.workout_record?.target_muscle}</dd>
                       <dt className="col-5">Equipment</dt>
-                      <dd className="col-7">{recommendation.workout_record?.equipment || 'None'}</dd>
+                      <dd className="col-7">
+                        {recommendation.workout_record?.equipment || 'None'}
+                      </dd>
                       <dt className="col-5">Goal</dt>
                       <dd className="col-7">{recommendation.workout_record?.goal}</dd>
                     </dl>
@@ -220,7 +231,22 @@ export default function Dashboard() {
           </div>
         </div>
 
-        <div className="col-12">
+        {analysisHistory.length > 0 && (
+          <div className="col-12 animate-in" style={{ '--animate-delay': '240ms' }}>
+            <div className="card">
+              <div className="card-body">
+                <h2 className="h5 mb-1">Body type analysis history</h2>
+                <p className="text-muted small mb-3">
+                  Confidence score of your last {Math.min(analysisHistory.length, 10)} photo
+                  analyses.
+                </p>
+                <AnalysisHistoryChart history={analysisHistory} />
+              </div>
+            </div>
+          </div>
+        )}
+
+        <div className="col-12 animate-in" style={{ '--animate-delay': '320ms' }}>
           <h2 className="h5 mt-2">Quick actions</h2>
           <div className="row g-3">
             <div className="col-sm-6 col-lg-4">

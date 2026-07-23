@@ -223,3 +223,229 @@ h6,
 .navbar .btn {
   white-space: nowrap;
 }
+
+/* --- Navbar: sticky glass surface --- */
+.navbar {
+  position: sticky;
+  top: 0;
+  z-index: 1030;
+  background-color: rgba(10, 10, 12, 0.72) !important;
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+}
+
+/* ==========================================================================
+   Premium UI pass: glassmorphism, micro-interactions, animations,
+   notification bell + toasts.
+   ========================================================================== */
+
+/* --- Glassmorphism surface: subtle translucent + blur, opt-in via class --- */
+.glass-card {
+  background: rgba(255, 255, 255, 0.045);
+  border: 1px solid rgba(255, 255, 255, 0.09);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-radius: 0.9rem;
+}
+
+/* --- Interactive card hover lift: opt-in, so it doesn't affect every .card
+   (e.g. modal content, admin table cards) that shouldn't feel clickable --- */
+.card-interactive {
+  transition:
+    transform 0.18s ease,
+    border-color 0.18s ease,
+    box-shadow 0.18s ease;
+}
+.card-interactive:hover {
+  transform: translateY(-3px);
+  border-color: var(--sgf-orange);
+  box-shadow: 0 12px 24px -12px rgba(255, 90, 31, 0.35);
+}
+
+/* --- Button micro-interaction --- */
+.btn {
+  transition:
+    transform 0.12s ease,
+    box-shadow 0.12s ease,
+    background-color 0.12s ease,
+    border-color 0.12s ease,
+    color 0.12s ease;
+}
+.btn:hover {
+  transform: translateY(-1px);
+}
+.btn:active {
+  transform: translateY(0);
+}
+
+/* --- Fade-in-up on load: apply `.animate-in` plus an optional
+   `--animate-delay` custom property (in ms) for staggered lists --- */
+@keyframes sgf-fade-in-up {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+.animate-in {
+  animation: sgf-fade-in-up 0.5s ease both;
+  animation-delay: var(--animate-delay, 0ms);
+}
+@media (prefers-reduced-motion: reduce) {
+  .animate-in {
+    animation: none;
+  }
+  .card-interactive:hover,
+  .btn:hover,
+  .feature-card:hover {
+    transform: none;
+  }
+}
+
+/* --- Notification bell --- */
+.notification-bell {
+  position: relative;
+}
+.notification-bell-btn {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: 1px solid var(--bs-border-color);
+  background: transparent;
+  color: var(--bs-secondary-color);
+  transition:
+    color 0.15s ease,
+    border-color 0.15s ease;
+}
+.notification-bell-btn:hover {
+  color: var(--sgf-orange);
+  border-color: var(--sgf-orange);
+}
+.notification-bell-badge {
+  position: absolute;
+  top: -2px;
+  right: -2px;
+  min-width: 18px;
+  height: 18px;
+  padding: 0 4px;
+  border-radius: 999px;
+  background: var(--sgf-orange);
+  color: #fff;
+  font-size: 0.68rem;
+  font-weight: 700;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+}
+.notification-dropdown {
+  position: absolute;
+  top: calc(100% + 10px);
+  right: 0;
+  width: 320px;
+  max-width: 90vw;
+  z-index: 1040;
+  box-shadow: 0 20px 40px -16px rgba(0, 0, 0, 0.6);
+  animation: sgf-fade-in-up 0.18s ease both;
+  /* Overlay content needs to stay legible over busy page text underneath,
+     so it uses a near-opaque surface instead of .glass-card's light wash. */
+  background: rgba(15, 15, 17, 0.97);
+  border: 1px solid var(--bs-border-color);
+}
+.notification-dropdown-header {
+  padding: 0.75rem 1rem 0.5rem;
+  font-weight: 700;
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--bs-secondary-color);
+}
+.notification-dropdown-list {
+  list-style: none;
+  margin: 0;
+  padding: 0 0 0.5rem;
+  max-height: 320px;
+  overflow-y: auto;
+}
+.notification-dropdown-list li {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.6rem;
+  padding: 0.5rem 1rem;
+}
+.notification-dropdown-list li:hover {
+  background: rgba(255, 255, 255, 0.04);
+}
+.notification-dot {
+  margin-top: 0.35rem;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--sgf-orange);
+  flex-shrink: 0;
+}
+
+/* --- Toasts: slide in from the top-right corner --- */
+.toast-stack {
+  position: fixed;
+  top: 1.25rem;
+  right: 1.25rem;
+  z-index: 1080;
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  width: 320px;
+  max-width: calc(100vw - 2rem);
+}
+@keyframes sgf-toast-in {
+  from {
+    opacity: 0;
+    transform: translateX(24px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+.toast-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  padding: 0.85rem 1rem;
+  border-radius: 0.75rem;
+  color: #fff;
+  font-size: 0.9rem;
+  font-weight: 500;
+  box-shadow: 0 16px 32px -14px rgba(0, 0, 0, 0.55);
+  animation: sgf-toast-in 0.25s ease both;
+  background: rgba(19, 19, 21, 0.92);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid var(--bs-border-color);
+  border-left: 3px solid var(--sgf-orange);
+}
+.toast-item-success {
+  border-left-color: var(--sgf-green);
+}
+.toast-item-danger {
+  border-left-color: #ef4444;
+}
+.toast-item-close {
+  background: none;
+  border: none;
+  color: var(--bs-secondary-color);
+  font-size: 1.1rem;
+  line-height: 1;
+  padding: 0;
+}
+.toast-item-close:hover {
+  color: #fff;
+}

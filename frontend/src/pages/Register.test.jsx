@@ -4,6 +4,7 @@ import { MemoryRouter } from 'react-router-dom'
 import { afterEach, beforeEach, expect, it, vi } from 'vitest'
 import Register from './Register'
 import { useAuth } from '../context/AuthContext'
+import { NotificationProvider } from '../context/NotificationContext'
 import { register as registerRequest } from '../services/authService'
 
 vi.mock('../context/AuthContext')
@@ -17,9 +18,11 @@ vi.mock('react-router-dom', async () => {
 
 function renderRegister() {
   return render(
-    <MemoryRouter>
-      <Register />
-    </MemoryRouter>,
+    <NotificationProvider>
+      <MemoryRouter>
+        <Register />
+      </MemoryRouter>
+    </NotificationProvider>,
   )
 }
 
@@ -50,9 +53,7 @@ it('rejects submission client-side when the user is under 15', async () => {
   await fillCommonFields(user, { dateOfBirth: '2015-01-02' })
   await user.click(screen.getByRole('button', { name: /create account/i }))
 
-  expect(
-    screen.getByText('You must be at least 15 years old to register.'),
-  ).toBeInTheDocument()
+  expect(screen.getByText('You must be at least 15 years old to register.')).toBeInTheDocument()
   expect(registerRequest).not.toHaveBeenCalled()
   expect(navigateMock).not.toHaveBeenCalled()
 })

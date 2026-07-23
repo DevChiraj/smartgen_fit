@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
+import { useNotifications } from '../context/NotificationContext'
 import { login as loginRequest } from '../services/authService'
 import { formatApiError } from '../utils/formatApiError'
 
@@ -10,6 +11,7 @@ export default function Login() {
   const [error, setError] = useState('')
   const [isSubmitting, setIsSubmitting] = useState(false)
   const { login } = useAuth()
+  const { showToast } = useNotifications()
   const navigate = useNavigate()
 
   const handleSubmit = async (event) => {
@@ -19,6 +21,7 @@ export default function Login() {
     try {
       const data = await loginRequest({ identifier, password })
       login(data)
+      showToast(`Welcome back, ${data.user.full_name}!`, 'success')
       navigate('/')
     } catch (err) {
       setError(formatApiError(err, 'Login failed. Please check your credentials.'))

@@ -4,6 +4,7 @@ import { MemoryRouter } from 'react-router-dom'
 import { beforeEach, expect, it, vi } from 'vitest'
 import Login from './Login'
 import { useAuth } from '../context/AuthContext'
+import { NotificationProvider } from '../context/NotificationContext'
 import { login as loginRequest } from '../services/authService'
 
 vi.mock('../context/AuthContext')
@@ -21,9 +22,11 @@ beforeEach(() => {
 
 function renderLogin() {
   return render(
-    <MemoryRouter>
-      <Login />
-    </MemoryRouter>,
+    <NotificationProvider>
+      <MemoryRouter>
+        <Login />
+      </MemoryRouter>
+    </NotificationProvider>,
   )
 }
 
@@ -31,18 +34,24 @@ it('logs in, updates auth state, and navigates home on success', async () => {
   const user = userEvent.setup()
   const loginFn = vi.fn()
   useAuth.mockReturnValue({ login: loginFn })
-  loginRequest.mockResolvedValue({ access_token: 'a', refresh_token: 'r', user: { username: 'jane' } })
+  loginRequest.mockResolvedValue({
+    access_token: 'a',
+    refresh_token: 'r',
+    user: { username: 'jane' },
+  })
 
   renderLogin()
   await user.type(screen.getByLabelText(/username or email/i), 'jane')
   await user.type(screen.getByLabelText(/password/i), 'supersecret')
   await user.click(screen.getByRole('button', { name: /log in/i }))
 
-  await waitFor(() => expect(loginFn).toHaveBeenCalledWith({
-    access_token: 'a',
-    refresh_token: 'r',
-    user: { username: 'jane' },
-  }))
+  await waitFor(() =>
+    expect(loginFn).toHaveBeenCalledWith({
+      access_token: 'a',
+      refresh_token: 'r',
+      user: { username: 'jane' },
+    }),
+  )
   expect(navigateMock).toHaveBeenCalledWith('/')
 })
 

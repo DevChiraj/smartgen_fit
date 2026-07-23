@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
+import { useNotifications } from '../context/NotificationContext'
 import { register as registerRequest } from '../services/authService'
 import { calculateAge } from '../utils/age'
 import { formatApiError } from '../utils/formatApiError'
@@ -22,6 +23,7 @@ export default function Register() {
   const [error, setError] = useState('')
   const [isSubmitting, setIsSubmitting] = useState(false)
   const { login } = useAuth()
+  const { showToast } = useNotifications()
   const navigate = useNavigate()
 
   const handleChange = (event) => {
@@ -45,6 +47,7 @@ export default function Register() {
 
       const data = await registerRequest(payload)
       login(data)
+      showToast('Account created — welcome to SmartGen Fit!', 'success')
       navigate('/')
     } catch (err) {
       setError(formatApiError(err, 'Registration failed. Please check your details.'))
