@@ -1,0 +1,26 @@
+{
+  "version": "v20260726_142644",
+  "file_path": "ai_model/saved_models/smartgen_model_retrained.h5",
+  "accuracy": 0.6,
+  "trained_date": "2026-07-26T14:26:44.888110+00:00",
+  "class_names": [
+    "normal",
+    "overweight",
+    "thin"
+  ],
+  "train_count": 38,
+  "val_count": 10,
+  "epochs": 12,
+  "final_train_accuracy": 0.5789,
+  "final_val_loss": 0.9395,
+  "fine_tuned": true,
+  "base_model": "ai_model/saved_models/v20260719_134710.keras",
+  "learning_rate": 0.0001,
+  "augmentation": {
+    "rotation_range": 20,
+    "width_shift_range": 0.1,
+    "height_shift_range": 0.1,
+    "zoom_range": 0.15,
+    "horizontal_flip": true
+  }
+}
