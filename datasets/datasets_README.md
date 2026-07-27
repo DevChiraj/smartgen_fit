@@ -73,9 +73,25 @@ Since Module 8, the dataset was expanded with two more sources merged into the s
 
 **Explicit project decision (documented here so it isn't mistaken for an oversight):** the project owner's supervisor instructed keeping all 48 images exactly as-is — including the `dataset_3` mismatch and the `hf`/`kaggle` duplicates — because the immediate goal is proving the training pipeline runs end to end, not achieving real classification accuracy. See `documentation/module_reports/module9.md` for the full review trail and the resulting model's real (expectedly poor/overfit) metrics. **Do not point Module 10's inference at this model expecting meaningful predictions** — retrain on a corrected/larger dataset first if real accuracy is ever needed.
 
+## Update: dataset expanded to 182 images (`new_dataset_2026` merge)
+
+The project owner supplied a fourth source — `New_dataset/` (not committed, same as `raw_dataset/`): 135 photos across `Thin`/`Normal`/`Overweight` subfolders plus `Body_Measurement_details.xlsx` (`subject_id, height_cm, weight_kg, bmi, body_type`), merged in via `ai_model/preprocessing/merge_new_dataset.py`:
+
+```bash
+python ai_model/preprocessing/merge_new_dataset.py \
+  --source New_dataset --excel New_dataset/Body_Measurement_details.xlsx \
+  --dataset-source new_dataset_2026
+python ai_model/preprocessing/build_dataset.py \
+  --source datasets/body_images --out datasets/body_images_processed --size 224
+```
+
+Unlike the `dataset_3` source, this one checks out: every row's recorded BMI matches its own height/weight (`weight_kg / (height_cm/100)²`) to within 0.05, and every `body_type` label agrees with the standard BMI thresholds — cross-checked automatically by the merge script (any row that didn't line up would have been flagged and excluded, not silently merged; none were, on the 134 that made it through). One image (`NDT12`, 97×240px) was skipped for failing the existing `dataset_validator.py` minimum-dimension check, the same gate every other source goes through. New totals: **182 images** (`normal`: 69, `overweight`: 61, `thin`: 52), tagged `dataset_source=new_dataset_2026` in `labels.csv` so they stay distinguishable from the earlier sources.
+
+This does **not** retroactively fix the `ds3_*` rows' fabricated-weight problem described above — those 21 rows are still present, still untrustworthy, and still mixed into the same `labels.csv`. It also doesn't change the project owner's supervisor's explicit "keep the pipeline-proof-of-concept framing" instruction from Module 9 — that call was about accuracy expectations, not a ban on ever improving the dataset, but the model still shouldn't be treated as fit for real classification without a fresh review of what training on this larger, mixed-quality set actually produces.
+
 ## Known limitations
 
-- Per the above, roughly half of `labels.csv`'s rows (the `ds3_*` ones) do not have trustworthy body-type labels, and 3 rows are exact duplicates of other rows.
+- Roughly half of the *original* 48 rows (the `ds3_*` ones) do not have trustworthy body-type labels, and 3 of those rows are exact duplicates of other rows. The 134 rows added by the `new_dataset_2026` merge above passed an automated BMI/label consistency check that the `ds3_*` rows would have failed had it existed at the time.
 - `resize_image()` squashes to a square without preserving aspect ratio, which distorts body proportions — the exact signal this classifier depends on. Worth revisiting (e.g. letterbox-pad instead of stretch) if this pipeline is ever pointed at real training.
-- HOG person detection succeeds on roughly 35/48 images (73%) of this combined dataset's close-range, indoor, tightly-cropped photos; the rest fall back to using the full frame uncropped.
-- 48 images total (even before discounting the issues above) is nowhere near enough to train a CNN that generalizes to real-world photos.
+- HOG person detection succeeds on roughly 58% of this combined dataset's close-range, indoor, tightly-cropped photos (105/182); the rest fall back to using the full frame uncropped.
+- 182 images is still a small dataset for a CNN, though a substantial improvement over the original 48 — re-evaluate real-world generalization before treating any resulting model's predictions as meaningful, not just its validation-split accuracy.
