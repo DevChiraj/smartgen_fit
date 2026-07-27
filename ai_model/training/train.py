@@ -81,11 +81,14 @@ def train(data_dir: Path, output_dir: Path, epochs: int, batch_size: int, seed: 
         f"Validation accuracy: {val_accuracy:.4f}  |  Validation loss: {val_loss:.4f}"
     )
     print(
-        "\nNOTE: trained on a small (48-image) dataset that includes known "
-        "data-quality issues kept in per explicit project direction - see "
-        "documentation/module_reports/module9.md. This proves the training "
-        "pipeline runs end to end, not that the resulting model is fit for "
-        "real classification."
+        f"\nNOTE: trained on {len(x_train) + len(x_val)} images ({len(x_train)} train / "
+        f"{len(x_val)} val) from datasets/body_images_processed/. See "
+        "documentation/module_reports/module9.md and datasets/datasets_README.md for "
+        "which sources/rows in the current dataset (if any) have known label-quality "
+        "issues. This run alone proves the training pipeline runs end to end, not "
+        "that the resulting model is fit for real classification - check the "
+        "per-epoch train/val accuracy gap for overfitting before trusting the final "
+        "number."
     )
 
     return metadata
