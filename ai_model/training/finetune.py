@@ -15,14 +15,16 @@ backend's `flask register-model <metadata.json>` command can pick up
 if you decide to make the fine-tuned model active - that's a separate,
 deliberate step this script does not take on its own.
 
-READ THIS FIRST: fine-tuning does not fix the underlying dataset problems
-documented in documentation/module_reports/module9.md (fabricated weight
-column in one source, duplicates, 48 images total, kept as-is per explicit
-project direction). Augmentation only multiplies variations of those same
-48 images - it cannot manufacture the additional real, correctly-labeled
-subjects the dataset actually needs. Treat this script as what it is: the
-augmentation + low-LR continued-training mechanics working end to end, not
-a fix for the dataset's known accuracy problems.
+READ THIS FIRST: fine-tuning does not fix problems in whatever dataset is
+currently under datasets/body_images_processed/ (see
+documentation/module_reports/module9.md and datasets/datasets_README.md
+for known issues in specific sources/rows - e.g. dataset_3's fabricated
+weight column). Augmentation only multiplies variations of the images
+that are actually there - it cannot manufacture additional real,
+correctly-labeled subjects, and it doesn't retroactively clean up rows
+that were already mislabeled. Treat this script as what it is: the
+augmentation + low-LR continued-training mechanics working end to end,
+not a fix for whatever the current dataset's known problems are.
 
 USAGE
 -----
@@ -173,11 +175,14 @@ def finetune(
         f"Validation accuracy: {val_accuracy:.4f}  |  Validation loss: {val_loss:.4f}"
     )
     print(
-        "\nNOTE: fine-tuned with augmentation on the same 48-image dataset documented "
-        "in documentation/module_reports/module9.md, which has known label-quality "
-        "issues kept in per explicit project direction. Augmentation multiplies "
-        "variations of those same images - it does not fix mislabeled or fabricated "
-        "source data. This is not evidence the model is fit for real classification."
+        f"\nNOTE: fine-tuned with augmentation on {len(x_train) + len(x_val)} images "
+        f"({len(x_train)} train / {len(x_val)} val) from datasets/body_images_processed/. "
+        "Some of that data has known label-quality issues (see "
+        "documentation/module_reports/module9.md and datasets/datasets_README.md for "
+        "which rows/sources those are). Augmentation multiplies variations of whatever "
+        "images were actually used - it does not fix mislabeled or fabricated source "
+        "data. Check the dataset composition before treating this model's accuracy as "
+        "meaningful."
     )
     print(
         "\nThis model is not registered as active. To do that:\n"
