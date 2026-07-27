@@ -89,9 +89,22 @@ Unlike the `dataset_3` source, this one checks out: every row's recorded BMI mat
 
 This does **not** retroactively fix the `ds3_*` rows' fabricated-weight problem described above — those 21 rows are still present, still untrustworthy, and still mixed into the same `labels.csv`. It also doesn't change the project owner's supervisor's explicit "keep the pipeline-proof-of-concept framing" instruction from Module 9 — that call was about accuracy expectations, not a ban on ever improving the dataset, but the model still shouldn't be treated as fit for real classification without a fresh review of what training on this larger, mixed-quality set actually produces.
 
+## Update: `dataset_3` removed (161 images remain)
+
+The 21 `dataset_3` rows described above (fabricated `weight_kg` column, BMI-vs-photo mismatches like a visually normal subject labeled BMI 7.7) were removed via `ai_model/preprocessing/remove_dataset_source.py`, keeping the `hugging_face` (21) and `kaggle` (6) sources — neither has a documented labeling problem — alongside the `new_dataset_2026` merge (134):
+
+```bash
+python ai_model/preprocessing/remove_dataset_source.py --dataset-source dataset_3
+rm -rf datasets/body_images_processed
+python ai_model/preprocessing/build_dataset.py \
+  --source datasets/body_images --out datasets/body_images_processed --size 224
+```
+
+New totals: **161 images** (`normal`: 60, `overweight`: 56, `thin`: 45). Note 3 of the `kaggle_*` rows are still byte-identical duplicates of `hf_*` rows (documented above, not yet deduplicated) — a minor redundancy, not a labeling error, so it wasn't in scope for this removal.
+
 ## Known limitations
 
-- Roughly half of the *original* 48 rows (the `ds3_*` ones) do not have trustworthy body-type labels, and 3 of those rows are exact duplicates of other rows. The 134 rows added by the `new_dataset_2026` merge above passed an automated BMI/label consistency check that the `ds3_*` rows would have failed had it existed at the time.
+- 3 of the `kaggle_*` rows are exact duplicate photos of `hf_*` rows (same people) — not yet deduplicated.
 - `resize_image()` squashes to a square without preserving aspect ratio, which distorts body proportions — the exact signal this classifier depends on. Worth revisiting (e.g. letterbox-pad instead of stretch) if this pipeline is ever pointed at real training.
-- HOG person detection succeeds on roughly 58% of this combined dataset's close-range, indoor, tightly-cropped photos (105/182); the rest fall back to using the full frame uncropped.
-- 182 images is still a small dataset for a CNN, though a substantial improvement over the original 48 — re-evaluate real-world generalization before treating any resulting model's predictions as meaningful, not just its validation-split accuracy.
+- HOG person detection succeeds on roughly 57% of this combined dataset's close-range, indoor, tightly-cropped photos (92/161); the rest fall back to using the full frame uncropped.
+- 161 images is still a small dataset for a CNN, though a substantial improvement over the original 48 — re-evaluate real-world generalization before treating any resulting model's predictions as meaningful, not just its validation-split accuracy.
