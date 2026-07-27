@@ -1,0 +1,16 @@
+{
+  "version": "v20260727_125241",
+  "file_path": "ai_model/saved_models/v20260727_125241.keras",
+  "accuracy": 0.4242,
+  "trained_date": "2026-07-27T12:52:41.743766+00:00",
+  "class_names": [
+    "normal",
+    "overweight",
+    "thin"
+  ],
+  "train_count": 128,
+  "val_count": 33,
+  "epochs": 15,
+  "final_train_accuracy": 0.9375,
+  "final_val_loss": 1.3502
+}
