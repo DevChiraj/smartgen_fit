@@ -697,3 +697,43 @@ h6,
 .scanner-btn-stop:disabled {
   --bs-btn-color: #52525b;
 }
+
+/* ==========================================================================
+   Floating decorative icons: purely ambient background texture on public
+   pages. Mount inside a `position: relative` container with a bounded
+   height (see FloatingIcons.jsx) - never inside a long/table-heavy page
+   directly, so they stay confined to a hero/intro area.
+   ========================================================================== */
+.floating-icons {
+  /* z-index: -1 (not 0) matters: within its position:relative parent's
+     stacking context, this sits below static-position sibling content
+     regardless of DOM order - z-index:0 would instead paint on TOP of
+     that content, since positioned descendants stack above static ones
+     even at the same z-index level. */
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+  z-index: -1;
+}
+.floating-icon {
+  position: absolute;
+  color: var(--sgf-orange);
+  opacity: 0.14;
+  animation: sgf-icon-float var(--float-duration, 6s) ease-in-out infinite;
+  animation-delay: var(--float-delay, 0s);
+}
+@keyframes sgf-icon-float {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-14px);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .floating-icon {
+    animation: none;
+  }
+}

@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
+import FloatingIcons from '../components/FloatingIcons'
 import heroBg from '../assets/hero-bg.png'
 
 const FEATURES = [
@@ -122,7 +123,8 @@ export default function LandingPage() {
         </div>
       </section>
 
-      <section className="py-5">
+      <section className="py-5 position-relative">
+        <FloatingIcons />
         <div className="text-center mb-5">
           <span className="hero-badge mb-3">What you get</span>
           <h2 className="fw-bold mt-3">Everything matched to you</h2>

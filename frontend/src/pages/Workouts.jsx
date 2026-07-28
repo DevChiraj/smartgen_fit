@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { getExerciseDifficulties, getExercises } from '../services/exerciseService'
 import { formatApiError } from '../utils/formatApiError'
+import FloatingIcons from '../components/FloatingIcons'
 
 const DIFFICULTY_VARIANT = {
   Beginner: 'success',
@@ -37,11 +38,14 @@ export default function Workouts() {
 
   return (
     <div>
-      <h1>Workouts</h1>
-      <p className="text-muted">
-        A library of exercises with sets, reps, calories burned, and target muscles &mdash; search
-        or filter by difficulty, and click an exercise for its full detail.
-      </p>
+      <div className="position-relative pb-2">
+        <FloatingIcons />
+        <h1>Workouts</h1>
+        <p className="text-muted">
+          A library of exercises with sets, reps, calories burned, and target muscles &mdash; search
+          or filter by difficulty, and click an exercise for its full detail.
+        </p>
+      </div>
 
       <div className="row g-3 mb-4">
         <div className="col-sm-6 col-md-4">
@@ -122,10 +126,7 @@ export default function Workouts() {
           style={{ backgroundColor: 'rgba(0,0,0,0.5)' }}
           onClick={() => setSelectedExercise(null)}
         >
-          <div
-            className="modal-dialog modal-dialog-centered"
-            onClick={(e) => e.stopPropagation()}
-          >
+          <div className="modal-dialog modal-dialog-centered" onClick={(e) => e.stopPropagation()}>
             <div className="modal-content">
               <div className="modal-header">
                 <h2 className="modal-title h5">{selectedExercise.exercise_name}</h2>
