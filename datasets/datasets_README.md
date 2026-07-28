@@ -102,9 +102,24 @@ python ai_model/preprocessing/build_dataset.py \
 
 New totals: **161 images** (`normal`: 60, `overweight`: 56, `thin`: 45). Note 3 of the `kaggle_*` rows are still byte-identical duplicates of `hf_*` rows (documented above, not yet deduplicated) — a minor redundancy, not a labeling error, so it wasn't in scope for this removal.
 
+## Update: dataset expanded to 745 images (`new_dataset_2_2026` merge)
+
+The project owner supplied a fifth source — `New_datatset_2/` (not committed, same policy as `New_dataset/`; note the folder's actual name has a typo, kept as-is rather than renamed): 584 photos across `Thin`/`Normal`/`Overweight` subfolders plus `Body_Mess.xlsx` (same `subject_id, height_cm, weight_kg, bmi, body_type` schema), merged the same way:
+
+```bash
+python ai_model/preprocessing/merge_new_dataset.py \
+  --source New_datatset_2 --excel New_datatset_2/Body_Mess.xlsx \
+  --dataset-source new_dataset_2_2026
+rm -rf datasets/body_images_processed
+python ai_model/preprocessing/build_dataset.py \
+  --source datasets/body_images --out datasets/body_images_processed --size 224
+```
+
+Same automated BMI/label consistency check as the `new_dataset_2026` merge: all 584 rows passed (max |computed − recorded BMI| = 0.02, zero label disagreements, zero subject_id collisions with the existing 161). Nothing was skipped this time — no images failed `dataset_validator.py`'s dimension check. New totals: **745 images** (`normal`: 239, `overweight`: 241, `thin`: 265), tagged `dataset_source=new_dataset_2_2026`.
+
 ## Known limitations
 
 - 3 of the `kaggle_*` rows are exact duplicate photos of `hf_*` rows (same people) — not yet deduplicated.
 - `resize_image()` squashes to a square without preserving aspect ratio, which distorts body proportions — the exact signal this classifier depends on. Worth revisiting (e.g. letterbox-pad instead of stretch) if this pipeline is ever pointed at real training.
-- HOG person detection succeeds on roughly 57% of this combined dataset's close-range, indoor, tightly-cropped photos (92/161); the rest fall back to using the full frame uncropped.
-- 161 images is still a small dataset for a CNN, though a substantial improvement over the original 48 — re-evaluate real-world generalization before treating any resulting model's predictions as meaningful, not just its validation-split accuracy.
+- HOG person detection succeeds on roughly 60% of this combined dataset's close-range, indoor, tightly-cropped photos (448/745); the rest fall back to using the full frame uncropped.
+- 745 images is a genuinely larger dataset than any prior point in this project, but re-evaluate real-world generalization before treating any resulting model's predictions as meaningful, not just its validation-split accuracy — see the training run logged in the corresponding chat/PR for whether more data actually moved accuracy this time.
