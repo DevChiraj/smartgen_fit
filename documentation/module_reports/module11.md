@@ -182,6 +182,17 @@ npm run dev      # log in, set height/weight in profile, upload a photo at /anal
   retraining required" — extended here to mean no recommender retraining either; both are offline,
   manually-run scripts).
 
+## Update: meal dataset replaced with `Sri_Lankan_Meal_Dataset_NEW.xlsx`
+
+`Sri_Lankan_Meal_Dataset_Part_1.xlsx` was replaced with a new 2,000-row file, same schema and same
+`Person_ID`/`Age`/`Gender`/`BMI_Category` values for every row (verified before swapping) — only the
+meal content itself (`Breakfast`/`Morning_Snack`/`Lunch`/`Evening_Snack`/`Dinner`) was rewritten;
+`Daily_Calories` is unchanged. Because the KNN's matching features didn't change, the previously
+trained recommender bundle would still have matched correctly, but it was retrained anyway (cheap,
+and keeps its metadata's `source_dataset` field accurate) alongside `flask seed-recommendations`
+reloading `meal_recommendation_records` from the new file. `backend/app/seed_recommendation_data.py`
+and `ai_model/recommendation/train_recommender.py` now default to the new filename.
+
 ## Next
 
 Module 12 — Meal plan module: Sri Lankan food data, meal plan detail pages, nutrition breakdown.
