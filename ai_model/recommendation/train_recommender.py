@@ -16,7 +16,7 @@ overloading it for an unrelated model type.
 USAGE
 -----
     python train_recommender.py \
-      --meal-xlsx ../../datasets/recommendations/Sri_Lankan_Meal_Dataset_Part_1.xlsx
+      --meal-xlsx ../../datasets/recommendations/Sri_Lankan_Meal_Dataset_NEW.xlsx
 """
 
 import argparse
@@ -101,7 +101,7 @@ def main():
         "--meal-xlsx",
         type=Path,
         default=Path(
-            "../../datasets/recommendations/Sri_Lankan_Meal_Dataset_Part_1.xlsx"
+            "../../datasets/recommendations/Sri_Lankan_Meal_Dataset_NEW.xlsx"
         ),
     )
     parser.add_argument("--out", type=Path, default=Path("../saved_models"))

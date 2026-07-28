@@ -16,7 +16,7 @@ from app.config import PROJECT_ROOT
 from app.repositories import meal_recommendation_repository, workout_recommendation_repository
 
 MEAL_XLSX = (
-    Path(PROJECT_ROOT) / "datasets" / "recommendations" / "Sri_Lankan_Meal_Dataset_Part_1.xlsx"
+    Path(PROJECT_ROOT) / "datasets" / "recommendations" / "Sri_Lankan_Meal_Dataset_NEW.xlsx"
 )
 WORKOUT_XLSX = (
     Path(PROJECT_ROOT) / "datasets" / "recommendations" / "Workout_Dataset_Matched_Advanced.xlsx"
