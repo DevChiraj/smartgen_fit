@@ -9,6 +9,7 @@ const NAV_LINKS = [
   { to: '/healthy-foods', label: 'Healthy Foods' },
   { to: '/workouts', label: 'Workouts' },
   { to: '/bmi-calculator', label: 'BMI Calculator' },
+  { to: '/analyze', label: '[ SCANNER ]' },
   { to: '/contact', label: 'Contact' },
 ]
 
