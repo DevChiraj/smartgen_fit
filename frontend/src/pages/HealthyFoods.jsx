@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { getFoodCategories, getFoods } from '../services/foodService'
 import { formatApiError } from '../utils/formatApiError'
+import FloatingIcons from '../components/FloatingIcons'
 import heroBg from '../assets/healthy-foods-hero-bg.png'
 
 export default function HealthyFoods() {
@@ -33,13 +34,14 @@ export default function HealthyFoods() {
   return (
     <div>
       <div
-        className="p-4 p-md-5 rounded-4 hero-section mb-4"
+        className="p-4 p-md-5 rounded-4 hero-section mb-4 position-relative"
         style={{
           backgroundImage: `linear-gradient(rgba(10, 10, 12, 0.82), rgba(10, 10, 12, 0.93)), url(${heroBg})`,
           backgroundSize: 'cover',
           backgroundPosition: 'center',
         }}
       >
+        <FloatingIcons />
         <h1>Healthy Foods</h1>
         <p className="text-muted mb-0">
           Nutrition facts for common Sri Lankan foods &mdash; search or filter by category, and

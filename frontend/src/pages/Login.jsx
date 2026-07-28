@@ -4,6 +4,7 @@ import { useAuth } from '../context/AuthContext'
 import { useNotifications } from '../context/NotificationContext'
 import { login as loginRequest } from '../services/authService'
 import { formatApiError } from '../utils/formatApiError'
+import FloatingIcons from '../components/FloatingIcons'
 
 export default function Login() {
   const [identifier, setIdentifier] = useState('')
@@ -31,48 +32,51 @@ export default function Login() {
   }
 
   return (
-    <div className="mx-auto py-4" style={{ maxWidth: 420 }}>
-      <div className="card p-4 p-md-5 shadow-lg">
-        <h1 className="h3 fw-bold mb-1">Welcome back</h1>
-        <p className="text-secondary mb-4">Log in to see your matched plan.</p>
-        {error && <div className="alert alert-danger">{error}</div>}
-        <form onSubmit={handleSubmit}>
-          <div className="mb-3">
-            <label className="form-label" htmlFor="identifier">
-              Username or email
-            </label>
-            <input
-              id="identifier"
-              className="form-control"
-              value={identifier}
-              onChange={(event) => setIdentifier(event.target.value)}
-              required
-            />
-          </div>
-          <div className="mb-3">
-            <label className="form-label" htmlFor="password">
-              Password
-            </label>
-            <input
-              id="password"
-              type="password"
-              className="form-control"
-              value={password}
-              onChange={(event) => setPassword(event.target.value)}
-              required
-            />
-          </div>
-          <button
-            type="submit"
-            className="btn btn-primary rounded-pill w-100 mt-2"
-            disabled={isSubmitting}
-          >
-            {isSubmitting ? 'Logging in...' : 'Log in'}
-          </button>
-        </form>
-        <p className="mt-4 mb-0 text-secondary">
-          Don&apos;t have an account? <Link to="/register">Register</Link>
-        </p>
+    <div className="position-relative py-4">
+      <FloatingIcons />
+      <div className="mx-auto" style={{ maxWidth: 420 }}>
+        <div className="card p-4 p-md-5 shadow-lg">
+          <h1 className="h3 fw-bold mb-1">Welcome back</h1>
+          <p className="text-secondary mb-4">Log in to see your matched plan.</p>
+          {error && <div className="alert alert-danger">{error}</div>}
+          <form onSubmit={handleSubmit}>
+            <div className="mb-3">
+              <label className="form-label" htmlFor="identifier">
+                Username or email
+              </label>
+              <input
+                id="identifier"
+                className="form-control"
+                value={identifier}
+                onChange={(event) => setIdentifier(event.target.value)}
+                required
+              />
+            </div>
+            <div className="mb-3">
+              <label className="form-label" htmlFor="password">
+                Password
+              </label>
+              <input
+                id="password"
+                type="password"
+                className="form-control"
+                value={password}
+                onChange={(event) => setPassword(event.target.value)}
+                required
+              />
+            </div>
+            <button
+              type="submit"
+              className="btn btn-primary rounded-pill w-100 mt-2"
+              disabled={isSubmitting}
+            >
+              {isSubmitting ? 'Logging in...' : 'Log in'}
+            </button>
+          </form>
+          <p className="mt-4 mb-0 text-secondary">
+            Don&apos;t have an account? <Link to="/register">Register</Link>
+          </p>
+        </div>
       </div>
     </div>
   )

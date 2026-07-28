@@ -1,3 +1,5 @@
+import FloatingIcons from '../components/FloatingIcons'
+
 const HOW_IT_WORKS = [
   {
     title: '1. Upload a photo',
@@ -16,12 +18,13 @@ const HOW_IT_WORKS = [
 
 export default function About() {
   return (
-    <div>
+    <div className="position-relative">
+      <FloatingIcons />
       <h1>About SmartGen Fit</h1>
       <p className="lead text-muted">
-        SmartGen Fit is a final year project exploring how computer vision and a curated
-        nutrition database can work together to give people a starting point for healthier
-        habits — without ever letting an algorithm invent health advice.
+        SmartGen Fit is a final year project exploring how computer vision and a curated nutrition
+        database can work together to give people a starting point for healthier habits — without
+        ever letting an algorithm invent health advice.
       </p>
 
       <h2 className="mt-5 mb-3">How it works</h2>
@@ -41,10 +44,10 @@ export default function About() {
       <h2 className="mt-5 mb-3">Our AI boundary</h2>
       <p className="text-muted">
         Our AI model performs one task only: classifying your body type from a photo. It never
-        generates meal plans, workouts, calories, or health advice. Every recommendation you
-        receive comes from a predefined, rule-based lookup in our nutrition and fitness
-        database, keyed on your body type, BMI category, age group, and gender — reviewed
-        and managed by administrators, not invented by an algorithm.
+        generates meal plans, workouts, calories, or health advice. Every recommendation you receive
+        comes from a predefined, rule-based lookup in our nutrition and fitness database, keyed on
+        your body type, BMI category, age group, and gender — reviewed and managed by
+        administrators, not invented by an algorithm.
       </p>
     </div>
   )
