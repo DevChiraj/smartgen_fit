@@ -469,8 +469,11 @@ h6,
 }
 
 .scanner-viewfinder {
+  /* Measured directly from the reference screenshot (587x512px box in a
+     1100x688 image) via pixel edge-detection, not estimated - the outer
+     frame is wider than tall, unlike the inner guide box below. */
   position: relative;
-  aspect-ratio: 3 / 4;
+  aspect-ratio: 587 / 512;
   background: #050506;
   border: 1px solid var(--bs-border-color);
   border-radius: 0.9rem;
@@ -513,12 +516,14 @@ h6,
 }
 
 .scanner-guide-box {
+  /* Measured from the same reference screenshot: the dashed box sits
+     inset 51px top/bottom (9.96% of the 512px-tall outer box) and
+     ~117-118px left/right (20.0% of the 587px-wide outer box) - its own
+     aspect ratio (352x410, portrait) differs from the outer box's
+     (landscape), so it's positioned via independent inset percentages
+     rather than a single scale factor + shared aspect-ratio. */
   position: absolute;
-  top: 50%;
-  left: 50%;
-  width: 55%;
-  aspect-ratio: 3 / 4;
-  transform: translate(-50%, -50%);
+  inset: 9.96% 20.02%;
   border: 2px dashed var(--sgf-orange);
   border-radius: 0.75rem;
   animation: sgf-scanner-pulse 2s ease-in-out infinite;
