@@ -205,6 +205,7 @@ uploads/*
 # regenerate locally via datasets/datasets_README.md.
 raw_dataset/
 New_dataset/
+New_datatset_2/
 datasets/body_images/*
 !datasets/body_images/.gitkeep
 datasets/body_images_processed/
