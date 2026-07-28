@@ -514,7 +514,11 @@ h6,
 
 .scanner-guide-box {
   position: absolute;
-  inset: 12% 18%;
+  top: 50%;
+  left: 50%;
+  width: 55%;
+  aspect-ratio: 3 / 4;
+  transform: translate(-50%, -50%);
   border: 2px dashed var(--sgf-orange);
   border-radius: 0.75rem;
   animation: sgf-scanner-pulse 2s ease-in-out infinite;
@@ -627,32 +631,24 @@ h6,
   font-size: 0.8rem;
 }
 
-.scanner-select {
-  background-color: #050506;
-  border-color: var(--bs-border-color);
-}
-
-/* Custom range slider: orange thumb with a 10px glow, both engines. */
-.scanner-slider.form-range {
-  --bs-form-range-track-bg: #050506;
-}
-.scanner-slider.form-range::-webkit-slider-runnable-track {
+.scanner-readonly-field {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
   background-color: #050506;
   border: 1px solid var(--bs-border-color);
+  border-radius: 0.5rem;
+  padding: 0.55rem 0.85rem;
+  font-size: 0.85rem;
+  font-weight: 600;
+  margin-bottom: 0.6rem;
 }
-.scanner-slider.form-range::-webkit-slider-thumb {
-  background-color: var(--sgf-orange);
-  box-shadow: 0 0 10px var(--sgf-orange);
-  border: none;
+.scanner-readonly-field:last-child {
+  margin-bottom: 0;
 }
-.scanner-slider.form-range::-moz-range-track {
-  background-color: #050506;
-  border: 1px solid var(--bs-border-color);
-}
-.scanner-slider.form-range::-moz-range-thumb {
-  background-color: var(--sgf-orange);
-  box-shadow: 0 0 10px var(--sgf-orange);
-  border: none;
+.scanner-readonly-field .scanner-field-value {
+  font-size: 0.85rem;
+  font-weight: 700;
 }
 
 .scanner-btn-start {
