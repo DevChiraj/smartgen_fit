@@ -15,6 +15,7 @@
 :root {
   --bs-body-font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   --sgf-heading-font: 'Poppins', 'Inter', sans-serif;
+  --sgf-mono-font: 'Consolas', 'SFMono-Regular', 'Courier New', monospace;
   --sgf-orange: #ff5a1f;
   --sgf-orange-hover: #ff7a47;
   --sgf-orange-active: #e64a0f;
@@ -448,4 +449,241 @@ h6,
 }
 .toast-item-close:hover {
   color: #fff;
+}
+
+/* ==========================================================================
+   Body Type Analysis "scanner" UI. Camera height / distance sliders are
+   decorative (no real camera/3D-sensing feature exists) - see ImageAnalysis.jsx
+   for the reasoning; kept purely to match the requested sci-fi scanner look.
+   ========================================================================== */
+.scanner-grid {
+  display: grid;
+  grid-template-columns: 1fr 400px;
+  gap: 1.5rem;
+  align-items: start;
+}
+@media (max-width: 900px) {
+  .scanner-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.scanner-viewfinder {
+  position: relative;
+  aspect-ratio: 3 / 4;
+  background: #050506;
+  border: 1px solid var(--bs-border-color);
+  border-radius: 0.9rem;
+  overflow: hidden;
+}
+
+.scanner-crosshair {
+  position: absolute;
+  width: 28px;
+  height: 28px;
+  border-color: var(--sgf-orange);
+  border-style: solid;
+  border-width: 0;
+  opacity: 0.85;
+  z-index: 2;
+}
+.scanner-crosshair-tl {
+  top: 14px;
+  left: 14px;
+  border-top-width: 2px;
+  border-left-width: 2px;
+}
+.scanner-crosshair-tr {
+  top: 14px;
+  right: 14px;
+  border-top-width: 2px;
+  border-right-width: 2px;
+}
+.scanner-crosshair-bl {
+  bottom: 14px;
+  left: 14px;
+  border-bottom-width: 2px;
+  border-left-width: 2px;
+}
+.scanner-crosshair-br {
+  bottom: 14px;
+  right: 14px;
+  border-bottom-width: 2px;
+  border-right-width: 2px;
+}
+
+.scanner-guide-box {
+  position: absolute;
+  inset: 12% 18%;
+  border: 2px dashed var(--sgf-orange);
+  border-radius: 0.75rem;
+  animation: sgf-scanner-pulse 2s ease-in-out infinite;
+}
+@keyframes sgf-scanner-pulse {
+  0%,
+  100% {
+    opacity: 0.45;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+.scanner-guide-text {
+  position: absolute;
+  top: 40px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(255, 90, 31, 0.12);
+  border: 1px solid rgba(255, 90, 31, 0.4);
+  color: var(--sgf-orange);
+  font-family: var(--sgf-mono-font);
+  font-size: 0.75rem;
+  letter-spacing: 0.03em;
+  padding: 0.3rem 0.75rem;
+  border-radius: 999px;
+  white-space: nowrap;
+}
+
+.scanner-preview-img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  animation: sgf-fade-in-up 0.4s ease both;
+}
+
+.scanner-laser {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  height: 2px;
+  background: var(--sgf-orange);
+  box-shadow:
+    0 0 8px 2px rgba(255, 90, 31, 0.85),
+    0 0 20px 6px rgba(255, 90, 31, 0.35);
+  animation: sgf-scanner-sweep 3s linear infinite;
+  z-index: 3;
+}
+@keyframes sgf-scanner-sweep {
+  0% {
+    top: 0%;
+  }
+  100% {
+    top: 100%;
+  }
+}
+
+.scanner-viewfinder-footer {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.5rem 0.85rem;
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.75), transparent);
+  color: var(--bs-secondary-color);
+  font-family: var(--sgf-mono-font);
+  font-size: 0.7rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  z-index: 3;
+}
+.scanner-rec-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--sgf-orange);
+}
+
+.scanner-card {
+  --bs-card-bg: #0d0d0f;
+}
+.scanner-card-title {
+  font-family: var(--sgf-mono-font);
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--bs-secondary-color);
+  margin-bottom: 1rem;
+}
+
+.scanner-field-label {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 0.85rem;
+  font-weight: 600;
+  margin-bottom: 0.4rem;
+}
+.scanner-field-value {
+  font-family: var(--sgf-mono-font);
+  color: var(--sgf-orange);
+  font-size: 0.8rem;
+}
+
+.scanner-select {
+  background-color: #050506;
+  border-color: var(--bs-border-color);
+}
+
+/* Custom range slider: orange thumb with a 10px glow, both engines. */
+.scanner-slider.form-range {
+  --bs-form-range-track-bg: #050506;
+}
+.scanner-slider.form-range::-webkit-slider-runnable-track {
+  background-color: #050506;
+  border: 1px solid var(--bs-border-color);
+}
+.scanner-slider.form-range::-webkit-slider-thumb {
+  background-color: var(--sgf-orange);
+  box-shadow: 0 0 10px var(--sgf-orange);
+  border: none;
+}
+.scanner-slider.form-range::-moz-range-track {
+  background-color: #050506;
+  border: 1px solid var(--bs-border-color);
+}
+.scanner-slider.form-range::-moz-range-thumb {
+  background-color: var(--sgf-orange);
+  box-shadow: 0 0 10px var(--sgf-orange);
+  border: none;
+}
+
+.scanner-btn-start {
+  font-family: var(--sgf-mono-font);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  --bs-btn-color: #050506;
+  --bs-btn-bg: var(--sgf-orange);
+  --bs-btn-border-color: var(--sgf-orange);
+  --bs-btn-hover-color: #050506;
+  --bs-btn-hover-bg: var(--sgf-orange-hover);
+  --bs-btn-hover-border-color: var(--sgf-orange-hover);
+  --bs-btn-active-bg: var(--sgf-orange-active);
+  --bs-btn-disabled-color: #050506;
+  --bs-btn-disabled-bg: var(--sgf-orange);
+  --bs-btn-disabled-border-color: var(--sgf-orange);
+}
+.scanner-btn-stop {
+  font-family: var(--sgf-mono-font);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  --bs-btn-color: var(--sgf-orange);
+  --bs-btn-bg: transparent;
+  --bs-btn-border-color: var(--sgf-orange);
+  --bs-btn-hover-color: #050506;
+  --bs-btn-hover-bg: var(--sgf-orange);
+  --bs-btn-hover-border-color: var(--sgf-orange);
+  --bs-btn-disabled-color: var(--sgf-orange);
+  --bs-btn-disabled-border-color: #3f3f46;
+  opacity: 1;
+}
+.scanner-btn-stop:disabled {
+  --bs-btn-color: #52525b;
 }
