@@ -20,6 +20,7 @@ from pathlib import Path
 import numpy as np
 from sklearn.utils.class_weight import compute_class_weight
 from tensorflow.keras.callbacks import EarlyStopping
+from tensorflow.keras.utils import set_random_seed
 
 from data_generator import load_dataset, train_val_split
 from model_architecture import CLASS_NAMES, build_model, compile_model
@@ -35,7 +36,21 @@ def train(
     seed: int,
     monitor: str = "val_loss",
     patience: int = 10,
+    model_seed: int = None,
 ):
+    """`seed` controls only the train/val split (data_generator.py), so
+    every run compares against the exact same validation set. `model_seed`
+    (Python/NumPy/TF random state - weight init, dropout masks, batch
+    shuffle order) defaults to `seed` but is a separate parameter on
+    purpose: to measure genuine run-to-run variance for a fixed
+    configuration, vary `model_seed` across runs while holding `seed`
+    (and everything else) constant - otherwise each "repeat" would also
+    be evaluated against a different validation set, confounding two
+    different sources of variation into one number."""
+    if model_seed is None:
+        model_seed = seed
+    set_random_seed(model_seed)
+
     images, labels = load_dataset(data_dir)
     x_train, x_val, y_train, y_val = train_val_split(images, labels, seed=seed)
 
@@ -99,6 +114,8 @@ def train(
         "early_stopped": stopped_early,
         "early_stopping_monitor": monitor,
         "early_stopping_patience": patience,
+        "seed": seed,
+        "model_seed": model_seed,
         "final_train_accuracy": round(float(history.history["accuracy"][-1]), 4),
         "final_val_loss": round(float(val_loss), 4),
     }
@@ -148,7 +165,17 @@ def main():
         help="Maximum epochs - early stopping may end the run sooner",
     )
     parser.add_argument("--batch-size", type=int, default=8)
-    parser.add_argument("--seed", type=int, default=42)
+    parser.add_argument(
+        "--seed", type=int, default=42, help="Controls only the train/val split"
+    )
+    parser.add_argument(
+        "--model-seed",
+        type=int,
+        default=None,
+        help="Controls weight init/dropout/batch order (default: same as --seed). "
+        "Vary this across repeated runs to measure genuine run-to-run variance "
+        "without also changing which images land in validation.",
+    )
     parser.add_argument(
         "--monitor",
         type=str,
@@ -171,6 +198,7 @@ def main():
         args.seed,
         monitor=args.monitor,
         patience=args.patience,
+        model_seed=args.model_seed,
     )
 
 
