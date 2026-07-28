@@ -23,17 +23,6 @@ export default function ImageAnalysis() {
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [isLoadingHistory, setIsLoadingHistory] = useState(true)
 
-  // Display-only "pre-scan" fields. Camera height / distance have no real
-  // counterpart in SmartGen Fit (single-photo upload, no camera/3D sensing),
-  // so they're decorative to match the scanner aesthetic. Gender/age start
-  // from the user's real profile since those already mean something in this
-  // app (the KNN recommender matches on them) - editable here for display
-  // only though, since the analyze endpoint only accepts the photo itself.
-  const [cameraHeight, setCameraHeight] = useState(120)
-  const [distance, setDistance] = useState(175)
-  const [gender, setGender] = useState(user?.gender || 'male')
-  const [age, setAge] = useState(user?.age || 25)
-
   const fileInputRef = useRef(null)
   const requestTokenRef = useRef(0)
 
@@ -161,63 +150,23 @@ export default function ImageAnalysis() {
         <div className="d-flex flex-column gap-3">
           <div className="card scanner-card">
             <div className="card-body">
-              <h2 className="scanner-card-title">Camera setup</h2>
+              <h2 className="scanner-card-title">Subject profile</h2>
+              <p className="text-secondary small" style={{ marginTop: '-0.5rem' }}>
+                From your account
+              </p>
 
-              <label className="scanner-field-label" htmlFor="cameraHeight">
-                <span>Camera height</span>
-                <span className="scanner-field-value">{cameraHeight}cm</span>
-              </label>
-              <input
-                id="cameraHeight"
-                type="range"
-                min="100"
-                max="220"
-                value={cameraHeight}
-                onChange={(e) => setCameraHeight(Number(e.target.value))}
-                className="form-range scanner-slider"
-              />
-
-              <label className="scanner-field-label mt-3" htmlFor="distance">
-                <span>Distance to camera</span>
-                <span className="scanner-field-value">{distance}cm</span>
-              </label>
-              <input
-                id="distance"
-                type="range"
-                min="50"
-                max="300"
-                value={distance}
-                onChange={(e) => setDistance(Number(e.target.value))}
-                className="form-range scanner-slider"
-              />
-
-              <label className="scanner-field-label mt-3" htmlFor="scanGender">
+              <div className="scanner-readonly-field">
                 <span>Gender</span>
-              </label>
-              <select
-                id="scanGender"
-                className="form-select scanner-select"
-                value={gender}
-                onChange={(e) => setGender(e.target.value)}
-              >
-                <option value="male">Male</option>
-                <option value="female">Female</option>
-                <option value="other">Other</option>
-              </select>
-
-              <label className="scanner-field-label mt-3" htmlFor="scanAge">
+                <span className="scanner-field-value">
+                  {user?.gender
+                    ? user.gender.charAt(0).toUpperCase() + user.gender.slice(1)
+                    : '—'}
+                </span>
+              </div>
+              <div className="scanner-readonly-field">
                 <span>Age</span>
-                <span className="scanner-field-value">{age}yr</span>
-              </label>
-              <input
-                id="scanAge"
-                type="range"
-                min="15"
-                max="90"
-                value={age}
-                onChange={(e) => setAge(Number(e.target.value))}
-                className="form-range scanner-slider"
-              />
+                <span className="scanner-field-value">{user?.age ? `${user.age}yr` : '—'}</span>
+              </div>
             </div>
           </div>
 
