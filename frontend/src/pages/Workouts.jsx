@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { getExerciseDifficulties, getExercises } from '../services/exerciseService'
 import { formatApiError } from '../utils/formatApiError'
 import FloatingIcons from '../components/FloatingIcons'
+import ExerciseDemoGif from '../components/ExerciseDemoGif'
 
 const DIFFICULTY_VARIANT = {
   Beginner: 'success',
@@ -138,6 +139,11 @@ export default function Workouts() {
                 />
               </div>
               <div className="modal-body">
+                <ExerciseDemoGif
+                  exerciseId={selectedExercise.exercise_id}
+                  alt={`How to perform ${selectedExercise.exercise_name}`}
+                  className="mb-3"
+                />
                 <p className="mb-3">
                   <span
                     className={`badge text-bg-${DIFFICULTY_VARIANT[selectedExercise.difficulty] || 'secondary'}`}
