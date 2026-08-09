@@ -1,0 +1,35 @@
+tags:
+  - Notifications
+summary: Get the logged-in user's current smart notifications
+description: >
+  Computed fresh on every request from the user's own real workout_logs and
+  meal_logs data - nothing is stored or model-generated. Possible types:
+  exercise_inactivity (no workout logged for 3+ days), skipped_meal (a core
+  meal - breakfast/lunch/dinner - missing from yesterday's meal log, only
+  once the user has logged at least one meal ever), low_protein (today's
+  logged protein so far is under 70% of a weight-based RDA estimate, only
+  once the user has logged at least one meal today and has a weight on
+  file).
+security:
+  - BearerAuth: []
+responses:
+  200:
+    description: Current notifications
+    schema:
+      type: object
+      properties:
+        notifications:
+          type: array
+          items:
+            type: object
+            properties:
+              type:
+                type: string
+                enum: [exercise_inactivity, skipped_meal, low_protein]
+              severity:
+                type: string
+                enum: [info, warning]
+              message:
+                type: string
+  401:
+    description: Missing/invalid/expired access token

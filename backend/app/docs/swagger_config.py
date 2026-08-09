@@ -61,5 +61,12 @@ SWAGGER_TEMPLATE = {
             "name": "Meal Logs",
             "description": "The user's real food diary - logged meals against real nutrition data",
         },
+        {
+            "name": "Notifications",
+            "description": (
+                "Deterministic, rule-based alerts computed from the user's own logged "
+                "workout/meal data - never model-generated"
+            ),
+        },
     ],
 }
