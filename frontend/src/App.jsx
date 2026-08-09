@@ -1,8 +1,10 @@
-import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
+import { BrowserRouter, Routes, Route, Navigate, useLocation } from 'react-router-dom'
+import { AnimatePresence, MotionConfig } from 'framer-motion'
 import { AuthProvider } from './context/AuthContext'
 import { NotificationProvider } from './context/NotificationContext'
 import ProtectedRoute from './components/ProtectedRoute'
 import AdminRoute from './components/AdminRoute'
+import PageTransition from './components/PageTransition'
 import PublicLayout from './layouts/PublicLayout'
 import AuthenticatedLayout from './layouts/AuthenticatedLayout'
 import AdminLayout from './layouts/AdminLayout'
@@ -26,134 +28,168 @@ import AdminExercises from './pages/admin/AdminExercises'
 import AdminBodyTypes from './pages/admin/AdminBodyTypes'
 import AdminBmiCategories from './pages/admin/AdminBmiCategories'
 
+function AnimatedRoutes() {
+  const location = useLocation()
+
+  return (
+    <AnimatePresence mode="wait">
+      <Routes location={location} key={location.pathname}>
+        <Route path="/" element={<PageTransition><LandingPage /></PageTransition>} />
+        <Route path="/about" element={<PageTransition><About /></PageTransition>} />
+        <Route path="/contact" element={<PageTransition><Contact /></PageTransition>} />
+        <Route path="/healthy-foods" element={<PageTransition><HealthyFoods /></PageTransition>} />
+        <Route path="/workouts" element={<PageTransition><Workouts /></PageTransition>} />
+        <Route path="/bmi-calculator" element={<PageTransition><BMICalculator /></PageTransition>} />
+        <Route path="/login" element={<PageTransition><Login /></PageTransition>} />
+        <Route path="/register" element={<PageTransition><Register /></PageTransition>} />
+        <Route
+          path="/dashboard"
+          element={
+            <ProtectedRoute>
+              <AuthenticatedLayout>
+                <PageTransition>
+                  <Dashboard />
+                </PageTransition>
+              </AuthenticatedLayout>
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/profile"
+          element={
+            <ProtectedRoute>
+              <AuthenticatedLayout>
+                <PageTransition>
+                  <Profile />
+                </PageTransition>
+              </AuthenticatedLayout>
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/analyze"
+          element={
+            <ProtectedRoute>
+              <AuthenticatedLayout>
+                <PageTransition>
+                  <ImageAnalysis />
+                </PageTransition>
+              </AuthenticatedLayout>
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/meal-plan"
+          element={
+            <ProtectedRoute>
+              <AuthenticatedLayout>
+                <PageTransition>
+                  <MealPlanDetail />
+                </PageTransition>
+              </AuthenticatedLayout>
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/workout-tracker"
+          element={
+            <ProtectedRoute>
+              <AuthenticatedLayout>
+                <PageTransition>
+                  <WorkoutTracker />
+                </PageTransition>
+              </AuthenticatedLayout>
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/meal-diary"
+          element={
+            <ProtectedRoute>
+              <AuthenticatedLayout>
+                <PageTransition>
+                  <MealDiary />
+                </PageTransition>
+              </AuthenticatedLayout>
+            </ProtectedRoute>
+          }
+        />
+        <Route path="/admin" element={<Navigate to="/admin/users" replace />} />
+        <Route
+          path="/admin/users"
+          element={
+            <AdminRoute>
+              <AdminLayout>
+                <PageTransition>
+                  <AdminUsers />
+                </PageTransition>
+              </AdminLayout>
+            </AdminRoute>
+          }
+        />
+        <Route
+          path="/admin/foods"
+          element={
+            <AdminRoute>
+              <AdminLayout>
+                <PageTransition>
+                  <AdminFoods />
+                </PageTransition>
+              </AdminLayout>
+            </AdminRoute>
+          }
+        />
+        <Route
+          path="/admin/exercises"
+          element={
+            <AdminRoute>
+              <AdminLayout>
+                <PageTransition>
+                  <AdminExercises />
+                </PageTransition>
+              </AdminLayout>
+            </AdminRoute>
+          }
+        />
+        <Route
+          path="/admin/body-types"
+          element={
+            <AdminRoute>
+              <AdminLayout>
+                <PageTransition>
+                  <AdminBodyTypes />
+                </PageTransition>
+              </AdminLayout>
+            </AdminRoute>
+          }
+        />
+        <Route
+          path="/admin/bmi-categories"
+          element={
+            <AdminRoute>
+              <AdminLayout>
+                <PageTransition>
+                  <AdminBmiCategories />
+                </PageTransition>
+              </AdminLayout>
+            </AdminRoute>
+          }
+        />
+      </Routes>
+    </AnimatePresence>
+  )
+}
+
 function App() {
   return (
     <NotificationProvider>
       <AuthProvider>
         <BrowserRouter>
-          <PublicLayout>
-            <Routes>
-              <Route path="/" element={<LandingPage />} />
-              <Route path="/about" element={<About />} />
-              <Route path="/contact" element={<Contact />} />
-              <Route path="/healthy-foods" element={<HealthyFoods />} />
-              <Route path="/workouts" element={<Workouts />} />
-              <Route path="/bmi-calculator" element={<BMICalculator />} />
-              <Route path="/login" element={<Login />} />
-              <Route path="/register" element={<Register />} />
-              <Route
-                path="/dashboard"
-                element={
-                  <ProtectedRoute>
-                    <AuthenticatedLayout>
-                      <Dashboard />
-                    </AuthenticatedLayout>
-                  </ProtectedRoute>
-                }
-              />
-              <Route
-                path="/profile"
-                element={
-                  <ProtectedRoute>
-                    <AuthenticatedLayout>
-                      <Profile />
-                    </AuthenticatedLayout>
-                  </ProtectedRoute>
-                }
-              />
-              <Route
-                path="/analyze"
-                element={
-                  <ProtectedRoute>
-                    <AuthenticatedLayout>
-                      <ImageAnalysis />
-                    </AuthenticatedLayout>
-                  </ProtectedRoute>
-                }
-              />
-              <Route
-                path="/meal-plan"
-                element={
-                  <ProtectedRoute>
-                    <AuthenticatedLayout>
-                      <MealPlanDetail />
-                    </AuthenticatedLayout>
-                  </ProtectedRoute>
-                }
-              />
-              <Route
-                path="/workout-tracker"
-                element={
-                  <ProtectedRoute>
-                    <AuthenticatedLayout>
-                      <WorkoutTracker />
-                    </AuthenticatedLayout>
-                  </ProtectedRoute>
-                }
-              />
-              <Route
-                path="/meal-diary"
-                element={
-                  <ProtectedRoute>
-                    <AuthenticatedLayout>
-                      <MealDiary />
-                    </AuthenticatedLayout>
-                  </ProtectedRoute>
-                }
-              />
-              <Route path="/admin" element={<Navigate to="/admin/users" replace />} />
-              <Route
-                path="/admin/users"
-                element={
-                  <AdminRoute>
-                    <AdminLayout>
-                      <AdminUsers />
-                    </AdminLayout>
-                  </AdminRoute>
-                }
-              />
-              <Route
-                path="/admin/foods"
-                element={
-                  <AdminRoute>
-                    <AdminLayout>
-                      <AdminFoods />
-                    </AdminLayout>
-                  </AdminRoute>
-                }
-              />
-              <Route
-                path="/admin/exercises"
-                element={
-                  <AdminRoute>
-                    <AdminLayout>
-                      <AdminExercises />
-                    </AdminLayout>
-                  </AdminRoute>
-                }
-              />
-              <Route
-                path="/admin/body-types"
-                element={
-                  <AdminRoute>
-                    <AdminLayout>
-                      <AdminBodyTypes />
-                    </AdminLayout>
-                  </AdminRoute>
-                }
-              />
-              <Route
-                path="/admin/bmi-categories"
-                element={
-                  <AdminRoute>
-                    <AdminLayout>
-                      <AdminBmiCategories />
-                    </AdminLayout>
-                  </AdminRoute>
-                }
-              />
-            </Routes>
-          </PublicLayout>
+          <MotionConfig reducedMotion="user">
+            <PublicLayout>
+              <AnimatedRoutes />
+            </PublicLayout>
+          </MotionConfig>
         </BrowserRouter>
       </AuthProvider>
     </NotificationProvider>
