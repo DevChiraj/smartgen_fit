@@ -27,6 +27,9 @@ class User(db.Model, TimestampMixin):
     recommendations = db.relationship(
         "UserRecommendation", back_populates="user", cascade="all, delete-orphan"
     )
+    workout_logs = db.relationship(
+        "WorkoutLog", back_populates="user", cascade="all, delete-orphan"
+    )
 
     def __repr__(self) -> str:
         return f"<User {self.username}>"

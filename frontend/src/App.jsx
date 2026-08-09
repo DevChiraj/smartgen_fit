@@ -18,6 +18,7 @@ import ImageAnalysis from './pages/ImageAnalysis'
 import HealthyFoods from './pages/HealthyFoods'
 import MealPlanDetail from './pages/MealPlanDetail'
 import Workouts from './pages/Workouts'
+import WorkoutTracker from './pages/WorkoutTracker'
 import AdminUsers from './pages/admin/AdminUsers'
 import AdminFoods from './pages/admin/AdminFoods'
 import AdminExercises from './pages/admin/AdminExercises'
@@ -75,6 +76,16 @@ function App() {
                   <ProtectedRoute>
                     <AuthenticatedLayout>
                       <MealPlanDetail />
+                    </AuthenticatedLayout>
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/workout-tracker"
+                element={
+                  <ProtectedRoute>
+                    <AuthenticatedLayout>
+                      <WorkoutTracker />
                     </AuthenticatedLayout>
                   </ProtectedRoute>
                 }
