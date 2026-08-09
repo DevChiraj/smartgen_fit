@@ -27,3 +27,9 @@ def get_history_for_user(user_id: int) -> list[WorkoutLog]:
 def get_most_recent_log_date(user_id: int) -> date | None:
     log = WorkoutLog.query.filter_by(user_id=user_id).order_by(WorkoutLog.log_date.desc()).first()
     return log.log_date if log else None
+
+
+def get_for_user_since(user_id: int, since: date) -> list[WorkoutLog]:
+    return WorkoutLog.query.filter(
+        WorkoutLog.user_id == user_id, WorkoutLog.log_date >= since
+    ).all()

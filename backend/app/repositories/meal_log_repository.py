@@ -40,3 +40,7 @@ def get_meal_types_for_date(user_id: int, log_date: date) -> set[str]:
         .all()
     )
     return {row[0] for row in rows}
+
+
+def get_for_user_since(user_id: int, since: date) -> list[MealLog]:
+    return MealLog.query.filter(MealLog.user_id == user_id, MealLog.log_date >= since).all()
