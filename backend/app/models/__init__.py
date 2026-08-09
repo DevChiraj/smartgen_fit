@@ -11,6 +11,7 @@ from app.models.meal_recommendation_record import MealRecommendationRecord
 from app.models.sri_lankan_food import SriLankanFood
 from app.models.user import User
 from app.models.user_recommendation import UserRecommendation
+from app.models.workout_log import WorkoutLog
 from app.models.workout_plan import WorkoutPlan
 from app.models.workout_recommendation_record import WorkoutRecommendationRecord
 
@@ -26,6 +27,7 @@ __all__ = [
     "SriLankanFood",
     "User",
     "UserRecommendation",
+    "WorkoutLog",
     "WorkoutPlan",
     "WorkoutRecommendationRecord",
 ]

@@ -28,6 +28,11 @@ export default function AuthenticatedLayout({ children }) {
             My Meal Plan
           </NavLink>
         </li>
+        <li className="nav-item">
+          <NavLink className="nav-link" to="/workout-tracker">
+            Workout Tracker
+          </NavLink>
+        </li>
         {user?.role === 'admin' && (
           <li className="nav-item">
             <NavLink className="nav-link" to="/admin">

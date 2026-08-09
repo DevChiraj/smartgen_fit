@@ -53,5 +53,9 @@ SWAGGER_TEMPLATE = {
         {"name": "Foods", "description": "Public Sri Lankan food/nutrition reference data"},
         {"name": "Exercises", "description": "Public exercise reference library"},
         {"name": "Admin", "description": "Admin-only management (role=admin required)"},
+        {
+            "name": "Workout Logs",
+            "description": "The user's real logged history of completed workouts",
+        },
     ],
 }
