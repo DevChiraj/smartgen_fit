@@ -1,0 +1,84 @@
+tags:
+  - Reports
+summary: Get the aggregated data behind the Weekly Health Report PDF
+description: >
+  Read-only aggregation of the user's own real data - profile, BMI (from
+  height/weight on file), latest body-type scan, latest matched meal/workout
+  plan, and the last 7 days' logged calories consumed (meal_logs) vs burned
+  (workout_logs). Nothing is generated or model-authored; the PDF is built
+  client-side from this payload.
+security:
+  - BearerAuth: []
+responses:
+  200:
+    description: Weekly report data
+    schema:
+      type: object
+      properties:
+        report:
+          type: object
+          properties:
+            user:
+              type: object
+              properties:
+                full_name:
+                  type: string
+                age:
+                  type: integer
+                gender:
+                  type: string
+                phone_number:
+                  type: string
+                height_cm:
+                  type: string
+                weight_kg:
+                  type: string
+            bmi_value:
+              type: string
+              example: "22.5"
+            bmi_category:
+              type: object
+              properties:
+                category_name:
+                  type: string
+                min_bmi:
+                  type: string
+                max_bmi:
+                  type: string
+            latest_analysis:
+              type: object
+              properties:
+                confidence_score:
+                  type: string
+                created_at:
+                  type: string
+                  format: date-time
+                predicted_body_type:
+                  type: object
+                  properties:
+                    name:
+                      type: string
+            recommendation:
+              type: object
+              description: Same shape as GET /recommendations/latest
+            totals:
+              type: object
+              properties:
+                start_date:
+                  type: string
+                  format: date
+                end_date:
+                  type: string
+                  format: date
+                calories_consumed:
+                  type: integer
+                calories_burned:
+                  type: integer
+                workouts_logged:
+                  type: integer
+                meals_logged:
+                  type: integer
+                protein_g:
+                  type: string
+  401:
+    description: Missing/invalid/expired access token

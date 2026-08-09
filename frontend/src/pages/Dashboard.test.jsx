@@ -1,14 +1,23 @@
 import { render, screen } from '@testing-library/react'
+import userEvent from '@testing-library/user-event'
 import { MemoryRouter } from 'react-router-dom'
 import { beforeEach, expect, it, vi } from 'vitest'
 import Dashboard from './Dashboard'
 import { useAuth } from '../context/AuthContext'
+import { useNotifications } from '../context/NotificationContext'
 import { calculateBmi } from '../services/bmiService'
 import { getLatestRecommendation } from '../services/recommendationService'
+import { getWeeklyReport } from '../services/reportService'
+import { generateWeeklyReportPdf } from '../utils/weeklyReportPdf'
 
 vi.mock('../context/AuthContext')
+vi.mock('../context/NotificationContext')
 vi.mock('../services/bmiService')
 vi.mock('../services/recommendationService')
+vi.mock('../services/reportService')
+vi.mock('../utils/weeklyReportPdf')
+
+const showToast = vi.fn()
 
 function renderDashboard() {
   return render(
@@ -21,6 +30,7 @@ function renderDashboard() {
 beforeEach(() => {
   vi.resetAllMocks()
   getLatestRecommendation.mockResolvedValue({ recommendation: null })
+  useNotifications.mockReturnValue({ showToast })
 })
 
 it('renders nothing when there is no logged-in user', () => {
@@ -99,4 +109,32 @@ it('shows the full matched meal and workout plan when a recommendation exists', 
   expect(screen.getByText('Cycling')).toBeInTheDocument()
   expect(screen.getByText(/1900 kcal/)).toBeInTheDocument()
   expect(screen.getByText('View full plan')).toBeInTheDocument()
+})
+
+it('generates and downloads the weekly report PDF when clicked', async () => {
+  const user = userEvent.setup()
+  useAuth.mockReturnValue({ user: { full_name: 'Jane', username: 'jane', age: 28, gender: 'female' } })
+  const report = { user: { full_name: 'Jane' }, totals: { calories_consumed: 0 } }
+  getWeeklyReport.mockResolvedValue({ report })
+  renderDashboard()
+
+  await user.click(screen.getByRole('button', { name: /download weekly report/i }))
+
+  expect(await screen.findByRole('button', { name: /download weekly report/i })).toBeInTheDocument()
+  expect(getWeeklyReport).toHaveBeenCalled()
+  expect(generateWeeklyReportPdf).toHaveBeenCalledWith(report)
+  expect(showToast).toHaveBeenCalledWith('Weekly report downloaded!', 'success')
+})
+
+it('shows an error toast when the weekly report fails to generate', async () => {
+  const user = userEvent.setup()
+  useAuth.mockReturnValue({ user: { full_name: 'Jane', username: 'jane', age: 28, gender: 'female' } })
+  getWeeklyReport.mockRejectedValue({ response: { data: { message: 'Server error.' } } })
+  renderDashboard()
+
+  await user.click(screen.getByRole('button', { name: /download weekly report/i }))
+
+  await screen.findByRole('button', { name: /download weekly report/i })
+  expect(showToast).toHaveBeenCalledWith('Server error.', 'danger')
+  expect(generateWeeklyReportPdf).not.toHaveBeenCalled()
 })

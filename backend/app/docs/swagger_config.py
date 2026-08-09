@@ -68,5 +68,9 @@ SWAGGER_TEMPLATE = {
                 "workout/meal data - never model-generated"
             ),
         },
+        {
+            "name": "Reports",
+            "description": "Aggregated data for the client-generated Weekly Health Report PDF",
+        },
     ],
 }

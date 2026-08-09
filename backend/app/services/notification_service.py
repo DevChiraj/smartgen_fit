@@ -9,13 +9,18 @@ today's remaining meals still have time to be logged. Checking a day that
 has fully elapsed avoids flagging a meal the user simply hasn't gotten to
 yet. Today's protein check instead uses "so far" language, which stays
 true regardless of what time it is.
+
+"Today" here is the server's local date (`date.today()`), matching the
+same default every log_date falls back to elsewhere (workout_log_service,
+meal_log_service, weekly_report_service) - using a different time
+reference here (e.g. UTC) would silently misalign with what a log actually
+got dated, most visibly for users in timezones far from the server's.
 """
 
-from datetime import timedelta
+from datetime import date, datetime, timedelta, timezone
 from decimal import Decimal
 
 from app.models import User
-from app.models.mixins import utcnow
 from app.repositories import meal_log_repository, workout_log_repository
 
 EXERCISE_INACTIVITY_THRESHOLD_DAYS = 3
@@ -25,11 +30,19 @@ CORE_MEAL_TYPES = ("breakfast", "lunch", "dinner")
 
 
 def _exercise_inactivity_alert(user: User, today):
-    reference_date = workout_log_repository.get_most_recent_log_date(user.user_id)
-    if reference_date is None:
-        reference_date = user.created_at.date()
+    most_recent_log_date = workout_log_repository.get_most_recent_log_date(user.user_id)
+    if most_recent_log_date is not None:
+        days_inactive = (today - most_recent_log_date).days
+    else:
+        # No log_date to compare against yet - fall back to account age.
+        # user.created_at is stored in UTC (see app.models.mixins.utcnow),
+        # so this is computed as a UTC-to-UTC datetime difference rather
+        # than mixed with the caller's local `today`, which would silently
+        # drift by a day right around local midnight in timezones far from
+        # the server's.
+        created_at_utc = user.created_at.replace(tzinfo=timezone.utc)
+        days_inactive = (datetime.now(timezone.utc) - created_at_utc).days
 
-    days_inactive = (today - reference_date).days
     if days_inactive >= EXERCISE_INACTIVITY_THRESHOLD_DAYS:
         return {
             "type": "exercise_inactivity",
@@ -84,7 +97,7 @@ def _low_protein_alert(user: User, today):
 
 
 def get_notifications(user: User) -> list[dict]:
-    today = utcnow().date()
+    today = date.today()
     alerts = []
 
     exercise_alert = _exercise_inactivity_alert(user, today)

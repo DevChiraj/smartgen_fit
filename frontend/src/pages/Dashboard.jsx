@@ -1,10 +1,14 @@
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
+import { useNotifications } from '../context/NotificationContext'
 import { API_ORIGIN } from '../services/apiClient'
 import { calculateBmi } from '../services/bmiService'
 import { getLatestRecommendation } from '../services/recommendationService'
 import { getAnalysisHistory } from '../services/imageAnalysisService'
+import { getWeeklyReport } from '../services/reportService'
+import { generateWeeklyReportPdf } from '../utils/weeklyReportPdf'
+import { formatApiError } from '../utils/formatApiError'
 import AnalysisHistoryChart from '../components/AnalysisHistoryChart'
 
 const CATEGORY_VARIANT = {
@@ -22,11 +26,13 @@ const BODY_TYPE_VARIANT = {
 
 export default function Dashboard() {
   const { user } = useAuth()
+  const { showToast } = useNotifications()
   const [bmiResult, setBmiResult] = useState(null)
   const [bmiError, setBmiError] = useState('')
   const [recommendation, setRecommendation] = useState(null)
   const [isLoadingRecommendation, setIsLoadingRecommendation] = useState(true)
   const [analysisHistory, setAnalysisHistory] = useState([])
+  const [isGeneratingReport, setIsGeneratingReport] = useState(false)
 
   useEffect(() => {
     if (!user?.height_cm || !user?.weight_kg) return
@@ -46,6 +52,19 @@ export default function Dashboard() {
       .then((data) => setAnalysisHistory(data.history || []))
       .catch(() => setAnalysisHistory([]))
   }, [])
+
+  const handleDownloadReport = async () => {
+    setIsGeneratingReport(true)
+    try {
+      const data = await getWeeklyReport()
+      generateWeeklyReportPdf(data.report)
+      showToast('Weekly report downloaded!', 'success')
+    } catch (err) {
+      showToast(formatApiError(err, 'Could not generate your weekly report.'), 'danger')
+    } finally {
+      setIsGeneratingReport(false)
+    }
+  }
 
   if (!user) {
     return null
@@ -273,6 +292,16 @@ export default function Dashboard() {
               <Link to="/meal-diary" className="btn btn-outline-primary w-100 h-100">
                 Log a meal
               </Link>
+            </div>
+            <div className="col-sm-6 col-lg-4">
+              <button
+                type="button"
+                className="btn btn-outline-primary w-100 h-100"
+                onClick={handleDownloadReport}
+                disabled={isGeneratingReport}
+              >
+                {isGeneratingReport ? 'Generating...' : 'Download weekly report'}
+              </button>
             </div>
           </div>
         </div>
