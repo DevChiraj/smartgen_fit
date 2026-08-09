@@ -33,6 +33,11 @@ export default function AuthenticatedLayout({ children }) {
             Workout Tracker
           </NavLink>
         </li>
+        <li className="nav-item">
+          <NavLink className="nav-link" to="/meal-diary">
+            Meal Diary
+          </NavLink>
+        </li>
         {user?.role === 'admin' && (
           <li className="nav-item">
             <NavLink className="nav-link" to="/admin">

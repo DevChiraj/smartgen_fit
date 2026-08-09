@@ -6,6 +6,7 @@ from app.models.bmi_category import BMICategory
 from app.models.body_type_category import BodyTypeCategory
 from app.models.exercise import Exercise
 from app.models.image_analysis_record import ImageAnalysisRecord
+from app.models.meal_log import MealLog
 from app.models.meal_plan import MealPlan
 from app.models.meal_recommendation_record import MealRecommendationRecord
 from app.models.sri_lankan_food import SriLankanFood
@@ -22,6 +23,7 @@ __all__ = [
     "BodyTypeCategory",
     "Exercise",
     "ImageAnalysisRecord",
+    "MealLog",
     "MealPlan",
     "MealRecommendationRecord",
     "SriLankanFood",
