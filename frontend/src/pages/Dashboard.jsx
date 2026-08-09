@@ -269,6 +269,11 @@ export default function Dashboard() {
                 Log a workout
               </Link>
             </div>
+            <div className="col-sm-6 col-lg-4">
+              <Link to="/meal-diary" className="btn btn-outline-primary w-100 h-100">
+                Log a meal
+              </Link>
+            </div>
           </div>
         </div>
       </div>

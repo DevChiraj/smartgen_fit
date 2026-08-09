@@ -1,0 +1,84 @@
+tags:
+  - Meal Logs
+summary: Log a meal entry against a real food
+description: >
+  Ties the log entry to a real sri_lankan_foods row (no free-text food
+  names). calories and protein_g are always derived server-side from that
+  food's nutrition data times quantity_servings - not client-settable. If
+  log_date is omitted, it defaults to today.
+security:
+  - BearerAuth: []
+consumes:
+  - application/json
+parameters:
+  - in: body
+    name: body
+    required: true
+    schema:
+      type: object
+      required: [food_id, meal_type]
+      properties:
+        food_id:
+          type: integer
+        meal_type:
+          type: string
+          enum: [breakfast, morning_snack, lunch, evening_snack, dinner]
+        log_date:
+          type: string
+          format: date
+          example: "2026-08-09"
+        quantity_servings:
+          type: number
+          minimum: 0.1
+          maximum: 20
+          default: 1
+        notes:
+          type: string
+          maxLength: 255
+responses:
+  201:
+    description: Logged
+    schema:
+      type: object
+      properties:
+        log:
+          $ref: '#/definitions/MealLog'
+  400:
+    description: Missing/invalid fields
+  401:
+    description: Missing/invalid/expired access token
+  404:
+    description: No food with that id
+definitions:
+  MealLog:
+    type: object
+    properties:
+      log_id:
+        type: integer
+      meal_type:
+        type: string
+      log_date:
+        type: string
+        format: date
+      quantity_servings:
+        type: string
+        example: "1.00"
+      calories:
+        type: integer
+      protein_g:
+        type: string
+        example: "12.50"
+      notes:
+        type: string
+      created_at:
+        type: string
+        format: date-time
+      food:
+        type: object
+        properties:
+          food_id:
+            type: integer
+          food_name:
+            type: string
+          category:
+            type: string

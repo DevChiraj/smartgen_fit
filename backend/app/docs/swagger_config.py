@@ -57,5 +57,9 @@ SWAGGER_TEMPLATE = {
             "name": "Workout Logs",
             "description": "The user's real logged history of completed workouts",
         },
+        {
+            "name": "Meal Logs",
+            "description": "The user's real food diary - logged meals against real nutrition data",
+        },
     ],
 }
