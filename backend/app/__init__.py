@@ -44,6 +44,7 @@ def create_app(config_name: str | None = None) -> Flask:
     from app.routes.admin import admin_bp
     from app.routes.workout_logs import workout_logs_bp
     from app.routes.meal_logs import meal_logs_bp
+    from app.routes.notifications import notifications_bp
 
     app.register_blueprint(health_bp)
     app.register_blueprint(auth_bp)
@@ -56,6 +57,7 @@ def create_app(config_name: str | None = None) -> Flask:
     app.register_blueprint(admin_bp)
     app.register_blueprint(workout_logs_bp)
     app.register_blueprint(meal_logs_bp)
+    app.register_blueprint(notifications_bp)
 
     from app.seed import register_seed_command
     from app.seed_recommendation_data import register_seed_recommendation_command
