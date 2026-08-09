@@ -8,6 +8,8 @@ Read this file, `SYSTEM.md`, and `README.md` at the start of every session, in t
 
 **Standing heads-up (MySQL engine):** the local dev MySQL server has `default_storage_engine = MyISAM` (server-level, non-standard) instead of InnoDB — discovered and fixed for all *existing* tables in Module 11, but the server default itself was never changed. **Every new migration that creates a table must pass `mysql_engine='InnoDB'` explicitly to `op.create_table(...)`** (see Module 13's `f2895c49193b_add_exercises_table.py` for the pattern), or the new table silently gets MyISAM again — no foreign keys, no transaction rollback. Check this on every future migration until the server config itself is fixed.
 
+**Standing heads-up (exercise demo GIFs):** the 37 files in `frontend/public/exercise-gifs/` have **unresolved media licensing** — sourced from a community GitHub backup of a Kaggle dataset whose own README disclaims ownership of the actual GIF content ("I do not own any of the content... all rights belong to the original creators and dataset owner"). This was the project owner's explicit, informed choice over a fully-clean-but-static-only alternative (wger.de, CC-BY-SA 4.0) — see `documentation/exercise_demo_gifs_sourcing.md` for the full trade-off, matching methodology, and per-exercise provenance table. Fine for this non-commercial academic project; **must be reviewed/replaced before any commercial deployment or redistribution.**
+
 ## Non-negotiable rules
 
 1. **The AI model only classifies body images** (Thin/Normal/Overweight). It must never generate meal plans, workouts, calories, or health advice, and the code path must never let it. `RecommendationService` and `ai_model/` stay decoupled — label in, plan out, nothing shared.

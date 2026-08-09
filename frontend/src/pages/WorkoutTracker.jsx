@@ -4,6 +4,7 @@ import { useNotifications } from '../context/NotificationContext'
 import { getExercises } from '../services/exerciseService'
 import { getWorkoutLogHistory, logWorkout } from '../services/workoutLogService'
 import { formatApiError } from '../utils/formatApiError'
+import ExerciseDemoGif from '../components/ExerciseDemoGif'
 
 function todayIsoDate() {
   return new Date().toISOString().slice(0, 10)
@@ -122,6 +123,13 @@ export default function WorkoutTracker() {
                     ))}
                   </select>
                 </div>
+                {selectedExercise && (
+                  <ExerciseDemoGif
+                    exerciseId={selectedExercise.exercise_id}
+                    alt={`How to perform ${selectedExercise.exercise_name}`}
+                    className="mb-3"
+                  />
+                )}
                 <div className="mb-3">
                   <label className="form-label" htmlFor="log_date">
                     Date

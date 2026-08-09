@@ -829,3 +829,32 @@ h6,
     animation: none;
   }
 }
+
+/* ==========================================================================
+   Exercise demo GIFs - real sourced content (see
+   documentation/exercise_demo_gifs_sourcing.md for provenance), not every
+   exercise has one, so the placeholder state is a normal, expected outcome.
+   ========================================================================== */
+.exercise-demo-gif {
+  display: block;
+  width: 100%;
+  max-width: 260px;
+  margin-inline: auto;
+  border-radius: 0.75rem;
+  border: 1px solid var(--bs-border-color);
+  background: #050506;
+}
+.exercise-demo-gif-placeholder {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  max-width: 260px;
+  height: 140px;
+  margin-inline: auto;
+  border-radius: 0.75rem;
+  border: 1px dashed var(--bs-border-color);
+  background: rgba(255, 255, 255, 0.02);
+  text-align: center;
+  padding: 0.5rem;
+}
