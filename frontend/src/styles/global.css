@@ -737,3 +737,95 @@ h6,
     animation: none;
   }
 }
+
+/* ==========================================================================
+   In-app reminder banners (daily workout / hydration nudges). Each banner
+   is wrapped in a grid-rows collapse container so dismissal smoothly
+   shrinks the row to 0fr instead of an abrupt layout jump, while the inner
+   card independently fades + slides on both entrance and exit. See
+   ReminderBanners.jsx for the two-phase dismiss (exit class first, actual
+   removal from state after the transition finishes).
+   ========================================================================== */
+.reminder-banner-stack {
+  margin-bottom: 1.5rem;
+}
+.reminder-banner-item {
+  display: grid;
+  grid-template-rows: 1fr;
+  margin-bottom: 0.6rem;
+  transition:
+    grid-template-rows 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+    margin-bottom 0.3s ease;
+}
+.reminder-banner-item:last-child {
+  margin-bottom: 0;
+}
+.reminder-banner-item.is-exiting {
+  grid-template-rows: 0fr;
+  margin-bottom: 0;
+}
+.reminder-banner {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+  min-height: 0;
+  overflow: hidden;
+  padding: 0.85rem 1.1rem;
+  border-radius: 0.75rem;
+  background: rgba(255, 90, 31, 0.08);
+  border: 1px solid rgba(255, 90, 31, 0.32);
+  animation: sgf-banner-in 0.32s cubic-bezier(0.16, 1, 0.3, 1) both;
+  transition:
+    opacity 0.22s ease,
+    transform 0.22s ease;
+}
+.is-exiting .reminder-banner {
+  opacity: 0;
+  transform: translateY(-6px);
+}
+@keyframes sgf-banner-in {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+.reminder-banner-icon {
+  color: var(--sgf-orange);
+  flex-shrink: 0;
+}
+.reminder-banner-message {
+  flex: 1;
+}
+.reminder-banner-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  flex-shrink: 0;
+}
+.reminder-banner-close {
+  background: none;
+  border: none;
+  color: var(--bs-secondary-color);
+  font-size: 1.1rem;
+  line-height: 1;
+  padding: 0 0.15rem;
+}
+.reminder-banner-close:hover {
+  color: #fff;
+}
+@media (max-width: 576px) {
+  .reminder-banner {
+    flex-wrap: wrap;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .reminder-banner-item,
+  .reminder-banner {
+    transition: none;
+    animation: none;
+  }
+}

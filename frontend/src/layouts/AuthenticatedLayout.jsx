@@ -1,6 +1,7 @@
 import PropTypes from 'prop-types'
 import { NavLink } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
+import ReminderBanners from '../components/ReminderBanners'
 
 export default function AuthenticatedLayout({ children }) {
   const { user } = useAuth()
@@ -46,6 +47,7 @@ export default function AuthenticatedLayout({ children }) {
           </li>
         )}
       </ul>
+      <ReminderBanners />
       {children}
     </div>
   )
