@@ -2,11 +2,16 @@ import { Link } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 import FloatingIcons from '../components/FloatingIcons'
 import heroBg from '../assets/hero-bg.png'
+import bodyTypeAnalysisImg from '../assets/feature-body-type-analysis.jpg'
+import sriLankanMealPlansImg from '../assets/feature-sri-lankan-meal-plans.jpg'
+import workoutPlansImg from '../assets/feature-workout-plans.jpg'
+import bmiTrackingImg from '../assets/feature-bmi-tracking.png'
 
 const FEATURES = [
   {
     title: 'Body Type Analysis',
     description: 'Image-based classification powered by a trained CNN.',
+    image: bodyTypeAnalysisImg,
     icon: (
       <svg
         width="24"
@@ -24,6 +29,7 @@ const FEATURES = [
   {
     title: 'Sri Lankan Meal Plans',
     description: 'Nutrition guidance built around local, familiar foods.',
+    image: sriLankanMealPlansImg,
     icon: (
       <svg
         width="24"
@@ -41,6 +47,7 @@ const FEATURES = [
   {
     title: 'Workout Plans',
     description: 'Routines matched to your body type, BMI, and age group.',
+    image: workoutPlansImg,
     icon: (
       <svg
         width="24"
@@ -58,6 +65,7 @@ const FEATURES = [
   {
     title: 'BMI Tracking',
     description: 'Calculate and track your BMI category over time.',
+    image: bmiTrackingImg,
     icon: (
       <svg
         width="24"
@@ -136,7 +144,10 @@ export default function LandingPage() {
               key={feature.title}
               style={{ '--animate-delay': `${index * 90}ms` }}
             >
-              <div className="card feature-card card-interactive h-100">
+              <div
+                className="card feature-card feature-card-photo card-interactive h-100"
+                style={{ backgroundImage: `url(${feature.image})` }}
+              >
                 <div className="card-body">
                   <span className="icon-badge mb-3">{feature.icon}</span>
                   <h3 className="h6 fw-bold">{feature.title}</h3>
