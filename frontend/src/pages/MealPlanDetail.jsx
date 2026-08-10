@@ -49,11 +49,6 @@ export default function MealPlanDetail() {
           {recommendation.body_type?.name} &middot; BMI {recommendation.bmi_value}
         </span>
       </div>
-      <p className="text-muted">
-        Matched from a real dataset of similar people (age, gender, and predicted body type) using
-        a K-Nearest-Neighbors model &mdash; not generated. Looking for ingredient nutrition facts?
-        Check <Link to="/healthy-foods">Healthy Foods</Link>.
-      </p>
 
       <div className="row g-4 mt-1">
         <div className="col-md-6">
