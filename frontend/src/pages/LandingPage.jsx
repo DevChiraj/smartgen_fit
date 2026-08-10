@@ -12,73 +12,21 @@ const FEATURES = [
     title: 'Body Type Analysis',
     description: 'Image-based classification powered by a trained CNN.',
     image: bodyTypeAnalysisImg,
-    icon: (
-      <svg
-        width="24"
-        height="24"
-        viewBox="0 0 24 24"
-        fill="none"
-        stroke="currentColor"
-        strokeWidth="2"
-      >
-        <circle cx="12" cy="8" r="4" />
-        <path d="M4 21c0-4.4 3.6-8 8-8s8 3.6 8 8" />
-      </svg>
-    ),
   },
   {
     title: 'Sri Lankan Meal Plans',
     description: 'Nutrition guidance built around local, familiar foods.',
     image: sriLankanMealPlansImg,
-    icon: (
-      <svg
-        width="24"
-        height="24"
-        viewBox="0 0 24 24"
-        fill="none"
-        stroke="currentColor"
-        strokeWidth="2"
-      >
-        <path d="M18 8a6 6 0 0 1-12 0" />
-        <path d="M4 8h16l-1.5 12a2 2 0 0 1-2 2h-9a2 2 0 0 1-2-2L4 8Z" />
-      </svg>
-    ),
   },
   {
     title: 'Workout Plans',
     description: 'Routines matched to your body type, BMI, and age group.',
     image: workoutPlansImg,
-    icon: (
-      <svg
-        width="24"
-        height="24"
-        viewBox="0 0 24 24"
-        fill="none"
-        stroke="currentColor"
-        strokeWidth="2"
-      >
-        <path d="M6.5 6.5 17.5 17.5" />
-        <path d="m17 5 2 2M5 17l2 2M4 10l6-6M20 14l-6 6" />
-      </svg>
-    ),
   },
   {
     title: 'BMI Tracking',
     description: 'Calculate and track your BMI category over time.',
     image: bmiTrackingImg,
-    icon: (
-      <svg
-        width="24"
-        height="24"
-        viewBox="0 0 24 24"
-        fill="none"
-        stroke="currentColor"
-        strokeWidth="2"
-      >
-        <path d="M3 3v18h18" />
-        <path d="M7 15l4-4 3 3 5-6" />
-      </svg>
-    ),
   },
 ]
 
@@ -137,22 +85,16 @@ export default function LandingPage() {
           <span className="hero-badge mb-3">What you get</span>
           <h2 className="fw-bold mt-3">Everything matched to you</h2>
         </div>
-        <div className="row g-4">
-          {FEATURES.map((feature, index) => (
+        <div className="feature-gallery animate-in">
+          {FEATURES.map((feature) => (
             <div
-              className="col-md-3 col-sm-6 animate-in"
+              className="feature-gallery-item"
               key={feature.title}
-              style={{ '--animate-delay': `${index * 90}ms` }}
+              style={{ backgroundImage: `url(${feature.image})` }}
             >
-              <div
-                className="card feature-card feature-card-photo card-interactive h-100"
-                style={{ backgroundImage: `url(${feature.image})` }}
-              >
-                <div className="card-body">
-                  <span className="icon-badge mb-3">{feature.icon}</span>
-                  <h3 className="h6 fw-bold">{feature.title}</h3>
-                  <p className="card-text text-secondary small mb-0">{feature.description}</p>
-                </div>
+              <div className="feature-gallery-content">
+                <h3 className="feature-gallery-title">{feature.title}</h3>
+                <p className="feature-gallery-description">{feature.description}</p>
               </div>
             </div>
           ))}

@@ -255,62 +255,92 @@ h6,
   letter-spacing: -0.02em;
 }
 
-.feature-card {
-  transition:
-    transform 0.15s ease,
-    border-color 0.15s ease;
-}
-.feature-card:hover {
-  transform: translateY(-4px);
-  border-color: var(--sgf-orange);
-}
-
-/* --- Feature card background photos: bottom-anchored gradient scrim (via
-   ::before, so no extra markup is needed) keeps the caption readable
-   regardless of how bright the underlying photo is. Text is pinned to
-   white unconditionally rather than following --bs-body-color, same
-   reasoning as .hero-section - the photo backdrop doesn't change with
-   [data-bs-theme], so the text color shouldn't either. --- */
-.feature-card-photo {
-  position: relative;
+/* --- Home page feature gallery: horizontal expanding-accordion cards.
+   Equal flex-grow by default; hovering one item grows it via flex-grow
+   (not width, so the transition stays smooth and layout-safe) while its
+   siblings' flex-grow stays at 1, letting the flexbox algorithm shrink
+   them proportionally - no JS state needed. Photo backdrop doesn't
+   change with the dark/light toggle, so title/description are pinned to
+   white unconditionally, same reasoning as .hero-section. --- */
+.feature-gallery {
   display: flex;
-  flex-direction: column;
-  justify-content: flex-end;
-  min-height: 230px;
+  gap: 0.85rem;
+  height: 420px;
+}
+.feature-gallery-item {
+  position: relative;
+  flex: 1 1 0%;
+  min-width: 90px;
+  border-radius: 90px 16px 16px 16px;
   background-size: cover;
   background-position: center;
-  color: #fff;
   overflow: hidden;
+  color: #fff;
+  cursor: pointer;
+  transition: flex-grow 0.55s cubic-bezier(0.4, 0, 0.2, 1);
 }
-.feature-card-photo::before {
+.feature-gallery-item:hover {
+  flex-grow: 7;
+}
+.feature-gallery-item::before {
   content: '';
   position: absolute;
   inset: 0;
   background: linear-gradient(
     180deg,
-    rgba(10, 10, 12, 0.05) 0%,
-    rgba(10, 10, 12, 0.45) 55%,
-    rgba(10, 10, 12, 0.92) 100%
+    rgba(10, 10, 12, 0) 0%,
+    rgba(10, 10, 12, 0.15) 45%,
+    rgba(10, 10, 12, 0.88) 100%
   );
 }
-.feature-card-photo .card-body {
-  position: relative;
+.feature-gallery-content {
+  position: absolute;
+  left: 1.25rem;
+  right: 1.25rem;
+  bottom: 1.25rem;
   z-index: 1;
 }
-.feature-card-photo .text-secondary {
-  color: rgba(255, 255, 255, 0.78) !important;
+.feature-gallery-title {
+  font-size: 1rem;
+  font-weight: 700;
+  line-height: 1.2;
+  margin: 0;
 }
-
-.icon-badge {
-  width: 52px;
-  height: 52px;
-  border-radius: 14px;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  background: rgba(255, 90, 31, 0.12);
-  color: var(--sgf-orange);
-  font-size: 1.4rem;
+.feature-gallery-description {
+  margin: 0.4rem 0 0;
+  font-size: 0.85rem;
+  color: rgba(255, 255, 255, 0.82);
+  opacity: 0;
+  max-height: 0;
+  overflow: hidden;
+  transition:
+    opacity 0.35s ease 0.1s,
+    max-height 0.35s ease;
+}
+.feature-gallery-item:hover .feature-gallery-description {
+  opacity: 1;
+  max-height: 120px;
+}
+@media (max-width: 767.98px) {
+  .feature-gallery {
+    flex-direction: column;
+    height: auto;
+  }
+  .feature-gallery-item {
+    flex: none;
+    width: 100%;
+    height: 190px;
+  }
+  .feature-gallery-item .feature-gallery-description {
+    opacity: 1;
+    max-height: 100px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .feature-gallery-item,
+  .feature-gallery-description {
+    transition: none;
+  }
 }
 
 /* --- Nav links: uppercase, tracked, orange text. !important beats Bootstrap's
