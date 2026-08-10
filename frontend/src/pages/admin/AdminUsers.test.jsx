@@ -17,6 +17,15 @@ const EXISTING_USER = {
   role: 'user',
 }
 
+const SECOND_USER = {
+  user_id: 3,
+  username: 'anotheruser',
+  full_name: 'Someone Else',
+  email: 'someone@example.com',
+  age: 30,
+  role: 'user',
+}
+
 beforeEach(() => {
   vi.resetAllMocks()
   useAuth.mockReturnValue({ user: { user_id: 1, username: 'admin1' } })
@@ -27,6 +36,30 @@ it('lists existing users', async () => {
   render(<AdminUsers />)
 
   expect(await screen.findByText('plainuser')).toBeInTheDocument()
+})
+
+it('filters the user list by full name', async () => {
+  const user = userEvent.setup()
+  getUsers.mockResolvedValue({ users: [EXISTING_USER, SECOND_USER] })
+  render(<AdminUsers />)
+  await screen.findByText('plainuser')
+  expect(screen.getByText('anotheruser')).toBeInTheDocument()
+
+  await user.type(screen.getByPlaceholderText(/search users by name/i), 'Someone')
+
+  expect(screen.queryByText('plainuser')).not.toBeInTheDocument()
+  expect(screen.getByText('anotheruser')).toBeInTheDocument()
+})
+
+it('shows an empty state when no user matches the search', async () => {
+  const user = userEvent.setup()
+  render(<AdminUsers />)
+  await screen.findByText('plainuser')
+
+  await user.type(screen.getByPlaceholderText(/search users by name/i), 'nonexistent')
+
+  expect(screen.queryByText('plainuser')).not.toBeInTheDocument()
+  expect(screen.getByText(/no users match/i)).toBeInTheDocument()
 })
 
 it('opens the Add user modal and creates a new user', async () => {

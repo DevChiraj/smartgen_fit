@@ -2,6 +2,7 @@ import { BrowserRouter, Routes, Route, Navigate, useLocation } from 'react-route
 import { AnimatePresence, MotionConfig } from 'framer-motion'
 import { AuthProvider } from './context/AuthContext'
 import { NotificationProvider } from './context/NotificationContext'
+import { ThemeProvider } from './context/ThemeContext'
 import ProtectedRoute from './components/ProtectedRoute'
 import AdminRoute from './components/AdminRoute'
 import PageTransition from './components/PageTransition'
@@ -182,17 +183,19 @@ function AnimatedRoutes() {
 
 function App() {
   return (
-    <NotificationProvider>
-      <AuthProvider>
-        <BrowserRouter>
-          <MotionConfig reducedMotion="user">
-            <PublicLayout>
-              <AnimatedRoutes />
-            </PublicLayout>
-          </MotionConfig>
-        </BrowserRouter>
-      </AuthProvider>
-    </NotificationProvider>
+    <ThemeProvider>
+      <NotificationProvider>
+        <AuthProvider>
+          <BrowserRouter>
+            <MotionConfig reducedMotion="user">
+              <PublicLayout>
+                <AnimatedRoutes />
+              </PublicLayout>
+            </MotionConfig>
+          </BrowserRouter>
+        </AuthProvider>
+      </NotificationProvider>
+    </ThemeProvider>
   )
 }
 

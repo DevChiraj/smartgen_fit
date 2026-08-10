@@ -22,6 +22,7 @@ export default function AdminUsers() {
   const [showForm, setShowForm] = useState(false)
   const [form, setForm] = useState(EMPTY_FORM)
   const [isSaving, setIsSaving] = useState(false)
+  const [search, setSearch] = useState('')
 
   const fetchUsers = () => {
     return getUsers()
@@ -85,60 +86,81 @@ export default function AdminUsers() {
 
   if (isLoading) return <p className="text-muted">Loading...</p>
 
+  const filteredUsers = users.filter((user) =>
+    user.full_name.toLowerCase().includes(search.trim().toLowerCase()),
+  )
+
   return (
     <div>
       {error && <div className="alert alert-danger">{error}</div>}
 
-      <button type="button" className="btn btn-primary mb-3" onClick={openCreateForm}>
-        Add user
-      </button>
-
-      <div className="table-responsive">
-        <table className="table table-hover align-middle">
-          <thead>
-            <tr>
-              <th>Username</th>
-              <th>Full name</th>
-              <th>Email</th>
-              <th>Age</th>
-              <th>Role</th>
-              <th>Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            {users.map((user) => (
-              <tr key={user.user_id}>
-                <td>{user.username}</td>
-                <td>{user.full_name}</td>
-                <td>{user.email}</td>
-                <td>{user.age}</td>
-                <td>
-                  <select
-                    className="form-select form-select-sm"
-                    style={{ width: 120 }}
-                    value={user.role}
-                    disabled={busyUserId === user.user_id}
-                    onChange={(event) => handleRoleChange(user.user_id, event.target.value)}
-                  >
-                    <option value="user">user</option>
-                    <option value="admin">admin</option>
-                  </select>
-                </td>
-                <td>
-                  <button
-                    type="button"
-                    className="btn btn-outline-danger btn-sm"
-                    disabled={busyUserId === user.user_id || user.user_id === currentUser?.user_id}
-                    onClick={() => handleDelete(user.user_id, user.username)}
-                  >
-                    Delete
-                  </button>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+      <div className="d-flex flex-wrap align-items-center gap-2 mb-3">
+        <button type="button" className="btn btn-primary" onClick={openCreateForm}>
+          Add user
+        </button>
+        <input
+          type="search"
+          className="form-control"
+          style={{ maxWidth: 280 }}
+          placeholder="Search users by name..."
+          aria-label="Search users by name"
+          value={search}
+          onChange={(event) => setSearch(event.target.value)}
+        />
       </div>
+
+      {filteredUsers.length === 0 ? (
+        <p className="text-muted">No users match &quot;{search}&quot;.</p>
+      ) : (
+        <div className="table-responsive">
+          <table className="table table-hover align-middle">
+            <thead>
+              <tr>
+                <th>Username</th>
+                <th>Full name</th>
+                <th>Email</th>
+                <th>Age</th>
+                <th>Role</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              {filteredUsers.map((user) => (
+                <tr key={user.user_id}>
+                  <td>{user.username}</td>
+                  <td>{user.full_name}</td>
+                  <td>{user.email}</td>
+                  <td>{user.age}</td>
+                  <td>
+                    <select
+                      className="form-select form-select-sm"
+                      style={{ width: 120 }}
+                      value={user.role}
+                      disabled={busyUserId === user.user_id}
+                      onChange={(event) => handleRoleChange(user.user_id, event.target.value)}
+                    >
+                      <option value="user">user</option>
+                      <option value="admin">admin</option>
+                    </select>
+                  </td>
+                  <td>
+                    <button
+                      type="button"
+                      className="btn btn-outline-danger btn-sm"
+                      disabled={
+                        busyUserId === user.user_id || user.user_id === currentUser?.user_id
+                      }
+                      onClick={() => handleDelete(user.user_id, user.username)}
+                    >
+                      Delete
+                    </button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      )}
 
       {showForm && (
         <div
