@@ -52,6 +52,42 @@
   color-scheme: dark;
 }
 
+/* --- Light mode: white background, black text. Mirrors the dark block
+   above 1:1 so every Bootstrap component that already cascades correctly
+   from those variables (body, cards, forms, alerts, badges, tables) picks
+   up the light palette automatically - only the handful of components
+   that bake in fixed dark hex values (flagged in the header comment,
+   plus .navbar/.card below) need an explicit light override. --- */
+[data-bs-theme='light'] {
+  --bs-body-bg: #ffffff;
+  --bs-body-bg-rgb: 255, 255, 255;
+  --bs-body-color: #000000;
+  --bs-body-color-rgb: 0, 0, 0;
+  --bs-emphasis-color: #000000;
+  --bs-secondary-color: #495057;
+  --bs-secondary-bg: #f1f3f5;
+  --bs-secondary-bg-rgb: 241, 243, 245;
+  --bs-tertiary-bg: #f8f9fa;
+  --bs-tertiary-bg-rgb: 248, 249, 250;
+  --bs-border-color: #dee2e6;
+  --bs-border-color-translucent: #dee2e6;
+
+  --bs-primary: var(--sgf-orange);
+  --bs-primary-rgb: 255, 90, 31;
+  --bs-primary-text-emphasis: #c2410c;
+  --bs-primary-bg-subtle: #ffe4d6;
+  --bs-primary-border-subtle: #ffb088;
+  --bs-link-color: var(--sgf-orange);
+  --bs-link-color-rgb: 255, 90, 31;
+  --bs-link-hover-color: var(--sgf-orange-active);
+  --bs-link-hover-color-rgb: 230, 74, 15;
+
+  --bs-success: #16a34a;
+  --bs-success-rgb: 22, 163, 74;
+
+  color-scheme: light;
+}
+
 body {
   background-color: var(--bs-body-bg);
 }
@@ -106,7 +142,7 @@ h6,
   --bs-btn-disabled-border-color: var(--sgf-orange);
 }
 
-.btn-outline-secondary {
+[data-bs-theme='dark'] .btn-outline-secondary {
   --bs-btn-color: #d4d4d8;
   --bs-btn-border-color: #3f3f46;
   --bs-btn-hover-color: #0a0a0c;
@@ -114,6 +150,16 @@ h6,
   --bs-btn-hover-border-color: #d4d4d8;
   --bs-btn-active-bg: #d4d4d8;
   --bs-btn-active-border-color: #d4d4d8;
+}
+
+[data-bs-theme='light'] .btn-outline-secondary {
+  --bs-btn-color: #495057;
+  --bs-btn-border-color: #ced4da;
+  --bs-btn-hover-color: #ffffff;
+  --bs-btn-hover-bg: #495057;
+  --bs-btn-hover-border-color: #495057;
+  --bs-btn-active-bg: #495057;
+  --bs-btn-active-border-color: #495057;
 }
 
 .form-control:focus,
@@ -124,9 +170,15 @@ h6,
 
 /* --- Cards --- */
 .card {
+  border-radius: 0.9rem;
+}
+[data-bs-theme='dark'] .card {
   --bs-card-bg: #131315;
   --bs-card-border-color: #232326;
-  border-radius: 0.9rem;
+}
+[data-bs-theme='light'] .card {
+  --bs-card-bg: #ffffff;
+  --bs-card-border-color: #e5e7eb;
 }
 
 /* --- Nav tabs (AuthenticatedLayout / AdminLayout) --- */
@@ -144,10 +196,30 @@ h6,
   color: var(--bs-emphasis-color);
 }
 
-/* --- Landing page hero --- */
+/* --- Landing page hero: the image + dark gradient overlay backdrop
+   (applied inline in JSX) stays the same in both themes, so its text is
+   pinned to white regardless of [data-bs-theme] rather than following
+   --bs-body-color - otherwise light mode would render black text on a
+   still-dark backdrop and it would become unreadable. --- */
 .hero-section {
   padding-top: 4.5rem !important;
   padding-bottom: 4.5rem !important;
+  color: #fff;
+}
+/* Bootstrap's .text-secondary-emphasis utility carries !important and is
+   theme-driven, so in light mode it resolves to a dark gray meant for a
+   white page - unreadable against the hero's still-dark image backdrop.
+   Pinned to the same value dark mode already rendered, so both themes
+   look identical here. */
+.hero-section .text-secondary-emphasis {
+  color: rgb(167, 172, 177) !important;
+}
+.hero-section .hero-badge {
+  color: rgb(161, 161, 170);
+  border-color: rgb(42, 42, 46);
+}
+.hero-section .text-muted {
+  color: rgb(161, 161, 170) !important;
 }
 
 .hero-badge {
@@ -230,9 +302,14 @@ h6,
   position: sticky;
   top: 0;
   z-index: 1030;
-  background-color: rgba(10, 10, 12, 0.72) !important;
   backdrop-filter: blur(14px);
   -webkit-backdrop-filter: blur(14px);
+}
+[data-bs-theme='dark'] .navbar {
+  background-color: rgba(10, 10, 12, 0.72) !important;
+}
+[data-bs-theme='light'] .navbar {
+  background-color: rgba(255, 255, 255, 0.82) !important;
 }
 
 /* ==========================================================================
@@ -324,6 +401,19 @@ h6,
   transition:
     color 0.15s ease,
     border-color 0.15s ease;
+}
+
+/* --- Dark/light theme toggle button: same 40px circular treatment as
+   the notification bell button next to it --- */
+.theme-toggle-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  padding: 0;
+  border-radius: 50%;
+  flex-shrink: 0;
 }
 .notification-bell-btn:hover {
   color: var(--sgf-orange);

@@ -1,6 +1,8 @@
 import { useState } from 'react'
 import { Link, NavLink } from 'react-router-dom'
+import { Moon, Sun } from 'lucide-react'
 import { useAuth } from '../context/AuthContext'
+import { useTheme } from '../context/ThemeContext'
 import NotificationBell from './NotificationBell'
 
 const NAV_LINKS = [
@@ -16,10 +18,13 @@ const NAV_LINKS = [
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false)
   const { isAuthenticated, user, logout } = useAuth()
+  const { theme, toggleTheme } = useTheme()
   const closeMenu = () => setIsOpen(false)
 
   return (
-    <nav className="navbar navbar-expand-lg navbar-dark border-bottom">
+    <nav
+      className={`navbar navbar-expand-lg ${theme === 'dark' ? 'navbar-dark' : 'navbar-light'} border-bottom`}
+    >
       <div className="container">
         <Link className="navbar-brand fw-bold" to="/" onClick={closeMenu}>
           SmartGen Fit
@@ -44,6 +49,15 @@ export default function Navbar() {
             ))}
           </ul>
           <div className="d-flex align-items-center gap-2">
+            <button
+              type="button"
+              className="btn btn-outline-secondary theme-toggle-btn"
+              onClick={toggleTheme}
+              aria-label={theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'}
+              title={theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'}
+            >
+              {theme === 'dark' ? <Sun size={18} /> : <Moon size={18} />}
+            </button>
             {isAuthenticated ? (
               <>
                 <NotificationBell />

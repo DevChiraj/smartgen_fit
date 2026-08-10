@@ -51,12 +51,7 @@ export default function ImageAnalysis() {
       const data = await analyzeImage(selectedFile)
       if (requestTokenRef.current !== token) return // stopped/reset before this resolved
       setResult(data.analysis)
-      showToast(
-        `Body type analyzed: ${data.analysis.predicted_body_type?.name} (${(
-          Number(data.analysis.confidence_score) * 100
-        ).toFixed(0)}% confidence)`,
-        'success',
-      )
+      showToast(`Body type analyzed: ${data.analysis.predicted_body_type?.name}`, 'success')
       fetchHistory()
     } catch (err) {
       if (requestTokenRef.current !== token) return
@@ -207,9 +202,6 @@ export default function ImageAnalysis() {
           >
             {result.predicted_body_type?.name}
           </span>
-          <p className="text-muted small mt-2 mb-0">
-            Confidence: {(Number(result.confidence_score) * 100).toFixed(1)}%
-          </p>
         </div>
       )}
 
@@ -236,7 +228,6 @@ export default function ImageAnalysis() {
                     {item.predicted_body_type?.name}
                   </span>
                   <p className="text-muted small mt-2 mb-0">
-                    {(Number(item.confidence_score) * 100).toFixed(1)}% &middot;{' '}
                     {new Date(item.created_at).toLocaleDateString()}
                   </p>
                 </div>

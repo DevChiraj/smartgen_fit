@@ -12,6 +12,20 @@
       rel="stylesheet"
     />
     <title>SmartGen Fit</title>
+    <script>
+      // Runs before first paint so a returning user with a saved "light"
+      // preference never sees a flash of the default dark theme -
+      // ThemeContext's own useEffect re-applies this once React mounts.
+      ;(function () {
+        try {
+          if (localStorage.getItem('smartgen_fit_theme') === 'light') {
+            document.documentElement.setAttribute('data-bs-theme', 'light')
+          }
+        } catch (e) {
+          /* localStorage unavailable - default dark stays */
+        }
+      })()
+    </script>
   </head>
   <body>
     <div id="root"></div>
