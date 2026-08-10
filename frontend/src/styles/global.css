@@ -265,6 +265,42 @@ h6,
   border-color: var(--sgf-orange);
 }
 
+/* --- Feature card background photos: bottom-anchored gradient scrim (via
+   ::before, so no extra markup is needed) keeps the caption readable
+   regardless of how bright the underlying photo is. Text is pinned to
+   white unconditionally rather than following --bs-body-color, same
+   reasoning as .hero-section - the photo backdrop doesn't change with
+   [data-bs-theme], so the text color shouldn't either. --- */
+.feature-card-photo {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  min-height: 230px;
+  background-size: cover;
+  background-position: center;
+  color: #fff;
+  overflow: hidden;
+}
+.feature-card-photo::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    180deg,
+    rgba(10, 10, 12, 0.05) 0%,
+    rgba(10, 10, 12, 0.45) 55%,
+    rgba(10, 10, 12, 0.92) 100%
+  );
+}
+.feature-card-photo .card-body {
+  position: relative;
+  z-index: 1;
+}
+.feature-card-photo .text-secondary {
+  color: rgba(255, 255, 255, 0.78) !important;
+}
+
 .icon-badge {
   width: 52px;
   height: 52px;
