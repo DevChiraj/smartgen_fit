@@ -61,6 +61,78 @@ def test_admin_can_list_and_get_users(client, db):
     assert "admin1" in usernames and "plainuser" in usernames
 
 
+def _new_user_payload(**overrides):
+    payload = dict(
+        full_name="New User",
+        date_of_birth="2000-01-01",
+        gender="female",
+        email="newuser@example.com",
+        username="newuser",
+        password="supersecret",
+    )
+    payload.update(overrides)
+    return payload
+
+
+def test_admin_can_create_a_user(client, db):
+    admin_token, _ = register(client, "admin1", role="admin")
+
+    response = client.post(
+        "/api/v1/admin/users", json=_new_user_payload(), headers=auth_headers(admin_token)
+    )
+    assert response.status_code == 201
+    body = response.get_json()["user"]
+    assert body["username"] == "newuser"
+    assert body["email"] == "newuser@example.com"
+    assert body["role"] == "user"
+    assert "password" not in body
+    assert "password_hash" not in body
+
+    login_response = client.post(
+        "/api/v1/auth/login", json={"identifier": "newuser", "password": "supersecret"}
+    )
+    assert login_response.status_code == 200
+
+
+def test_admin_create_user_requires_admin_role(client, db):
+    token, _ = register(client, "regular")
+    response = client.post(
+        "/api/v1/admin/users", json=_new_user_payload(), headers=auth_headers(token)
+    )
+    assert response.status_code == 403
+
+
+def test_admin_create_user_rejects_under_minimum_age(client, db):
+    admin_token, _ = register(client, "admin1", role="admin")
+    response = client.post(
+        "/api/v1/admin/users",
+        json=_new_user_payload(date_of_birth="2020-01-01"),
+        headers=auth_headers(admin_token),
+    )
+    assert response.status_code == 400
+
+
+def test_admin_create_user_rejects_duplicate_email(client, db):
+    admin_token, _ = register(client, "admin1", role="admin")
+    register(client, "existinguser")
+
+    response = client.post(
+        "/api/v1/admin/users",
+        json=_new_user_payload(email="existinguser@example.com", username="anothername"),
+        headers=auth_headers(admin_token),
+    )
+    assert response.status_code == 409
+
+
+def test_admin_create_user_rejects_missing_required_field(client, db):
+    admin_token, _ = register(client, "admin1", role="admin")
+    payload = _new_user_payload()
+    del payload["password"]
+
+    response = client.post("/api/v1/admin/users", json=payload, headers=auth_headers(admin_token))
+    assert response.status_code == 400
+
+
 def test_admin_can_get_a_single_user(client, db):
     admin_token, _ = register(client, "admin1", role="admin")
     _, other_id = register(client, "plainuser")

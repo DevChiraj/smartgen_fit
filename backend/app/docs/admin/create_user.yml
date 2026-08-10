@@ -1,0 +1,57 @@
+tags:
+  - Admin
+summary: Create a user directly (admin bypass of self-registration)
+description: >
+  Same validation as public registration (minimum age 15, unique email/
+  username, bcrypt-hashed password) - reuses auth_service.register_user()
+  rather than duplicating those rules. Always creates the user with
+  role=user; promote via PUT /admin/users/{user_id} afterwards if needed.
+security:
+  - BearerAuth: []
+consumes:
+  - application/json
+parameters:
+  - in: body
+    name: body
+    required: true
+    schema:
+      type: object
+      required: [full_name, date_of_birth, gender, email, username, password]
+      properties:
+        full_name:
+          type: string
+        date_of_birth:
+          type: string
+          format: date
+        gender:
+          type: string
+          enum: [male, female, other]
+        email:
+          type: string
+        phone_number:
+          type: string
+        height_cm:
+          type: number
+        weight_kg:
+          type: number
+        username:
+          type: string
+        password:
+          type: string
+          minLength: 8
+responses:
+  201:
+    description: Created
+    schema:
+      type: object
+      properties:
+        user:
+          $ref: '#/definitions/AdminUser'
+  400:
+    description: Validation error, or under the minimum registration age (15)
+  401:
+    description: Missing/invalid/expired access token
+  403:
+    description: Not an admin
+  409:
+    description: Email or username already registered
