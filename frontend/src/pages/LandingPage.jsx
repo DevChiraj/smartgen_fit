@@ -6,6 +6,7 @@ import bodyTypeAnalysisImg from '../assets/feature-body-type-analysis.jpg'
 import sriLankanMealPlansImg from '../assets/feature-sri-lankan-meal-plans.jpg'
 import workoutPlansImg from '../assets/feature-workout-plans.jpg'
 import bmiTrackingImg from '../assets/feature-bmi-tracking.png'
+import aboutSectionImg from '../assets/about-section.jpg'
 
 const FEATURES = [
   {
@@ -102,14 +103,36 @@ export default function LandingPage() {
       </section>
 
       <section className="py-5">
-        <div className="card col-lg-9 mx-auto p-4 p-md-5 text-center">
-          <h2 className="fw-bold">Our AI boundary</h2>
-          <p className="text-secondary mb-0">
-            Our AI model performs one task only: classifying your body type from a photo. It never
-            generates meal plans, workouts, calories, or health advice — every recommendation comes
-            from a predefined, rule-based lookup that administrators manage directly.{' '}
-            <Link to="/about">Learn more</Link>.
-          </p>
+        <div className="about-split animate-in">
+          <div
+            className="about-split-image"
+            style={{ backgroundImage: `url(${aboutSectionImg})` }}
+          />
+          <span className="about-accent about-accent-1" aria-hidden="true" />
+          <span className="about-accent about-accent-2" aria-hidden="true" />
+          <span className="about-accent about-accent-3" aria-hidden="true" />
+          <div className="about-split-content">
+            <span className="about-subtitle">About Us</span>
+            <h2 className="about-title">Welcome to SmartGen Fit</h2>
+            <p className="about-paragraph">
+              Welcome to SmartGen Fit, your ultimate personalized fitness companion. We believe
+              that health and fitness are not one-size-fits-all, which is why we&apos;ve built a
+              platform that adapts specifically to you.
+            </p>
+            <p className="about-paragraph">
+              By combining advanced AI technology with tailored nutrition and exercise science,
+              we provide a uniquely customized experience. From our CNN-powered body type
+              analysis to authentic Sri Lankan meal plans, we ensure your fitness journey
+              perfectly aligns with your lifestyle and local culture.
+            </p>
+            <p className="about-paragraph">
+              Empower yourself with dynamic workout routines, accurate BMI tracking, and a
+              supportive system designed to help you achieve your goals safely and effectively.
+            </p>
+            <Link to="/about" className="about-readmore">
+              Read More..
+            </Link>
+          </div>
         </div>
       </section>
     </div>
