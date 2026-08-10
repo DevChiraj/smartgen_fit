@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { Link, NavLink, useLocation } from 'react-router-dom'
-import { Moon, Sun } from 'lucide-react'
+import { Dumbbell, Moon, Sun } from 'lucide-react'
 import { useAuth } from '../context/AuthContext'
 import { useTheme } from '../context/ThemeContext'
 import NotificationBell from './NotificationBell'
@@ -40,7 +40,14 @@ export default function Navbar() {
       className={`navbar navbar-expand-lg ${theme === 'dark' ? 'navbar-dark' : 'navbar-light'} border-bottom`}
     >
       <div className="container">
-        <Link className="navbar-brand fw-bold" to="/" onClick={closeMenu}>
+        <Link
+          className="navbar-brand fw-bold d-flex align-items-center gap-2"
+          to="/"
+          onClick={closeMenu}
+        >
+          <span className="navbar-brand-icon">
+            <Dumbbell size={17} strokeWidth={2.5} />
+          </span>
           SmartGen Fit
         </Link>
         <button
