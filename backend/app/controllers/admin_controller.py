@@ -12,11 +12,13 @@ from app.schemas.admin_schema import (
     ExerciseWriteSchema,
     SriLankanFoodWriteSchema,
 )
+from app.schemas.auth_schema import RegisterSchema
 from app.schemas.bmi_schema import BMICategorySchema
 from app.schemas.exercise_schema import ExerciseSchema
 from app.schemas.food_schema import SriLankanFoodSchema
 from app.services import (
     admin_user_service,
+    auth_service,
     bmi_category_service,
     body_type_service,
     exercise_service,
@@ -26,6 +28,7 @@ from app.services import (
 admin_user_schema = AdminUserSchema()
 admin_users_schema = AdminUserSchema(many=True)
 admin_user_update_schema = AdminUserUpdateSchema()
+register_schema = RegisterSchema()
 
 food_schema = SriLankanFoodSchema()
 food_write_schema = SriLankanFoodWriteSchema()
@@ -48,6 +51,12 @@ bmi_category_write_schema = BMICategoryWriteSchema()
 def handle_list_users():
     users = admin_user_service.list_users()
     return {"users": admin_users_schema.dump(users)}, 200
+
+
+def handle_create_user(json_body):
+    data = register_schema.load(json_body or {})
+    user = auth_service.register_user(data)
+    return {"user": admin_user_schema.dump(user)}, 201
 
 
 def handle_get_user(user_id: int):

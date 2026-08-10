@@ -1,7 +1,17 @@
 import { useEffect, useState } from 'react'
 import { useAuth } from '../../context/AuthContext'
-import { deleteUser, getUsers, updateUser } from '../../services/adminService'
+import { createUser, deleteUser, getUsers, updateUser } from '../../services/adminService'
 import { formatApiError } from '../../utils/formatApiError'
+
+const EMPTY_FORM = {
+  full_name: '',
+  date_of_birth: '',
+  gender: 'female',
+  email: '',
+  username: '',
+  password: '',
+  phone_number: '',
+}
 
 export default function AdminUsers() {
   const { user: currentUser } = useAuth()
@@ -9,6 +19,9 @@ export default function AdminUsers() {
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState('')
   const [busyUserId, setBusyUserId] = useState(null)
+  const [showForm, setShowForm] = useState(false)
+  const [form, setForm] = useState(EMPTY_FORM)
+  const [isSaving, setIsSaving] = useState(false)
 
   const fetchUsers = () => {
     return getUsers()
@@ -19,6 +32,29 @@ export default function AdminUsers() {
   useEffect(() => {
     fetchUsers().finally(() => setIsLoading(false))
   }, [])
+
+  const openCreateForm = () => {
+    setForm(EMPTY_FORM)
+    setError('')
+    setShowForm(true)
+  }
+
+  const handleCreate = async (event) => {
+    event.preventDefault()
+    setError('')
+    setIsSaving(true)
+    try {
+      const payload = { ...form }
+      if (!payload.phone_number) delete payload.phone_number
+      await createUser(payload)
+      setShowForm(false)
+      await fetchUsers()
+    } catch (err) {
+      setError(formatApiError(err, 'Could not create user.'))
+    } finally {
+      setIsSaving(false)
+    }
+  }
 
   const handleRoleChange = async (userId, role) => {
     setBusyUserId(userId)
@@ -52,6 +88,11 @@ export default function AdminUsers() {
   return (
     <div>
       {error && <div className="alert alert-danger">{error}</div>}
+
+      <button type="button" className="btn btn-primary mb-3" onClick={openCreateForm}>
+        Add user
+      </button>
+
       <div className="table-responsive">
         <table className="table table-hover align-middle">
           <thead>
@@ -98,6 +139,142 @@ export default function AdminUsers() {
           </tbody>
         </table>
       </div>
+
+      {showForm && (
+        <div
+          className="modal d-block"
+          tabIndex={-1}
+          style={{ backgroundColor: 'rgba(0,0,0,0.5)' }}
+          onClick={() => setShowForm(false)}
+        >
+          <div
+            className="modal-dialog modal-dialog-centered"
+            onClick={(event) => event.stopPropagation()}
+          >
+            <form className="modal-content" onSubmit={handleCreate}>
+              <div className="modal-header">
+                <h2 className="modal-title h5">Add user</h2>
+                <button
+                  type="button"
+                  className="btn-close"
+                  onClick={() => setShowForm(false)}
+                  aria-label="Close"
+                />
+              </div>
+              <div className="modal-body">
+                <div className="row g-2">
+                  <div className="col-12">
+                    <label className="form-label" htmlFor="new_full_name">
+                      Full name
+                    </label>
+                    <input
+                      id="new_full_name"
+                      className="form-control"
+                      required
+                      value={form.full_name}
+                      onChange={(e) => setForm({ ...form, full_name: e.target.value })}
+                    />
+                  </div>
+                  <div className="col-6">
+                    <label className="form-label" htmlFor="new_date_of_birth">
+                      Date of birth
+                    </label>
+                    <input
+                      id="new_date_of_birth"
+                      type="date"
+                      className="form-control"
+                      required
+                      value={form.date_of_birth}
+                      onChange={(e) => setForm({ ...form, date_of_birth: e.target.value })}
+                    />
+                  </div>
+                  <div className="col-6">
+                    <label className="form-label" htmlFor="new_gender">
+                      Gender
+                    </label>
+                    <select
+                      id="new_gender"
+                      className="form-select"
+                      value={form.gender}
+                      onChange={(e) => setForm({ ...form, gender: e.target.value })}
+                    >
+                      <option value="female">Female</option>
+                      <option value="male">Male</option>
+                      <option value="other">Other</option>
+                    </select>
+                  </div>
+                  <div className="col-12">
+                    <label className="form-label" htmlFor="new_email">
+                      Email
+                    </label>
+                    <input
+                      id="new_email"
+                      type="email"
+                      className="form-control"
+                      required
+                      value={form.email}
+                      onChange={(e) => setForm({ ...form, email: e.target.value })}
+                    />
+                  </div>
+                  <div className="col-6">
+                    <label className="form-label" htmlFor="new_username">
+                      Username
+                    </label>
+                    <input
+                      id="new_username"
+                      className="form-control"
+                      required
+                      minLength={3}
+                      maxLength={50}
+                      pattern="[a-zA-Z0-9_]+"
+                      title="Letters, numbers, and underscores only"
+                      value={form.username}
+                      onChange={(e) => setForm({ ...form, username: e.target.value })}
+                    />
+                  </div>
+                  <div className="col-6">
+                    <label className="form-label" htmlFor="new_password">
+                      Password
+                    </label>
+                    <input
+                      id="new_password"
+                      type="password"
+                      className="form-control"
+                      required
+                      minLength={8}
+                      value={form.password}
+                      onChange={(e) => setForm({ ...form, password: e.target.value })}
+                    />
+                  </div>
+                  <div className="col-12">
+                    <label className="form-label" htmlFor="new_phone_number">
+                      Phone number (optional)
+                    </label>
+                    <input
+                      id="new_phone_number"
+                      className="form-control"
+                      value={form.phone_number}
+                      onChange={(e) => setForm({ ...form, phone_number: e.target.value })}
+                    />
+                  </div>
+                </div>
+              </div>
+              <div className="modal-footer">
+                <button
+                  type="button"
+                  className="btn btn-outline-secondary"
+                  onClick={() => setShowForm(false)}
+                >
+                  Cancel
+                </button>
+                <button type="submit" className="btn btn-primary" disabled={isSaving}>
+                  {isSaving ? 'Creating...' : 'Create user'}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
     </div>
   )
 }

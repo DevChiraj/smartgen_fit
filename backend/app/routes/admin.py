@@ -24,6 +24,14 @@ def list_users():
     return jsonify(body), status_code
 
 
+@admin_bp.post("/users")
+@role_required("admin")
+@swag_from("../docs/admin/create_user.yml")
+def create_user():
+    body, status_code = admin_controller.handle_create_user(request.get_json(silent=True))
+    return jsonify(body), status_code
+
+
 @admin_bp.get("/users/<int:user_id>")
 @role_required("admin")
 @swag_from("../docs/admin/get_user.yml")

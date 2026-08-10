@@ -6,6 +6,11 @@ export async function getUsers() {
   return data
 }
 
+export async function createUser(payload) {
+  const { data } = await apiClient.post('/v1/admin/users', payload)
+  return data
+}
+
 export async function updateUser(userId, payload) {
   const { data } = await apiClient.put(`/v1/admin/users/${userId}`, payload)
   return data
