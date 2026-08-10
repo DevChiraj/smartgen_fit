@@ -1,4 +1,5 @@
-import { Link } from 'react-router-dom'
+import { useEffect } from 'react'
+import { Link, useLocation } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 import FloatingIcons from '../components/FloatingIcons'
 import heroBg from '../assets/hero-bg.png'
@@ -31,8 +32,38 @@ const FEATURES = [
   },
 ]
 
+const HOW_IT_WORKS = [
+  {
+    title: '1. Upload a photo',
+    description: 'Share a full-body photo so we can analyze your body type.',
+  },
+  {
+    title: '2. AI classifies your body type',
+    description: 'A CNN model classifies you as Thin, Normal, or Overweight — nothing more.',
+  },
+  {
+    title: '3. Get your personalized plan',
+    description:
+      'We look up a meal and workout plan matched to your body type, BMI, age group, and gender from our curated database.',
+  },
+]
+
 export default function LandingPage() {
   const { isAuthenticated } = useAuth()
+  const location = useLocation()
+
+  useEffect(() => {
+    if (location.hash !== '#about') return
+    const target = document.getElementById('about')
+    if (!target) return
+    // Wait a frame so the page has completed its own layout - especially
+    // right after navigating here from another page, mid page-transition -
+    // before measuring where to scroll to.
+    const frame = requestAnimationFrame(() => {
+      target.scrollIntoView({ behavior: 'smooth', block: 'start' })
+    })
+    return () => cancelAnimationFrame(frame)
+  }, [location.hash])
 
   return (
     <div>
@@ -102,7 +133,7 @@ export default function LandingPage() {
         </div>
       </section>
 
-      <section className="py-5">
+      <section className="py-5" id="about">
         <div className="about-split animate-in">
           <div
             className="about-split-image"
@@ -133,6 +164,25 @@ export default function LandingPage() {
               Read More..
             </Link>
           </div>
+        </div>
+      </section>
+
+      <section className="py-5">
+        <div className="text-center mb-5">
+          <span className="hero-badge mb-3">The process</span>
+          <h2 className="fw-bold mt-3">How it works</h2>
+        </div>
+        <div className="row g-4">
+          {HOW_IT_WORKS.map((step) => (
+            <div className="col-md-4 animate-in" key={step.title}>
+              <div className="card card-interactive h-100">
+                <div className="card-body">
+                  <h3 className="h5 fw-bold">{step.title}</h3>
+                  <p className="text-secondary small mb-0">{step.description}</p>
+                </div>
+              </div>
+            </div>
+          ))}
         </div>
       </section>
     </div>

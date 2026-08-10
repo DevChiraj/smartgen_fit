@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Link, NavLink } from 'react-router-dom'
+import { Link, NavLink, useLocation } from 'react-router-dom'
 import { Moon, Sun } from 'lucide-react'
 import { useAuth } from '../context/AuthContext'
 import { useTheme } from '../context/ThemeContext'
@@ -7,7 +7,7 @@ import NotificationBell from './NotificationBell'
 
 const NAV_LINKS = [
   { to: '/', label: 'Home', end: true },
-  { to: '/about', label: 'About' },
+  { to: '/#about', label: 'About', anchorId: 'about' },
   { to: '/healthy-foods', label: 'Healthy Foods' },
   { to: '/workouts', label: 'Workouts' },
   { to: '/bmi-calculator', label: 'BMI Calculator' },
@@ -19,7 +19,21 @@ export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false)
   const { isAuthenticated, user, logout } = useAuth()
   const { theme, toggleTheme } = useTheme()
+  const location = useLocation()
   const closeMenu = () => setIsOpen(false)
+
+  const handleAnchorClick = (event, anchorId) => {
+    closeMenu()
+    if (location.pathname === '/') {
+      // Already on the Home page - scroll directly rather than round-tripping
+      // through a navigation, since a hash-only URL change wouldn't remount
+      // the page for LandingPage's own scroll effect to react to.
+      event.preventDefault()
+      document.getElementById(anchorId)?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+    }
+    // Elsewhere: let the Link navigate to `/#anchorId` normally; LandingPage's
+    // own mount effect picks up the hash and smooth-scrolls once it renders.
+  }
 
   return (
     <nav
@@ -40,13 +54,25 @@ export default function Navbar() {
         </button>
         <div className={`collapse navbar-collapse ${isOpen ? 'show' : ''}`}>
           <ul className="navbar-nav me-auto mb-2 mb-lg-0">
-            {NAV_LINKS.map((link) => (
-              <li className="nav-item" key={link.to}>
-                <NavLink className="nav-link" to={link.to} end={link.end} onClick={closeMenu}>
-                  {link.label}
-                </NavLink>
-              </li>
-            ))}
+            {NAV_LINKS.map((link) =>
+              link.anchorId ? (
+                <li className="nav-item" key={link.to}>
+                  <Link
+                    className="nav-link"
+                    to={link.to}
+                    onClick={(event) => handleAnchorClick(event, link.anchorId)}
+                  >
+                    {link.label}
+                  </Link>
+                </li>
+              ) : (
+                <li className="nav-item" key={link.to}>
+                  <NavLink className="nav-link" to={link.to} end={link.end} onClick={closeMenu}>
+                    {link.label}
+                  </NavLink>
+                </li>
+              ),
+            )}
           </ul>
           <div className="d-flex align-items-center gap-2">
             <button
