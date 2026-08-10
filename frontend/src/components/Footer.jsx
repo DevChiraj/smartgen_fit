@@ -87,9 +87,9 @@ export default function Footer() {
         <div className="footer-subbar">
           <span>&copy; Copyright {new Date().getFullYear()} by SmartGen Fit</span>
           <div className="footer-sublinks">
-            <span className="footer-sublink-static">Terms &amp; Conditions</span>
+            <Link to="/terms">Terms &amp; Conditions</Link>
             <span className="footer-sublink-divider">/</span>
-            <span className="footer-sublink-static">Privacy Policy</span>
+            <Link to="/privacy">Privacy Policy</Link>
             <span className="footer-sublink-divider">/</span>
             <Link to="/contact">Support</Link>
           </div>

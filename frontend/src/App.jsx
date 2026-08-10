@@ -12,6 +12,8 @@ import AdminLayout from './layouts/AdminLayout'
 import LandingPage from './pages/LandingPage'
 import About from './pages/About'
 import Contact from './pages/Contact'
+import Terms from './pages/Terms'
+import Privacy from './pages/Privacy'
 import BMICalculator from './pages/BMICalculator'
 import Login from './pages/Login'
 import Register from './pages/Register'
@@ -38,6 +40,8 @@ function AnimatedRoutes() {
         <Route path="/" element={<PageTransition><LandingPage /></PageTransition>} />
         <Route path="/about" element={<PageTransition><About /></PageTransition>} />
         <Route path="/contact" element={<PageTransition><Contact /></PageTransition>} />
+        <Route path="/terms" element={<PageTransition><Terms /></PageTransition>} />
+        <Route path="/privacy" element={<PageTransition><Privacy /></PageTransition>} />
         <Route path="/healthy-foods" element={<PageTransition><HealthyFoods /></PageTransition>} />
         <Route path="/workouts" element={<PageTransition><Workouts /></PageTransition>} />
         <Route path="/bmi-calculator" element={<PageTransition><BMICalculator /></PageTransition>} />

@@ -207,6 +207,22 @@ h6,
   padding-bottom: 4.5rem !important;
   color: #fff;
 }
+/* --- Full-bleed variant: breaks the hero out of the page's `.container`
+   (and the `main.py-4` wrapper's top padding) so it spans the full
+   viewport edge-to-edge, flush against the sticky navbar above it,
+   instead of sitting inset inside the container like the rest of the
+   page content. `margin-inline: calc(50% - 50vw)` is used over a fixed
+   `100vw` width so it doesn't overflow when a scrollbar is present. --- */
+.hero-section-full {
+  width: auto;
+  margin-inline: calc(50% - 50vw);
+  margin-top: -1.5rem;
+  border-radius: 0;
+  min-height: 100vh;
+  min-height: 100svh;
+  display: flex;
+  align-items: center;
+}
 /* Bootstrap's .text-secondary-emphasis utility carries !important and is
    theme-driven, so in light mode it resolves to a dark gray meant for a
    white page - unreadable against the hero's still-dark image backdrop.
@@ -480,6 +496,20 @@ h6,
 
 .navbar .btn {
   white-space: nowrap;
+}
+
+/* --- Navbar brand icon: small orange badge, same treatment in both
+   themes since it's a logo mark rather than page body content. --- */
+.navbar-brand-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  border-radius: 8px;
+  background: var(--sgf-orange);
+  color: #fff;
+  flex-shrink: 0;
 }
 
 /* --- Navbar: sticky glass surface --- */
@@ -1283,8 +1313,7 @@ h6,
   align-items: center;
   gap: 0.5rem;
 }
-.footer-sublinks a,
-.footer-sublink-static {
+.footer-sublinks a {
   color: rgba(255, 255, 255, 0.55);
   text-decoration: none;
 }
