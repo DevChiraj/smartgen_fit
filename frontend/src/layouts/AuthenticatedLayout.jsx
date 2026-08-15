@@ -2,12 +2,14 @@ import PropTypes from 'prop-types'
 import { NavLink } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 import ReminderBanners from '../components/ReminderBanners'
+import FloatingIcons from '../components/FloatingIcons'
 
 export default function AuthenticatedLayout({ children }) {
   const { user } = useAuth()
 
   return (
-    <div>
+    <div className="position-relative">
+      <FloatingIcons />
       <ul className="nav nav-tabs mb-4">
         <li className="nav-item">
           <NavLink className="nav-link" to="/dashboard" end>
