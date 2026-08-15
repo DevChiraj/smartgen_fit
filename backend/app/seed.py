@@ -3,6 +3,8 @@ the Module 12 Kaggle-sourced Sri Lankan food nutrition data and the
 Module 13 Kaggle-sourced exercise library.
 """
 
+import click
+
 from app.extensions import db
 from app.models import (
     AgeGroup,
@@ -334,4 +336,4 @@ def register_seed_command(app):
     def seed_command():
         """Populate the database with reference data and sample plans/foods."""
         seed_data()
-        print("Database seeded.")
+        click.echo("Database seeded.")

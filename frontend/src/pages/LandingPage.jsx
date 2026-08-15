@@ -6,7 +6,7 @@ import heroBg from '../assets/hero-bg.png'
 import bodyTypeAnalysisImg from '../assets/feature-body-type-analysis.jpg'
 import sriLankanMealPlansImg from '../assets/feature-sri-lankan-meal-plans.jpg'
 import workoutPlansImg from '../assets/feature-workout-plans.jpg'
-import bmiTrackingImg from '../assets/feature-bmi-tracking.png'
+import bmiTrackingImg from '../assets/feature-bmi-tracking-gauge.png'
 import aboutSectionImg from '../assets/about-section.jpg'
 
 const FEATURES = [

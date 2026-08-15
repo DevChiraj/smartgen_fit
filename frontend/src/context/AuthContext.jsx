@@ -1,6 +1,7 @@
 import { createContext, useContext, useEffect, useMemo, useState } from 'react'
 import PropTypes from 'prop-types'
 import { fetchCurrentUser } from '../services/authService'
+import { SESSION_EXPIRED_EVENT } from '../services/apiClient'
 import { REFRESH_TOKEN_STORAGE_KEY, TOKEN_STORAGE_KEY } from '../utils/storageKeys'
 
 const AuthContext = createContext(null)
@@ -23,6 +24,18 @@ export function AuthProvider({ children }) {
       })
       .finally(() => setIsLoading(false))
   }, [token])
+
+  // apiClient dispatches this once it's tried (and failed) to silently
+  // refresh an expired session, so the app's auth state - and therefore
+  // ProtectedRoute's redirect - stays in sync without a page reload.
+  useEffect(() => {
+    const handleSessionExpired = () => {
+      setToken(null)
+      setUser(null)
+    }
+    window.addEventListener(SESSION_EXPIRED_EVENT, handleSessionExpired)
+    return () => window.removeEventListener(SESSION_EXPIRED_EVENT, handleSessionExpired)
+  }, [])
 
   const login = (authResponse) => {
     localStorage.setItem(TOKEN_STORAGE_KEY, authResponse.access_token)
