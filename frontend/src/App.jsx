@@ -10,7 +10,6 @@ import PublicLayout from './layouts/PublicLayout'
 import AuthenticatedLayout from './layouts/AuthenticatedLayout'
 import AdminLayout from './layouts/AdminLayout'
 import LandingPage from './pages/LandingPage'
-import About from './pages/About'
 import Contact from './pages/Contact'
 import Terms from './pages/Terms'
 import Privacy from './pages/Privacy'
@@ -39,7 +38,6 @@ function AnimatedRoutes() {
     <AnimatePresence mode="wait">
       <Routes location={location} key={location.pathname}>
         <Route path="/" element={<PageTransition><LandingPage /></PageTransition>} />
-        <Route path="/about" element={<PageTransition><About /></PageTransition>} />
         <Route path="/contact" element={<PageTransition><Contact /></PageTransition>} />
         <Route path="/terms" element={<PageTransition><Terms /></PageTransition>} />
         <Route path="/privacy" element={<PageTransition><Privacy /></PageTransition>} />

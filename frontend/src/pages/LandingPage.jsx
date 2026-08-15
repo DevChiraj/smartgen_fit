@@ -165,9 +165,6 @@ export default function LandingPage() {
               Empower yourself with dynamic workout routines, accurate BMI tracking, and a
               supportive system designed to help you achieve your goals safely and effectively.
             </p>
-            <Link to="/about" className="about-readmore">
-              Read More..
-            </Link>
           </div>
         </div>
       </section>
