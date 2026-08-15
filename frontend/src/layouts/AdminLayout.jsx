@@ -1,9 +1,11 @@
 import PropTypes from 'prop-types'
 import { NavLink } from 'react-router-dom'
+import FloatingIcons from '../components/FloatingIcons'
 
 export default function AdminLayout({ children }) {
   return (
-    <div>
+    <div className="position-relative">
+      <FloatingIcons />
       <h1>Admin Panel</h1>
       <ul className="nav nav-tabs mb-4">
         <li className="nav-item">
