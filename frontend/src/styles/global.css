@@ -1013,7 +1013,7 @@ h6,
 .floating-icon {
   position: absolute;
   color: var(--sgf-orange);
-  opacity: 0.14;
+  opacity: 0.35;
   animation: sgf-icon-float var(--float-duration, 6s) ease-in-out infinite;
   animation-delay: var(--float-delay, 0s);
 }
