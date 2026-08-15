@@ -353,6 +353,15 @@ h6,
     max-height: 100px;
   }
 }
+/* Touch-primary devices (tablets, touchscreens) never fire :hover, so the
+   description would otherwise be permanently unreachable at any viewport
+   width >= 768px that doesn't hit the mobile column layout above. */
+@media (hover: none) {
+  .feature-gallery-item .feature-gallery-description {
+    opacity: 1;
+    max-height: 100px;
+  }
+}
 @media (prefers-reduced-motion: reduce) {
   .feature-gallery-item,
   .feature-gallery-description {

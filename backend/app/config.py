@@ -56,3 +56,16 @@ config_by_name = {
     "testing": TestingConfig,
     "production": ProductionConfig,
 }
+
+_DEV_DEFAULT_SECRETS = {
+    "SECRET_KEY": "dev-secret-key-change-me",
+    "JWT_SECRET_KEY": "dev-jwt-secret-change-me",
+}
+
+if os.environ.get("FLASK_ENV") == "production":
+    for _env_var, _dev_default in _DEV_DEFAULT_SECRETS.items():
+        if os.environ.get(_env_var, _dev_default) == _dev_default:
+            raise RuntimeError(
+                f"{_env_var} is not set (or still equals its development default). "
+                "Refusing to start with FLASK_ENV=production using an insecure secret."
+            )

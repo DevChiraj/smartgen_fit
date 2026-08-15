@@ -14,6 +14,7 @@ import About from './pages/About'
 import Contact from './pages/Contact'
 import Terms from './pages/Terms'
 import Privacy from './pages/Privacy'
+import NotFound from './pages/NotFound'
 import BMICalculator from './pages/BMICalculator'
 import Login from './pages/Login'
 import Register from './pages/Register'
@@ -180,6 +181,7 @@ function AnimatedRoutes() {
             </AdminRoute>
           }
         />
+        <Route path="*" element={<PageTransition><NotFound /></PageTransition>} />
       </Routes>
     </AnimatePresence>
   )
