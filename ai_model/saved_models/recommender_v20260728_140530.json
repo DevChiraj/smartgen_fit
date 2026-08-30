@@ -1,0 +1,12 @@
+{
+  "version": "v20260728_140530",
+  "file_path": "ai_model/saved_models/recommender_v20260728_140530.joblib",
+  "trained_date": "2026-07-28T14:05:30.864675+00:00",
+  "record_count": 2000,
+  "features": [
+    "age",
+    "gender",
+    "bmi_category_ordinal"
+  ],
+  "source_dataset": "..\\..\\datasets\\recommendations\\Sri_Lankan_Meal_Dataset_NEW.xlsx"
+}

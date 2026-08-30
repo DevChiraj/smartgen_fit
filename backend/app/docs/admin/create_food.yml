@@ -1,0 +1,56 @@
+tags:
+  - Admin
+summary: Create a food
+security:
+  - BearerAuth: []
+consumes:
+  - application/json
+parameters:
+  - in: body
+    name: body
+    required: true
+    schema:
+      type: object
+      required: [food_name, category, calories, protein_g, carbs_g, fat_g]
+      properties:
+        food_name:
+          type: string
+        category:
+          type: string
+        serving_size:
+          type: string
+        calories:
+          type: integer
+          minimum: 0
+        protein_g:
+          type: number
+          minimum: 0
+        carbs_g:
+          type: number
+          minimum: 0
+        fat_g:
+          type: number
+          minimum: 0
+        fiber_g:
+          type: number
+          minimum: 0
+        vitamins:
+          type: string
+        minerals:
+          type: string
+        image_url:
+          type: string
+responses:
+  201:
+    description: Created
+    schema:
+      type: object
+      properties:
+        food:
+          $ref: '#/definitions/SriLankanFood'
+  400:
+    description: Validation error
+  401:
+    description: Missing/invalid/expired access token
+  403:
+    description: Not an admin

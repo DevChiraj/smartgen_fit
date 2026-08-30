@@ -1,0 +1,1335 @@
+@import 'bootstrap/dist/css/bootstrap.min.css';
+
+/* ==========================================================================
+   SmartGen Fit dark theme
+   Bootstrap 5.3's compiled CSS is CSS-variable driven for most components
+   (body, card, form-control, alerts, badges via `--bs-*-rgb`), so overriding
+   those variables under [data-bs-theme=dark] cascades correctly. A few
+   components (`.btn-primary`, `.btn-outline-primary`, `.btn-outline-secondary`,
+   `.form-control:focus`'s box-shadow) bake fixed hex colors into their own
+   `--bs-btn-*` variables at the component level instead of referencing
+   `--bs-primary`, so those need direct overrides too - verified by reading
+   the actual compiled bootstrap.css rather than assuming.
+   ========================================================================== */
+
+:root {
+  --bs-body-font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --sgf-heading-font: 'Poppins', 'Inter', sans-serif;
+  --sgf-mono-font: 'Consolas', 'SFMono-Regular', 'Courier New', monospace;
+  --sgf-script-font: 'Dancing Script', cursive;
+  --sgf-orange: #ff5a1f;
+  --sgf-orange-hover: #ff7a47;
+  --sgf-orange-active: #e64a0f;
+  --sgf-green: #22c55e;
+}
+
+[data-bs-theme='dark'] {
+  --bs-body-bg: #0a0a0c;
+  --bs-body-bg-rgb: 10, 10, 12;
+  --bs-body-color: #f2f2f4;
+  --bs-body-color-rgb: 242, 242, 244;
+  --bs-emphasis-color: #ffffff;
+  --bs-secondary-color: #a1a1aa;
+  --bs-secondary-bg: #151517;
+  --bs-secondary-bg-rgb: 21, 21, 23;
+  --bs-tertiary-bg: #17171a;
+  --bs-tertiary-bg-rgb: 23, 23, 26;
+  --bs-border-color: #2a2a2e;
+  --bs-border-color-translucent: #2a2a2e;
+
+  --bs-primary: var(--sgf-orange);
+  --bs-primary-rgb: 255, 90, 31;
+  --bs-primary-text-emphasis: #ff8a5c;
+  --bs-primary-bg-subtle: #2a1408;
+  --bs-primary-border-subtle: #5c2a10;
+  --bs-link-color: var(--sgf-orange);
+  --bs-link-color-rgb: 255, 90, 31;
+  --bs-link-hover-color: var(--sgf-orange-hover);
+  --bs-link-hover-color-rgb: 255, 122, 71;
+
+  --bs-success: var(--sgf-green);
+  --bs-success-rgb: 34, 197, 94;
+
+  color-scheme: dark;
+}
+
+/* --- Light mode: white background, black text. Mirrors the dark block
+   above 1:1 so every Bootstrap component that already cascades correctly
+   from those variables (body, cards, forms, alerts, badges, tables) picks
+   up the light palette automatically - only the handful of components
+   that bake in fixed dark hex values (flagged in the header comment,
+   plus .navbar/.card below) need an explicit light override. --- */
+[data-bs-theme='light'] {
+  --bs-body-bg: #ffffff;
+  --bs-body-bg-rgb: 255, 255, 255;
+  --bs-body-color: #000000;
+  --bs-body-color-rgb: 0, 0, 0;
+  --bs-emphasis-color: #000000;
+  --bs-secondary-color: #495057;
+  --bs-secondary-bg: #f1f3f5;
+  --bs-secondary-bg-rgb: 241, 243, 245;
+  --bs-tertiary-bg: #f8f9fa;
+  --bs-tertiary-bg-rgb: 248, 249, 250;
+  --bs-border-color: #dee2e6;
+  --bs-border-color-translucent: #dee2e6;
+
+  --bs-primary: var(--sgf-orange);
+  --bs-primary-rgb: 255, 90, 31;
+  --bs-primary-text-emphasis: #c2410c;
+  --bs-primary-bg-subtle: #ffe4d6;
+  --bs-primary-border-subtle: #ffb088;
+  --bs-link-color: var(--sgf-orange);
+  --bs-link-color-rgb: 255, 90, 31;
+  --bs-link-hover-color: var(--sgf-orange-active);
+  --bs-link-hover-color-rgb: 230, 74, 15;
+
+  --bs-success: #16a34a;
+  --bs-success-rgb: 22, 163, 74;
+
+  color-scheme: light;
+}
+
+body {
+  background-color: var(--bs-body-bg);
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+.display-1,
+.display-2,
+.display-3,
+.display-4,
+.display-5,
+.display-6 {
+  font-family: var(--sgf-heading-font);
+  font-weight: 800;
+  letter-spacing: -0.01em;
+}
+
+/* --- Buttons: Bootstrap bakes fixed colors into --bs-btn-* per component,
+   so --bs-primary alone doesn't recolor these - override directly. --- */
+.btn {
+  font-weight: 600;
+}
+
+.btn-primary {
+  --bs-btn-color: #fff;
+  --bs-btn-bg: var(--sgf-orange);
+  --bs-btn-border-color: var(--sgf-orange);
+  --bs-btn-hover-color: #fff;
+  --bs-btn-hover-bg: var(--sgf-orange-hover);
+  --bs-btn-hover-border-color: var(--sgf-orange-hover);
+  --bs-btn-active-bg: var(--sgf-orange-active);
+  --bs-btn-active-border-color: var(--sgf-orange-active);
+  --bs-btn-focus-shadow-rgb: 255, 90, 31;
+  --bs-btn-disabled-bg: var(--sgf-orange);
+  --bs-btn-disabled-border-color: var(--sgf-orange);
+}
+
+.btn-outline-primary {
+  --bs-btn-color: var(--sgf-orange);
+  --bs-btn-border-color: var(--sgf-orange);
+  --bs-btn-hover-color: #fff;
+  --bs-btn-hover-bg: var(--sgf-orange);
+  --bs-btn-hover-border-color: var(--sgf-orange);
+  --bs-btn-active-bg: var(--sgf-orange);
+  --bs-btn-active-border-color: var(--sgf-orange);
+  --bs-btn-focus-shadow-rgb: 255, 90, 31;
+  --bs-btn-disabled-color: var(--sgf-orange);
+  --bs-btn-disabled-border-color: var(--sgf-orange);
+}
+
+[data-bs-theme='dark'] .btn-outline-secondary {
+  --bs-btn-color: #d4d4d8;
+  --bs-btn-border-color: #3f3f46;
+  --bs-btn-hover-color: #0a0a0c;
+  --bs-btn-hover-bg: #d4d4d8;
+  --bs-btn-hover-border-color: #d4d4d8;
+  --bs-btn-active-bg: #d4d4d8;
+  --bs-btn-active-border-color: #d4d4d8;
+}
+
+[data-bs-theme='light'] .btn-outline-secondary {
+  --bs-btn-color: #495057;
+  --bs-btn-border-color: #ced4da;
+  --bs-btn-hover-color: #ffffff;
+  --bs-btn-hover-bg: #495057;
+  --bs-btn-hover-border-color: #495057;
+  --bs-btn-active-bg: #495057;
+  --bs-btn-active-border-color: #495057;
+}
+
+.form-control:focus,
+.form-select:focus {
+  border-color: var(--sgf-orange);
+  box-shadow: 0 0 0 0.25rem rgba(255, 90, 31, 0.25);
+}
+
+/* --- Cards --- */
+.card {
+  border-radius: 0.9rem;
+}
+[data-bs-theme='dark'] .card {
+  --bs-card-bg: #131315;
+  --bs-card-border-color: #232326;
+}
+[data-bs-theme='light'] .card {
+  --bs-card-bg: #ffffff;
+  --bs-card-border-color: #e5e7eb;
+}
+
+/* --- Nav tabs (AuthenticatedLayout / AdminLayout) --- */
+.nav-tabs {
+  --bs-nav-tabs-link-active-color: var(--sgf-orange);
+  --bs-nav-tabs-link-active-bg: var(--bs-body-bg);
+  --bs-nav-tabs-link-active-border-color: var(--bs-border-color) var(--bs-border-color)
+    var(--bs-body-bg);
+}
+.nav-tabs .nav-link {
+  color: var(--bs-secondary-color);
+  font-weight: 600;
+}
+.nav-tabs .nav-link:hover {
+  color: var(--bs-emphasis-color);
+}
+
+/* --- Landing page hero: the image + dark gradient overlay backdrop
+   (applied inline in JSX) stays the same in both themes, so its text is
+   pinned to white regardless of [data-bs-theme] rather than following
+   --bs-body-color - otherwise light mode would render black text on a
+   still-dark backdrop and it would become unreadable. --- */
+.hero-section {
+  padding-top: 4.5rem !important;
+  padding-bottom: 4.5rem !important;
+  color: #fff;
+}
+/* --- Full-bleed variant: breaks the hero out of the page's `.container`
+   (and the `main.py-4` wrapper's top padding) so it spans the full
+   viewport edge-to-edge, flush against the sticky navbar above it,
+   instead of sitting inset inside the container like the rest of the
+   page content. `margin-inline: calc(50% - 50vw)` is used over a fixed
+   `100vw` width so it doesn't overflow when a scrollbar is present. --- */
+.hero-section-full {
+  width: auto;
+  margin-inline: calc(50% - 50vw);
+  margin-top: -1.5rem;
+  border-radius: 0;
+  min-height: 100vh;
+  min-height: 100svh;
+  display: flex;
+  align-items: center;
+}
+/* Bootstrap's .text-secondary-emphasis utility carries !important and is
+   theme-driven, so in light mode it resolves to a dark gray meant for a
+   white page - unreadable against the hero's still-dark image backdrop.
+   Pinned to the same value dark mode already rendered, so both themes
+   look identical here. */
+.hero-section .text-secondary-emphasis {
+  color: rgb(167, 172, 177) !important;
+}
+.hero-section .hero-badge {
+  color: rgb(161, 161, 170);
+  border-color: rgb(42, 42, 46);
+}
+.hero-section .text-muted {
+  color: rgb(161, 161, 170) !important;
+}
+
+.hero-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.4rem 0.9rem;
+  border-radius: 999px;
+  border: 1px solid var(--bs-border-color);
+  color: var(--bs-secondary-color);
+  font-size: 0.8rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+}
+.hero-badge .dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--sgf-green);
+  display: inline-block;
+}
+
+.text-accent {
+  color: var(--sgf-orange);
+}
+
+.hero-display {
+  font-size: clamp(2.5rem, 6vw, 4.25rem);
+  line-height: 1.05;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: -0.02em;
+}
+
+/* --- Home page feature gallery: horizontal expanding-accordion cards.
+   Equal flex-grow by default; hovering one item grows it via flex-grow
+   (not width, so the transition stays smooth and layout-safe) while its
+   siblings' flex-grow stays at 1, letting the flexbox algorithm shrink
+   them proportionally - no JS state needed. Photo backdrop doesn't
+   change with the dark/light toggle, so title/description are pinned to
+   white unconditionally, same reasoning as .hero-section. --- */
+.feature-gallery {
+  display: flex;
+  gap: 0.85rem;
+  height: 420px;
+}
+.feature-gallery-item {
+  position: relative;
+  flex: 1 1 0%;
+  min-width: 90px;
+  border-radius: 90px 16px 16px 16px;
+  background-size: cover;
+  background-position: center;
+  overflow: hidden;
+  color: #fff;
+  cursor: pointer;
+  transition: flex-grow 0.55s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.feature-gallery-item:hover {
+  flex-grow: 7;
+}
+.feature-gallery-item::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    180deg,
+    rgba(10, 10, 12, 0) 0%,
+    rgba(10, 10, 12, 0.15) 45%,
+    rgba(10, 10, 12, 0.88) 100%
+  );
+}
+.feature-gallery-content {
+  position: absolute;
+  left: 1.25rem;
+  right: 1.25rem;
+  bottom: 1.25rem;
+  z-index: 1;
+}
+.feature-gallery-title {
+  font-size: 1rem;
+  font-weight: 700;
+  line-height: 1.2;
+  margin: 0;
+}
+.feature-gallery-description {
+  margin: 0.4rem 0 0;
+  font-size: 0.85rem;
+  color: rgba(255, 255, 255, 0.82);
+  opacity: 0;
+  max-height: 0;
+  overflow: hidden;
+  transition:
+    opacity 0.35s ease 0.1s,
+    max-height 0.35s ease;
+}
+.feature-gallery-item:hover .feature-gallery-description {
+  opacity: 1;
+  max-height: 120px;
+}
+@media (max-width: 767.98px) {
+  .feature-gallery {
+    flex-direction: column;
+    height: auto;
+  }
+  .feature-gallery-item {
+    flex: none;
+    width: 100%;
+    height: 190px;
+  }
+  .feature-gallery-item .feature-gallery-description {
+    opacity: 1;
+    max-height: 100px;
+  }
+}
+/* Touch-primary devices (tablets, touchscreens) never fire :hover, so the
+   description would otherwise be permanently unreachable at any viewport
+   width >= 768px that doesn't hit the mobile column layout above. */
+@media (hover: none) {
+  .feature-gallery-item .feature-gallery-description {
+    opacity: 1;
+    max-height: 100px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .feature-gallery-item,
+  .feature-gallery-description {
+    transition: none;
+  }
+}
+
+/* --- Home page "About Us" diagonal split: dark left panel (copy + orange
+   accents), photo right panel clipped to a diagonal left edge via
+   clip-path. The photo is absolutely positioned so the clip-path's cut
+   lands directly against the section's own dark background - no
+   negative-margin alignment tricks needed. Colors are strictly black/
+   orange per the brand constraint; text is on a permanently dark panel
+   so it isn't wired to [data-bs-theme] the way page body text is. --- */
+.about-split {
+  position: relative;
+  display: flex;
+  align-items: center;
+  min-height: 520px;
+  border-radius: 1.5rem;
+  overflow: hidden;
+  background: #050506;
+}
+.about-split-image {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: 58%;
+  background-size: cover;
+  background-position: center;
+  clip-path: polygon(14% 0, 100% 0, 100% 100%, 0 100%);
+}
+.about-accent {
+  position: absolute;
+  z-index: 1;
+  width: 4px;
+  background: var(--sgf-orange);
+  transform: rotate(21deg);
+}
+.about-accent-1 {
+  height: 230px;
+  left: 45%;
+  top: -40px;
+  opacity: 0.55;
+}
+.about-accent-2 {
+  height: 150px;
+  left: 39.5%;
+  bottom: -30px;
+  opacity: 0.35;
+}
+.about-accent-3 {
+  height: 90px;
+  left: 34%;
+  bottom: 30px;
+  opacity: 0.2;
+}
+.about-split-content {
+  position: relative;
+  z-index: 2;
+  max-width: 46%;
+  padding: 3.5rem 3rem;
+}
+.about-subtitle {
+  display: block;
+  font-family: var(--sgf-script-font);
+  font-size: 2.1rem;
+  line-height: 1;
+  color: var(--sgf-orange);
+  margin-bottom: 0.35rem;
+}
+.about-title {
+  color: #fff;
+  font-weight: 800;
+  margin-bottom: 1.25rem;
+}
+.about-paragraph {
+  color: rgba(255, 255, 255, 0.72);
+  font-size: 0.92rem;
+  margin-bottom: 1rem;
+}
+@media (max-width: 900px) {
+  .about-split {
+    flex-direction: column;
+    align-items: stretch;
+    min-height: auto;
+  }
+  .about-split-image {
+    position: relative;
+    inset: auto;
+    width: 100%;
+    height: 260px;
+    clip-path: none;
+    order: -1;
+  }
+  .about-accent {
+    display: none;
+  }
+  .about-split-content {
+    max-width: 100%;
+    padding: 2.25rem 1.5rem;
+  }
+}
+
+/* --- Nav links: uppercase, tracked, orange text. !important beats Bootstrap's
+   own .navbar-light/.navbar-dark .navbar-nav .nav-link color rules, which have
+   equal-or-higher selector specificity than a plain .navbar-nav .nav-link. --- */
+.navbar-nav .nav-link {
+  text-transform: uppercase;
+  font-size: 0.82rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  color: var(--sgf-orange) !important;
+  white-space: nowrap;
+}
+.navbar-nav .nav-link.active,
+.navbar-nav .nav-link:hover {
+  color: var(--sgf-orange-hover) !important;
+}
+
+.navbar .btn {
+  white-space: nowrap;
+}
+
+/* --- Navbar brand icon: small orange badge, same treatment in both
+   themes since it's a logo mark rather than page body content. --- */
+.navbar-brand-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  border-radius: 8px;
+  background: var(--sgf-orange);
+  color: #fff;
+  flex-shrink: 0;
+}
+
+/* --- Navbar: sticky glass surface --- */
+.navbar {
+  position: sticky;
+  top: 0;
+  z-index: 1030;
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+}
+[data-bs-theme='dark'] .navbar {
+  background-color: rgba(10, 10, 12, 0.72) !important;
+}
+[data-bs-theme='light'] .navbar {
+  background-color: rgba(255, 255, 255, 0.82) !important;
+}
+
+/* ==========================================================================
+   Premium UI pass: glassmorphism, micro-interactions, animations,
+   notification bell + toasts.
+   ========================================================================== */
+
+/* --- Glassmorphism surface: subtle translucent + blur, opt-in via class --- */
+.glass-card {
+  background: rgba(255, 255, 255, 0.045);
+  border: 1px solid rgba(255, 255, 255, 0.09);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-radius: 0.9rem;
+}
+
+/* --- Interactive card hover lift: opt-in, so it doesn't affect every .card
+   (e.g. modal content, admin table cards) that shouldn't feel clickable --- */
+.card-interactive {
+  transition:
+    transform 0.18s ease,
+    border-color 0.18s ease,
+    box-shadow 0.18s ease;
+}
+.card-interactive:hover {
+  transform: translateY(-3px);
+  border-color: var(--sgf-orange);
+  box-shadow: 0 12px 24px -12px rgba(255, 90, 31, 0.35);
+}
+
+/* --- Button micro-interaction --- */
+.btn {
+  transition:
+    transform 0.12s ease,
+    box-shadow 0.12s ease,
+    background-color 0.12s ease,
+    border-color 0.12s ease,
+    color 0.12s ease;
+}
+.btn:hover {
+  transform: translateY(-1px);
+}
+.btn:active {
+  transform: translateY(0);
+}
+
+/* --- Fade-in-up on load: apply `.animate-in` plus an optional
+   `--animate-delay` custom property (in ms) for staggered lists --- */
+@keyframes sgf-fade-in-up {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+.animate-in {
+  animation: sgf-fade-in-up 0.5s ease both;
+  animation-delay: var(--animate-delay, 0ms);
+}
+@media (prefers-reduced-motion: reduce) {
+  .animate-in {
+    animation: none;
+  }
+  .card-interactive:hover,
+  .btn:hover,
+  .feature-card:hover {
+    transform: none;
+  }
+}
+
+/* --- Notification bell --- */
+.notification-bell {
+  position: relative;
+}
+.notification-bell-btn {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: 1px solid var(--bs-border-color);
+  background: transparent;
+  color: var(--bs-secondary-color);
+  transition:
+    color 0.15s ease,
+    border-color 0.15s ease;
+}
+
+/* --- Dark/light theme toggle button: same 40px circular treatment as
+   the notification bell button next to it --- */
+.theme-toggle-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  padding: 0;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+.notification-bell-btn:hover {
+  color: var(--sgf-orange);
+  border-color: var(--sgf-orange);
+}
+.notification-bell-badge {
+  position: absolute;
+  top: -2px;
+  right: -2px;
+  min-width: 18px;
+  height: 18px;
+  padding: 0 4px;
+  border-radius: 999px;
+  background: var(--sgf-orange);
+  color: #fff;
+  font-size: 0.68rem;
+  font-weight: 700;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+}
+.notification-dropdown {
+  position: absolute;
+  top: calc(100% + 10px);
+  right: 0;
+  width: 320px;
+  max-width: 90vw;
+  z-index: 1040;
+  box-shadow: 0 20px 40px -16px rgba(0, 0, 0, 0.6);
+  animation: sgf-fade-in-up 0.18s ease both;
+  /* Overlay content needs to stay legible over busy page text underneath,
+     so it uses a near-opaque surface instead of .glass-card's light wash. */
+  background: rgba(15, 15, 17, 0.97);
+  border: 1px solid var(--bs-border-color);
+}
+.notification-dropdown-header {
+  padding: 0.75rem 1rem 0.5rem;
+  font-weight: 700;
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--bs-secondary-color);
+}
+.notification-dropdown-list {
+  list-style: none;
+  margin: 0;
+  padding: 0 0 0.5rem;
+  max-height: 320px;
+  overflow-y: auto;
+}
+.notification-dropdown-list li {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.6rem;
+  padding: 0.5rem 1rem;
+}
+.notification-dropdown-list li:hover {
+  background: rgba(255, 255, 255, 0.04);
+}
+.notification-dot {
+  margin-top: 0.35rem;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--sgf-orange);
+  flex-shrink: 0;
+}
+
+/* --- Toasts: slide in from the top-right corner --- */
+.toast-stack {
+  position: fixed;
+  top: 1.25rem;
+  right: 1.25rem;
+  z-index: 1080;
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  width: 320px;
+  max-width: calc(100vw - 2rem);
+}
+@keyframes sgf-toast-in {
+  from {
+    opacity: 0;
+    transform: translateX(24px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+.toast-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  padding: 0.85rem 1rem;
+  border-radius: 0.75rem;
+  color: #fff;
+  font-size: 0.9rem;
+  font-weight: 500;
+  box-shadow: 0 16px 32px -14px rgba(0, 0, 0, 0.55);
+  animation: sgf-toast-in 0.25s ease both;
+  background: rgba(19, 19, 21, 0.92);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid var(--bs-border-color);
+  border-left: 3px solid var(--sgf-orange);
+}
+.toast-item-success {
+  border-left-color: var(--sgf-green);
+}
+.toast-item-danger {
+  border-left-color: #ef4444;
+}
+.toast-item-close {
+  background: none;
+  border: none;
+  color: var(--bs-secondary-color);
+  font-size: 1.1rem;
+  line-height: 1;
+  padding: 0;
+}
+.toast-item-close:hover {
+  color: #fff;
+}
+
+/* ==========================================================================
+   Body Type Analysis "scanner" UI. Camera height / distance sliders are
+   decorative (no real camera/3D-sensing feature exists) - see ImageAnalysis.jsx
+   for the reasoning; kept purely to match the requested sci-fi scanner look.
+   ========================================================================== */
+.scanner-grid {
+  display: grid;
+  grid-template-columns: 1fr 400px;
+  gap: 1.5rem;
+  align-items: start;
+}
+@media (max-width: 900px) {
+  .scanner-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.scanner-viewfinder {
+  /* Strict 3:4 portrait, but height-driven rather than width-driven: in
+     a fluid `1fr` grid column, a width-driven aspect-ratio box grows
+     without limit on wide screens (wider column -> wider box -> even
+     taller box, since height follows width here), which is exactly what
+     overflowed the viewport on a real laptop-width window. Deriving
+     width FROM a viewport-capped height instead means the box can never
+     grow taller than the available vertical space, on any screen width. */
+  position: relative;
+  aspect-ratio: 3 / 4;
+  height: clamp(320px, calc(100vh - 320px), 560px);
+  max-width: 100%;
+  margin-inline: auto;
+  background: #050506;
+  border: 1px solid var(--bs-border-color);
+  border-radius: 0.9rem;
+  overflow: hidden;
+}
+
+.scanner-crosshair {
+  position: absolute;
+  width: 28px;
+  height: 28px;
+  border-color: var(--sgf-orange);
+  border-style: solid;
+  border-width: 0;
+  opacity: 0.85;
+  z-index: 2;
+}
+.scanner-crosshair-tl {
+  top: 14px;
+  left: 14px;
+  border-top-width: 2px;
+  border-left-width: 2px;
+}
+.scanner-crosshair-tr {
+  top: 14px;
+  right: 14px;
+  border-top-width: 2px;
+  border-right-width: 2px;
+}
+.scanner-crosshair-bl {
+  bottom: 14px;
+  left: 14px;
+  border-bottom-width: 2px;
+  border-left-width: 2px;
+}
+.scanner-crosshair-br {
+  bottom: 14px;
+  right: 14px;
+  border-bottom-width: 2px;
+  border-right-width: 2px;
+}
+
+.scanner-guide-box {
+  /* Scales proportionally with the outer box: same 3:4 ratio, uniformly
+     smaller, centered - so it stays fully visible and correctly
+     proportioned at any outer box size instead of using fixed insets
+     that assumed a specific (now-changed) outer aspect ratio. */
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 55%;
+  aspect-ratio: 3 / 4;
+  transform: translate(-50%, -50%);
+  border: 2px dashed var(--sgf-orange);
+  border-radius: 0.75rem;
+  animation: sgf-scanner-pulse 2s ease-in-out infinite;
+}
+@keyframes sgf-scanner-pulse {
+  0%,
+  100% {
+    opacity: 0.45;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+.scanner-guide-text {
+  position: absolute;
+  top: 40px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(255, 90, 31, 0.12);
+  border: 1px solid rgba(255, 90, 31, 0.4);
+  color: var(--sgf-orange);
+  font-family: var(--sgf-mono-font);
+  font-size: 0.75rem;
+  letter-spacing: 0.03em;
+  padding: 0.3rem 0.75rem;
+  border-radius: 999px;
+  white-space: nowrap;
+}
+
+.scanner-preview-img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  animation: sgf-fade-in-up 0.4s ease both;
+}
+
+.scanner-laser {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  height: 2px;
+  background: var(--sgf-orange);
+  box-shadow:
+    0 0 8px 2px rgba(255, 90, 31, 0.85),
+    0 0 20px 6px rgba(255, 90, 31, 0.35);
+  animation: sgf-scanner-sweep 3s linear infinite;
+  z-index: 3;
+}
+@keyframes sgf-scanner-sweep {
+  0% {
+    top: 0%;
+  }
+  100% {
+    top: 100%;
+  }
+}
+
+.scanner-viewfinder-footer {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.5rem 0.85rem;
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.75), transparent);
+  color: var(--bs-secondary-color);
+  font-family: var(--sgf-mono-font);
+  font-size: 0.7rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  z-index: 3;
+}
+.scanner-rec-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--sgf-orange);
+}
+
+.scanner-card {
+  --bs-card-bg: #0d0d0f;
+}
+.scanner-card-title {
+  font-family: var(--sgf-mono-font);
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--bs-secondary-color);
+  margin-bottom: 1rem;
+}
+
+.scanner-field-label {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 0.85rem;
+  font-weight: 600;
+  margin-bottom: 0.4rem;
+}
+.scanner-field-value {
+  font-family: var(--sgf-mono-font);
+  color: var(--sgf-orange);
+  font-size: 0.8rem;
+}
+
+.scanner-readonly-field {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background-color: #050506;
+  border: 1px solid var(--bs-border-color);
+  border-radius: 0.5rem;
+  padding: 0.55rem 0.85rem;
+  font-size: 0.85rem;
+  font-weight: 600;
+  margin-bottom: 0.6rem;
+}
+.scanner-readonly-field:last-child {
+  margin-bottom: 0;
+}
+.scanner-readonly-field .scanner-field-value {
+  font-size: 0.85rem;
+  font-weight: 700;
+}
+
+.scanner-btn-start {
+  font-family: var(--sgf-mono-font);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  --bs-btn-color: #050506;
+  --bs-btn-bg: var(--sgf-orange);
+  --bs-btn-border-color: var(--sgf-orange);
+  --bs-btn-hover-color: #050506;
+  --bs-btn-hover-bg: var(--sgf-orange-hover);
+  --bs-btn-hover-border-color: var(--sgf-orange-hover);
+  --bs-btn-active-bg: var(--sgf-orange-active);
+  --bs-btn-disabled-color: #050506;
+  --bs-btn-disabled-bg: var(--sgf-orange);
+  --bs-btn-disabled-border-color: var(--sgf-orange);
+}
+.scanner-btn-stop {
+  font-family: var(--sgf-mono-font);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  --bs-btn-color: var(--sgf-orange);
+  --bs-btn-bg: transparent;
+  --bs-btn-border-color: var(--sgf-orange);
+  --bs-btn-hover-color: #050506;
+  --bs-btn-hover-bg: var(--sgf-orange);
+  --bs-btn-hover-border-color: var(--sgf-orange);
+  --bs-btn-disabled-color: var(--sgf-orange);
+  --bs-btn-disabled-border-color: #3f3f46;
+  opacity: 1;
+}
+.scanner-btn-stop:disabled {
+  --bs-btn-color: #52525b;
+}
+
+/* ==========================================================================
+   Floating decorative icons: purely ambient background texture on public
+   pages. Mount inside a `position: relative` container with a bounded
+   height (see FloatingIcons.jsx) - never inside a long/table-heavy page
+   directly, so they stay confined to a hero/intro area.
+   ========================================================================== */
+.floating-icons {
+  /* z-index: -1 (not 0) matters: within its position:relative parent's
+     stacking context, this sits below static-position sibling content
+     regardless of DOM order - z-index:0 would instead paint on TOP of
+     that content, since positioned descendants stack above static ones
+     even at the same z-index level. */
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+  z-index: -1;
+}
+.floating-icon {
+  position: absolute;
+  color: var(--sgf-orange);
+  opacity: 0.6;
+  animation: sgf-icon-float var(--float-duration, 6s) ease-in-out infinite;
+  animation-delay: var(--float-delay, 0s);
+}
+@keyframes sgf-icon-float {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-14px);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .floating-icon {
+    animation: none;
+  }
+}
+
+/* ==========================================================================
+   In-app reminder banners (daily workout / hydration nudges). Each banner
+   is wrapped in a grid-rows collapse container so dismissal smoothly
+   shrinks the row to 0fr instead of an abrupt layout jump, while the inner
+   card independently fades + slides on both entrance and exit. See
+   ReminderBanners.jsx for the two-phase dismiss (exit class first, actual
+   removal from state after the transition finishes).
+   ========================================================================== */
+.reminder-banner-stack {
+  margin-bottom: 1.5rem;
+}
+.reminder-banner-item {
+  display: grid;
+  grid-template-rows: 1fr;
+  margin-bottom: 0.6rem;
+  transition:
+    grid-template-rows 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+    margin-bottom 0.3s ease;
+}
+.reminder-banner-item:last-child {
+  margin-bottom: 0;
+}
+.reminder-banner-item.is-exiting {
+  grid-template-rows: 0fr;
+  margin-bottom: 0;
+}
+.reminder-banner {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+  min-height: 0;
+  overflow: hidden;
+  padding: 0.85rem 1.1rem;
+  border-radius: 0.75rem;
+  background: rgba(255, 90, 31, 0.08);
+  border: 1px solid rgba(255, 90, 31, 0.32);
+  animation: sgf-banner-in 0.32s cubic-bezier(0.16, 1, 0.3, 1) both;
+  transition:
+    opacity 0.22s ease,
+    transform 0.22s ease;
+}
+.is-exiting .reminder-banner {
+  opacity: 0;
+  transform: translateY(-6px);
+}
+@keyframes sgf-banner-in {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+.reminder-banner-icon {
+  color: var(--sgf-orange);
+  flex-shrink: 0;
+}
+.reminder-banner-message {
+  flex: 1;
+}
+.reminder-banner-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  flex-shrink: 0;
+}
+.reminder-banner-close {
+  background: none;
+  border: none;
+  color: var(--bs-secondary-color);
+  font-size: 1.1rem;
+  line-height: 1;
+  padding: 0 0.15rem;
+}
+.reminder-banner-close:hover {
+  color: #fff;
+}
+@media (max-width: 576px) {
+  .reminder-banner {
+    flex-wrap: wrap;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .reminder-banner-item,
+  .reminder-banner {
+    transition: none;
+    animation: none;
+  }
+}
+
+/* ==========================================================================
+   Exercise demo GIFs - real sourced content (see
+   documentation/exercise_demo_gifs_sourcing.md for provenance), not every
+   exercise has one, so the placeholder state is a normal, expected outcome.
+   ========================================================================== */
+.exercise-demo-gif {
+  display: block;
+  width: 100%;
+  max-width: 260px;
+  margin-inline: auto;
+  border-radius: 0.75rem;
+  border: 1px solid var(--bs-border-color);
+  background: #050506;
+}
+.exercise-demo-gif-placeholder {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  max-width: 260px;
+  height: 140px;
+  margin-inline: auto;
+  border-radius: 0.75rem;
+  border: 1px dashed var(--bs-border-color);
+  background: rgba(255, 255, 255, 0.02);
+  text-align: center;
+  padding: 0.5rem;
+}
+
+/* ==========================================================================
+   Site footer - permanently dark/orange like the About-split and feature
+   gallery panels above, regardless of [data-bs-theme]. It's a brand surface
+   (logo, socials) rather than page body content, so it's pinned the same
+   way those sections are rather than following the light/dark toggle.
+   ========================================================================== */
+.site-footer {
+  margin-top: auto;
+  background: #050506;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  padding: 3.5rem 0 0;
+  color: rgba(255, 255, 255, 0.72);
+}
+.footer-grid {
+  display: grid;
+  grid-template-columns: 1.4fr 1fr 1fr;
+  gap: 2.5rem;
+  padding-bottom: 2.5rem;
+}
+.footer-heading {
+  color: #fff;
+  font-weight: 700;
+  font-size: 1rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  margin-bottom: 1.1rem;
+}
+
+/* --- Column 1: brand + socials --- */
+.footer-logo {
+  display: inline-block;
+  font-family: var(--sgf-heading-font);
+  font-size: 1.4rem;
+  font-weight: 800;
+  color: #fff;
+  text-decoration: none;
+  margin-bottom: 0.85rem;
+}
+.footer-tagline {
+  font-size: 0.88rem;
+  line-height: 1.6;
+  color: rgba(255, 255, 255, 0.6);
+  max-width: 320px;
+  margin-bottom: 1.4rem;
+}
+.footer-socials {
+  display: flex;
+  gap: 0.6rem;
+}
+.footer-social-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  color: rgba(255, 255, 255, 0.8);
+  transition:
+    background 0.15s ease,
+    border-color 0.15s ease,
+    color 0.15s ease,
+    transform 0.15s ease;
+}
+.footer-social-icon:hover {
+  background: var(--sgf-orange);
+  border-color: var(--sgf-orange);
+  color: #fff;
+  transform: translateY(-2px);
+}
+
+/* --- Column 2: quick contacts --- */
+.footer-contact-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.9rem;
+}
+.footer-contact-list li {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  font-size: 0.88rem;
+}
+.footer-contact-icon {
+  flex-shrink: 0;
+  color: var(--sgf-orange);
+}
+.footer-contact-list a,
+.footer-contact-list span {
+  color: rgba(255, 255, 255, 0.72);
+  text-decoration: none;
+}
+.footer-contact-list a:hover {
+  color: var(--sgf-orange);
+}
+
+/* --- Column 3: gallery highlights --- */
+.footer-gallery-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+.footer-gallery-list li {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+.footer-gallery-thumb {
+  width: 52px;
+  height: 52px;
+  border-radius: 0.5rem;
+  object-fit: cover;
+  flex-shrink: 0;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+.footer-gallery-title {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #fff;
+  margin-bottom: 0.15rem;
+}
+.footer-gallery-subtitle {
+  font-size: 0.78rem;
+  color: var(--sgf-orange);
+}
+
+/* --- Sub-footer bar --- */
+.footer-subbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  padding: 1.25rem 0;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  font-size: 0.82rem;
+  color: rgba(255, 255, 255, 0.55);
+}
+.footer-sublinks {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+.footer-sublinks a {
+  color: rgba(255, 255, 255, 0.55);
+  text-decoration: none;
+}
+.footer-sublinks a:hover {
+  color: var(--sgf-orange);
+}
+.footer-sublink-divider {
+  color: rgba(255, 255, 255, 0.25);
+}
+
+@media (max-width: 900px) {
+  .footer-grid {
+    grid-template-columns: 1fr;
+    gap: 2rem;
+  }
+  .footer-tagline {
+    max-width: 100%;
+  }
+}
+@media (max-width: 576px) {
+  .footer-subbar {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .footer-social-icon {
+    transition: none;
+  }
+}

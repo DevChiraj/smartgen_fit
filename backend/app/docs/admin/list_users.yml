@@ -1,0 +1,50 @@
+tags:
+  - Admin
+summary: List all users
+security:
+  - BearerAuth: []
+responses:
+  200:
+    description: All users
+    schema:
+      type: object
+      properties:
+        users:
+          type: array
+          items:
+            $ref: '#/definitions/AdminUser'
+  401:
+    description: Missing/invalid/expired access token
+  403:
+    description: Not an admin
+definitions:
+  AdminUser:
+    type: object
+    properties:
+      user_id:
+        type: integer
+      full_name:
+        type: string
+      username:
+        type: string
+      email:
+        type: string
+      gender:
+        type: string
+      age:
+        type: integer
+      phone_number:
+        type: string
+        x-nullable: true
+      height_cm:
+        type: string
+        x-nullable: true
+      weight_kg:
+        type: string
+        x-nullable: true
+      role:
+        type: string
+        enum: [user, admin]
+      created_at:
+        type: string
+        format: date-time

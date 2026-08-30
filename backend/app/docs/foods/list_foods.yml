@@ -1,0 +1,56 @@
+tags:
+  - Foods
+summary: List Sri Lankan foods
+description: Public, no auth. Real Kaggle-sourced nutrition data (119 rows) - see module_reports/module12.md.
+parameters:
+  - in: query
+    name: category
+    type: string
+    description: Exact category match, case-insensitive (e.g. "Grain", "Protein")
+  - in: query
+    name: q
+    type: string
+    description: Case-insensitive substring match on food_name
+responses:
+  200:
+    description: Matching foods
+    schema:
+      type: object
+      properties:
+        foods:
+          type: array
+          items:
+            $ref: '#/definitions/SriLankanFood'
+definitions:
+  SriLankanFood:
+    type: object
+    properties:
+      food_id:
+        type: integer
+      food_name:
+        type: string
+      category:
+        type: string
+      serving_size:
+        type: string
+        x-nullable: true
+      calories:
+        type: integer
+      protein_g:
+        type: string
+      carbs_g:
+        type: string
+      fat_g:
+        type: string
+      fiber_g:
+        type: string
+        x-nullable: true
+      vitamins:
+        type: string
+        x-nullable: true
+      minerals:
+        type: string
+        x-nullable: true
+      image_url:
+        type: string
+        x-nullable: true

@@ -1,0 +1,31 @@
+tags:
+  - Admin
+summary: List BMI categories
+security:
+  - BearerAuth: []
+responses:
+  200:
+    description: BMI category thresholds
+    schema:
+      type: object
+      properties:
+        bmi_categories:
+          type: array
+          items:
+            $ref: '#/definitions/BMICategory'
+  401:
+    description: Missing/invalid/expired access token
+  403:
+    description: Not an admin
+definitions:
+  BMICategory:
+    type: object
+    properties:
+      bmi_category_id:
+        type: integer
+      category_name:
+        type: string
+      min_bmi:
+        type: string
+      max_bmi:
+        type: string

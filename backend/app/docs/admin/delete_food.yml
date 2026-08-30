@@ -1,0 +1,19 @@
+tags:
+  - Admin
+summary: Delete a food
+security:
+  - BearerAuth: []
+parameters:
+  - in: path
+    name: food_id
+    type: integer
+    required: true
+responses:
+  204:
+    description: Deleted
+  401:
+    description: Missing/invalid/expired access token
+  403:
+    description: Not an admin
+  404:
+    description: No food with that id

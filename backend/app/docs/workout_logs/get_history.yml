@@ -1,0 +1,18 @@
+tags:
+  - Workout Logs
+summary: Get the logged-in user's workout log history
+description: Most recent 50, newest first.
+security:
+  - BearerAuth: []
+responses:
+  200:
+    description: Workout log history
+    schema:
+      type: object
+      properties:
+        history:
+          type: array
+          items:
+            $ref: '#/definitions/WorkoutLog'
+  401:
+    description: Missing/invalid/expired access token

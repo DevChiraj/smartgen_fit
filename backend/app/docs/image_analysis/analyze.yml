@@ -1,0 +1,54 @@
+tags:
+  - Image Analysis
+summary: Upload a body photo for classification and get a matched recommendation
+description: >
+  Pipeline: validate upload -> OpenCV preprocessing -> CNN classification (Thin/Normal/Overweight
+  only - rule 1) -> KNN match against real meal/workout datasets (rule 2) -> stores the analysis
+  and the matched recommendation. Fetch the match afterwards via GET /recommendations/latest.
+  Note: the CNN is a documented proof-of-concept (see module_reports/module9.md) - predictions
+  are not guaranteed accurate.
+security:
+  - BearerAuth: []
+consumes:
+  - multipart/form-data
+parameters:
+  - in: formData
+    name: image
+    type: file
+    required: true
+    description: PNG/JPEG/WEBP, max 4 MB
+responses:
+  201:
+    description: Classified and matched
+    schema:
+      $ref: '#/definitions/ImageAnalysisRecord'
+  400:
+    description: Invalid file (wrong type, too large, or not a real image)
+  401:
+    description: Missing/invalid/expired access token
+  500:
+    description: Predicted label has no matching body_type_categories row (should not happen with a correctly seeded DB)
+  503:
+    description: No active CNN model registered, or no trained KNN recommender available
+definitions:
+  ImageAnalysisRecord:
+    type: object
+    properties:
+      analysis_id:
+        type: integer
+      image_path:
+        type: string
+      confidence_score:
+        type: string
+        example: "0.8700"
+      created_at:
+        type: string
+        format: date-time
+      predicted_body_type:
+        type: object
+        properties:
+          body_type_id:
+            type: integer
+          name:
+            type: string
+            enum: [Thin, Normal, Overweight]

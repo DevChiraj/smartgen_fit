@@ -1,0 +1,30 @@
+tags:
+  - Admin
+summary: List body type categories
+security:
+  - BearerAuth: []
+responses:
+  200:
+    description: Body types (always exactly Thin/Normal/Overweight - see update note)
+    schema:
+      type: object
+      properties:
+        body_types:
+          type: array
+          items:
+            $ref: '#/definitions/BodyTypeCategory'
+  401:
+    description: Missing/invalid/expired access token
+  403:
+    description: Not an admin
+definitions:
+  BodyTypeCategory:
+    type: object
+    properties:
+      body_type_id:
+        type: integer
+      name:
+        type: string
+        enum: [Thin, Normal, Overweight]
+      description:
+        type: string

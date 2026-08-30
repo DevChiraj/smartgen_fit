@@ -1,0 +1,22 @@
+{
+  "version": "v20260728_120945",
+  "file_path": "ai_model/saved_models/v20260728_120945.keras",
+  "accuracy": 0.4698,
+  "trained_date": "2026-07-28T12:09:45.837461+00:00",
+  "class_names": [
+    "normal",
+    "overweight",
+    "thin"
+  ],
+  "train_count": 596,
+  "val_count": 149,
+  "epochs": 21,
+  "max_epochs_requested": 50,
+  "early_stopped": true,
+  "early_stopping_monitor": "val_loss",
+  "early_stopping_patience": 10,
+  "seed": 42,
+  "model_seed": 2,
+  "final_train_accuracy": 0.7886,
+  "final_val_loss": 1.0623
+}

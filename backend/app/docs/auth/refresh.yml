@@ -1,0 +1,16 @@
+tags:
+  - Auth
+summary: Exchange a refresh token for a new access token
+security:
+  - BearerAuth: []
+description: Requires the **refresh** token (not the access token) in the Authorization header.
+responses:
+  200:
+    description: New access token issued
+    schema:
+      type: object
+      properties:
+        access_token:
+          type: string
+  401:
+    description: Missing/invalid/expired refresh token
